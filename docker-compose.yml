@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  postgresql:
+    container_name: postgresql
+    image: postgres:15.2
+    environment:
+      POSTGRES_DB: vtbet
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      PGDATA: /var/lib/pgsql/data
+    volumes:
+      - postgres:/var/lib/pgsql/data
+    networks:
+      - backend
+    ports:
+      - "5432:5432"
+
+  liquibase-migrations:
+    image: liquibase/liquibase:4.18
+    depends_on:
+      - postgresql
+    command:
+      - --hub-mode=off
+      - --changelog-file=master.xml
+      - --driver=org.postgresql.Driver
+      - --url=jdbc:postgresql://postgresql:5432/vtbet
+      - --username=root
+      - --password=root
+      - update
+    volumes:
+      - ./migrations:/liquibase/changelog
+    networks:
+      - backend
+
+volumes:
+  postgres:
+  pgadmin:
+
+networks:
+  backend:
