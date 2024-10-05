@@ -3,7 +3,7 @@
 --changeset svytoq:create_users_table
 CREATE TABLE IF NOT EXISTS users
 (
-    user_id BIGSERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     registration_date TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS currency
 --changeset svytoq:create_user_account_table
 CREATE TABLE IF NOT EXISTS user_account
 (
-    user_id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT REFERENCES users (id) NOT NULL PRIMARY KEY,
     balance_amount DECIMAL(100,2) NOT NULL DEFAULT 0,
     currency_id BIGINT REFERENCES currency (currency_id) NOT NULL,
     username VARCHAR(255) NOT NULL,
