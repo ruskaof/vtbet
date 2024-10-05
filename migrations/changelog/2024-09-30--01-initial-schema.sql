@@ -58,9 +58,9 @@ CREATE TABLE IF NOT EXISTS type_of_bet_match
 
 
 --changeset svytoq:create_bets_table
-CREATE TABLE IF NOT EXISTS type_of_bet_match
+CREATE TABLE IF NOT EXISTS bets
 (
-    bet_id BIGSERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users (user_id),
     amount DECIMAL(100,2) NOT NULL,
     type_of_bet_match_id BIGINT NOT NULL REFERENCES type_of_bet_match (type_of_bet_match_id),
