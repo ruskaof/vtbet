@@ -1,27 +1,51 @@
 package ru.itmo.vtbet.integration
 
-import org.junit.jupiter.api.AfterAll
+import liquibase.Contexts
+import liquibase.LabelExpression
+import liquibase.Liquibase
+import liquibase.database.DatabaseFactory
+import liquibase.database.jvm.JdbcConnection
+import liquibase.resource.DirectoryResourceAccessor
 import org.junit.jupiter.api.BeforeAll
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.utility.DockerImageName
+import java.io.File
+import java.nio.file.Path
+import java.sql.DriverManager
 
-interface BaseIntegrationTest {
-    private companion object {
-        private val postgres = PostgreSQLContainer("postgres:16-alpine")
+
+@Testcontainers
+abstract class BaseIntegrationTest {
+    companion object {
+        @Container
+        var postgres: PostgreSQLContainer<*> = PostgreSQLContainer(DockerImageName.parse("postgres:16-alpine"))
 
         @JvmStatic
         @BeforeAll
-        fun beforeAll() {
-            postgres.start()
+        fun setup() {
+            runMigrations()
+        }
+
+        private fun runMigrations() {
+            val connection = DriverManager.getConnection(
+                postgres.jdbcUrl,
+                postgres.username,
+                postgres.password
+            );
+            val parentDirectory: Path = File("..").toPath()
+            val changeLogPath: Path = parentDirectory.resolve("/migrations/master.xml")
+
+            val database: liquibase.database.Database? =
+                DatabaseFactory.getInstance().findCorrectDatabaseImplementation(JdbcConnection(connection))
+            val liquibase = Liquibase(changeLogPath.toString(), DirectoryResourceAccessor(parentDirectory), database)
+            liquibase.update(Contexts(), LabelExpression())
         }
 
         @JvmStatic
-        @AfterAll
-        fun afterAll() {
-            postgres.stop()
-        }
-
         @DynamicPropertySource
         fun configureProperties(registry: DynamicPropertyRegistry) {
             registry.add("spring.datasource.url") { postgres.jdbcUrl }

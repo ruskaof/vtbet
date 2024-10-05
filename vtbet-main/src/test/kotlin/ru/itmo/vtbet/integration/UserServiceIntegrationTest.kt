@@ -4,12 +4,14 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import ru.itmo.vtbet.model.request.CreateUserRequest
 import ru.itmo.vtbet.service.UserService
 import java.math.BigDecimal
 
-@SpringBootTest
-class UserServiceIntegrationTest : BaseIntegrationTest {
+@SpringBootTest()
+@ActiveProfiles("test")
+class UserServiceIntegrationTest : BaseIntegrationTest() {
 
     @Autowired
     private lateinit var userService: UserService
