@@ -15,6 +15,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
 import java.io.File
 import java.nio.file.Path
+import java.sql.Connection
 import java.sql.DriverManager
 
 
@@ -25,17 +26,20 @@ abstract class BaseIntegrationTest {
         var postgres: PostgreSQLContainer<*> = PostgreSQLContainer(DockerImageName.parse("postgres:16-alpine"))
 
         @JvmStatic
+        protected lateinit var connection: Connection
+
+        @JvmStatic
         @BeforeAll
         fun setup() {
+            connection = DriverManager.getConnection(
+                postgres.jdbcUrl,
+                postgres.username,
+                postgres.password
+            )
             runMigrations()
         }
 
         private fun runMigrations() {
-            val connection = DriverManager.getConnection(
-                postgres.jdbcUrl,
-                postgres.username,
-                postgres.password
-            );
             val parentDirectory: Path = File("..").toPath()
             val changeLogPath: Path = parentDirectory.resolve("/migrations/master.xml")
 

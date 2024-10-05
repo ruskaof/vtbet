@@ -9,7 +9,7 @@ import ru.itmo.vtbet.model.request.CreateUserRequest
 import ru.itmo.vtbet.service.UserService
 import java.math.BigDecimal
 
-@SpringBootTest()
+@SpringBootTest
 @ActiveProfiles("test")
 class UserServiceIntegrationTest : BaseIntegrationTest() {
 
