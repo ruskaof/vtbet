@@ -7,19 +7,11 @@ CREATE TABLE IF NOT EXISTS users
     registration_date TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
---changeset svytoq:create_currency_table
-CREATE TABLE IF NOT EXISTS currency
-(
-    currency_id BIGINT PRIMARY KEY,
-    currency_name NOT NULL VARCHAR(255)
-);
-
 --changeset svytoq:create_user_account_table
 CREATE TABLE IF NOT EXISTS user_account
 (
     user_id BIGINT REFERENCES users (id) NOT NULL PRIMARY KEY,
     balance_amount DECIMAL(100,2) NOT NULL DEFAULT 0,
-    currency_id BIGINT REFERENCES currency (currency_id) NOT NULL,
     username VARCHAR(255) NOT NULL,
     email VARCHAR(255),
     phone_number VARCHAR(255),
