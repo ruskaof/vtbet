@@ -19,23 +19,23 @@ class UserService(
     private val userAccountRepository: UserAccountRepository,
 ) {
 
-     fun getUser(id: Long): UserDto {
-         val usersEntity = usersRepository.findById(id).getOrNull()
-         val userAccountEntity = userAccountRepository.findById(id).getOrNull()
+    fun getUser(id: Long): UserDto {
+        val usersEntity = usersRepository.findById(id).getOrNull()
+        val userAccountEntity = userAccountRepository.findById(id).getOrNull()
 
-         if (usersEntity == null || userAccountEntity == null) {
-             throw ResourceNotFoundException("User with id $id not found")
-         }
+        if (usersEntity == null || userAccountEntity == null) {
+            throw ResourceNotFoundException("User with id $id not found")
+        }
 
-         return UserDto(
-             id = usersEntity.id!!,
-             registrationDate = usersEntity.registrationDate,
-             balanceAmount = userAccountEntity.balanceAmount,
-             username = userAccountEntity.username,
-             email = userAccountEntity.email,
-             phoneNumber = userAccountEntity.phoneNumber,
-         )
-     }
+        return UserDto(
+            id = usersEntity.id!!,
+            registrationDate = usersEntity.registrationDate,
+            balanceAmount = userAccountEntity.balanceAmount,
+            username = userAccountEntity.username,
+            email = userAccountEntity.email,
+            phoneNumber = userAccountEntity.phoneNumber,
+        )
+    }
 
     @Transactional
     fun createUser(
@@ -60,5 +60,23 @@ class UserService(
             email = userAccountEntity.email,
             phoneNumber = userAccountEntity.phoneNumber,
         )
+    }
+
+    @Transactional
+    fun addMoneyToUser(userId: Long, amount: BigDecimal) {
+        val userAccountEntity = userAccountRepository.findById(userId).getOrNull()
+            ?: throw ResourceNotFoundException("User with id $userId not found")
+
+        userAccountEntity.balanceAmount = userAccountEntity.balanceAmount.add(amount)
+        userAccountRepository.save(userAccountEntity)
+    }
+
+    @Transactional
+    fun subtractMoneyFromUser(userId: Long, amount: BigDecimal) {
+        val userAccountEntity = userAccountRepository.findById(userId).getOrNull()
+            ?: throw ResourceNotFoundException("User with id $userId not found")
+
+        userAccountEntity.balanceAmount = userAccountEntity.balanceAmount.subtract(amount)
+        userAccountRepository.save(userAccountEntity)
     }
 }
