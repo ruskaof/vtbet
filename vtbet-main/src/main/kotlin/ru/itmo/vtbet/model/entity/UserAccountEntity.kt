@@ -6,7 +6,7 @@ import jakarta.persistence.Id
 import java.math.BigDecimal
 
 @Entity(name = "user_account")
-class UserAccountEntity(
+data class UserAccountEntity(
     @Id
     val userId: Long,
     @Column(name = "balance_amount", nullable = false)
