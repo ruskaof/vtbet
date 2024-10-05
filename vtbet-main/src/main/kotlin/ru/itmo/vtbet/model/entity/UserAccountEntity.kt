@@ -10,13 +10,13 @@ class UserAccountEntity(
     @Id
     val userId: Long,
     @Column(name = "balance_amount", nullable = false)
-    val balanceAmount: BigDecimal,
+    var balanceAmount: BigDecimal,
     @Column(name = "username", nullable = false)
-    val username: String,
+    var username: String,
     @Column(name = "email", nullable = true)
-    val email: String? = null,
+    var email: String? = null,
     @Column(name = "phone_number", nullable = true)
-    val phoneNumber: String? = null,
+    var phoneNumber: String? = null,
     @Column(name = "account_verified", nullable = false)
-    val accountVerified: Boolean,
+    var accountVerified: Boolean,
 )
