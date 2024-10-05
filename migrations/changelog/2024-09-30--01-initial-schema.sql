@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS type_of_bet_match
 CREATE TABLE IF NOT EXISTS bets
 (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES users (user_id),
+    user_id BIGINT NOT NULL REFERENCES users (id),
     amount DECIMAL(100,2) NOT NULL,
     type_of_bet_match_id BIGINT NOT NULL REFERENCES type_of_bet_match (type_of_bet_match_id),
     ratio DECIMAL(100,2) NOT NULL
