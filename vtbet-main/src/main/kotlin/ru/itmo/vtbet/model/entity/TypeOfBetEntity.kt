@@ -7,11 +7,11 @@ class TypeOfBetEntity(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long? = null,
-        @Column(nullable = false)
-        val description: String,
-        @Column(nullable = false)
-        @ManyToOne
-        @JoinColumn(name = "bet_group_id")
-        val betGroupEntity: BetGroupEntity,
+//        @Column(nullable = false)
+//        val description: String,
+//        @Column(nullable = false)
+//        @ManyToOne
+//        @JoinColumn(name = "bet_group_id")
+//        val betGroupEntity: BetGroupEntity,
 ) {
 }
