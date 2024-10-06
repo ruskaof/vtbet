@@ -6,12 +6,9 @@ import liquibase.Liquibase
 import liquibase.database.DatabaseFactory
 import liquibase.database.jvm.JdbcConnection
 import liquibase.resource.DirectoryResourceAccessor
-import org.junit.jupiter.api.BeforeAll
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.PostgreSQLContainer
-import org.testcontainers.junit.jupiter.Container
-import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
 import java.io.File
 import java.nio.file.Path
@@ -19,23 +16,24 @@ import java.sql.Connection
 import java.sql.DriverManager
 
 
-@Testcontainers
 abstract class BaseIntegrationTest {
     companion object {
-        @Container
-        var postgres: PostgreSQLContainer<*> = PostgreSQLContainer(DockerImageName.parse("postgres:16-alpine"))
 
         @JvmStatic
-        protected lateinit var connection: Connection
+        private val postgres: PostgreSQLContainer<*> = PostgreSQLContainer(DockerImageName.parse("postgres:16-alpine"))
+
+        init {
+            postgres.start()
+        }
 
         @JvmStatic
-        @BeforeAll
-        fun setup() {
-            connection = DriverManager.getConnection(
-                postgres.jdbcUrl,
-                postgres.username,
-                postgres.password
-            )
+        val connection: Connection = DriverManager.getConnection(
+            postgres.jdbcUrl,
+            postgres.username,
+            postgres.password
+        )
+
+        init {
             runMigrations()
         }
 

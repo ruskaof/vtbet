@@ -1,7 +1,7 @@
 FROM gradle:jdk21 as build
 COPY . /sources
 WORKDIR /sources
-RUN gradle clean build
+RUN gradle clean bootJar
 
 FROM openjdk:21-jdk as runner
 WORKDIR /app
