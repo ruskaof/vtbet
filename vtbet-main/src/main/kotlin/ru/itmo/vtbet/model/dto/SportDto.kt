@@ -9,7 +9,7 @@ data class SportDto(
 )
 
 fun SportEntity.toDto(): SportDto =
-    SportDto(sport_id!!, sportName)
+    SportDto(sportId!!, sportName)
 
 fun SportDto.toResponse(): SportResponse =
     SportResponse(id, name)

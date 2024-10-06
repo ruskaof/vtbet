@@ -33,6 +33,9 @@ CREATE TABLE IF NOT EXISTS matches
     sport_id BIGINT NOT NULL REFERENCES sport (sport_id)
 );
 
+--changeset svytoq:create_index_match_name
+CREATE INDEX IF NOT EXISTS match_name_idx ON matches (match_name);
+
 --changeset svytoq:create_bet_group_table
 CREATE TABLE IF NOT EXISTS bet_group
 (
