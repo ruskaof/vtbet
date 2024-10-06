@@ -7,8 +7,7 @@ import jakarta.persistence.Id
 
 @Entity(name = "bet_group")
 class BetGroupEntity(
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long? = null,
-) {
-}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val betGroupId: Long? = null,
+)

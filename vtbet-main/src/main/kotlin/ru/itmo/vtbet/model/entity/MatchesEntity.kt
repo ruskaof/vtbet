@@ -13,4 +13,6 @@ class MatchesEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sport_id")
     val sportEntity: SportEntity,
+    @Column(name = "ended", nullable = false)
+    val ended: Boolean
 )

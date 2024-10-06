@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS matches
 (
     match_id  BIGSERIAL PRIMARY KEY,
     match_name VARCHAR(255) NOT NULL,
-    sport_id BIGINT NOT NULL REFERENCES sport (sport_id)
+    sport_id BIGINT NOT NULL REFERENCES sport (sport_id),
+    ended BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 --changeset svytoq:create_index_match_name

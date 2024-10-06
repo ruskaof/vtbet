@@ -4,4 +4,5 @@ data class MatchResponse(
     val id: Long,
     val name: String,
     val sport: SportResponse,
+    val ended: Boolean,
 )

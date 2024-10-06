@@ -51,6 +51,7 @@ class SportService(
             MatchesEntity(
                 matchName = createMatchRequest.name,
                 sportEntity = sport,
+                ended = false
             )
         )
 

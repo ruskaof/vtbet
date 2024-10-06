@@ -1,6 +1,9 @@
 package ru.itmo.vtbet.model.entity
 
-import jakarta.persistence.*
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
 
 @Entity(name = "bets")
 class BetsEntity(
@@ -8,15 +11,15 @@ class BetsEntity(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long? = null,
 //        @Column(nullable = false)
-//        val amount: Double,
+//        val amount: BigDecimal,
 //        @Column(nullable = false)
-//        val ratio: Double,
+//        val ratio: BigDecimal,
 //        @Column(nullable = false)
-//        @ManyToOne
+//        @ManyToOne(fetch = FetchType.LAZY)
 //        @JoinColumn(name = "user_id")
 //        val usersEntity: UsersEntity,
 //        @Column(nullable = false)
-//        @ManyToOne
+//        @ManyToOne(fetch = FetchType.LAZY)
 //        @JoinColumn(name = "type_of_bet_match_id")
 //        val typeOfBetMatchEntity: TypeOfBetMatchEntity,
 ) {
