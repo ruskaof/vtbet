@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS type_of_bet
 --changeset svytoq:create_type_of_bet_match_table
 CREATE TABLE IF NOT EXISTS type_of_bet_match
 (
-    type_of_bet_match_id BIGINT PRIMARY KEY,
+    type_of_bet_match_id BIGSERIAL PRIMARY KEY,
     ratio_now DECIMAL(100,2) NOT NULL,
     match_id BIGINT NOT NULL REFERENCES matches (match_id) ON DELETE CASCADE,
     type_of_bet_id BIGINT NOT NULL REFERENCES type_of_bet (type_of_bet_id) ON DELETE CASCADE

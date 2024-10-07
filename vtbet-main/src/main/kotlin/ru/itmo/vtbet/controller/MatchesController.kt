@@ -32,7 +32,7 @@ class MatchesController(
         @RequestParam pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @PositiveOrZero
-        @RequestParam pageSize: Int,
+        @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<MatchResponse>> {
         val result = matchesService.getMatches(pageNumber, pageSize)
         return ResponseEntity(
@@ -47,7 +47,7 @@ class MatchesController(
         @PathVariable("id") id: Long,
         @RequestParam pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
-        @RequestParam pageSize: Int,
+        @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<SimpleTypeOfBetMatchResponse>> {
         val result = matchesService.getBetsByMatchId(id, pageNumber, pageSize)
         return ResponseEntity(

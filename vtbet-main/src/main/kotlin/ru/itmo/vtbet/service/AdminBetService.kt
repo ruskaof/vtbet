@@ -67,10 +67,10 @@ class AdminBetService(
         matchId: Long
     ): TypeOfBetMatchDto {
         val typeOfBetEntity = typeOfBetRepository.findById(createTypeOfBetMatchRequest.typeOfBetId).getOrElse {
-            throw ResourceNotFoundException("Invalid id: $matchId")
+            throw ResourceNotFoundException("cannot find type of bet with id: ${createTypeOfBetMatchRequest.typeOfBetId}")
         }
         val matchesEntity = matchesRepository.findById(matchId).getOrElse {
-            throw ResourceNotFoundException("Invalid id: $matchId")
+            throw ResourceNotFoundException("cannot find match with id: $matchId")
         }
         val typeOfBetMatchEntity = typeOfBetMatchRepository.save(
             TypeOfBetMatchEntity(
