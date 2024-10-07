@@ -51,7 +51,7 @@ class MatchesService(
             MatchesEntity(
                 matchId = matchId,
                 matchName = updateMatchRequest.name ?: oldMatch.matchName,
-                sportEntity = oldMatch.sportEntity,
+                sport = oldMatch.sport,
                 ended = oldMatch.ended,
             )
         )

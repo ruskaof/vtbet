@@ -5,9 +5,8 @@ import org.springframework.stereotype.Service
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.MatchDto
 import ru.itmo.vtbet.model.dto.PagingDto
+import ru.itmo.vtbet.model.dto.SimpleTypeOfBetMatchDto
 import ru.itmo.vtbet.model.dto.SportDto
-import ru.itmo.vtbet.model.dto.TypeOfBetMatchDto
-import ru.itmo.vtbet.model.dto.toDto
 import ru.itmo.vtbet.model.entity.MatchesEntity
 import ru.itmo.vtbet.model.entity.SportEntity
 import ru.itmo.vtbet.model.entity.TypeOfBetMatchEntity
@@ -24,7 +23,6 @@ class SportService(
     private val matchesRepository: MatchesRepository,
     private val typeOfBetMatchRepository: TypeOfBetMatchRepository,
 ) {
-
     fun getSports(pageNumber: Int, pageSize: Int): PagingDto<SportDto> {
         val result = sportRepository.findAll(PageRequest.of(pageNumber, pageSize))
         return PagingDto(
@@ -39,7 +37,7 @@ class SportService(
         sportRepository.save(SportEntity(sportName = createSportRequest.name)).toDto()
 
     fun getMatches(sportId: Long, pageNumber: Int, pageSize: Int): PagingDto<MatchDto> {
-        val result = matchesRepository.findBySportEntity(sportId, PageRequest.of(pageNumber, pageSize))
+        val result = matchesRepository.findAllBySportSportId(sportId, PageRequest.of(pageNumber, pageSize))
         return PagingDto(
             items = result.content.map(MatchesEntity::toDto),
             total = result.totalElements,
@@ -54,7 +52,7 @@ class SportService(
         val match = matchesRepository.save(
             MatchesEntity(
                 matchName = createMatchRequest.name,
-                sportEntity = sport,
+                sport = sport,
                 ended = false
             )
         )
@@ -62,10 +60,10 @@ class SportService(
         return match.toDto()
     }
 
-    fun getTypeOfBetMatch(sportId: Long, matchId: Long, pageNumber: Int, pageSize: Int): PagingDto<TypeOfBetMatchDto> {
-        val result = typeOfBetMatchRepository.findAll(PageRequest.of(pageNumber, pageSize))
+    fun getTypeOfBetMatch(matchId: Long, pageNumber: Int, pageSize: Int): PagingDto<SimpleTypeOfBetMatchDto> {
+        val result = typeOfBetMatchRepository.findAllByMatchMatchId(matchId, PageRequest.of(pageNumber, pageSize))
         return PagingDto(
-            items = result.content.map(TypeOfBetMatchEntity::toDto),
+            items = result.content.map(TypeOfBetMatchEntity::toSimpleDto),
             total = result.totalElements,
             pageSize = pageSize,
             page = pageNumber,

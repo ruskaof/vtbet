@@ -2,7 +2,6 @@ package ru.itmo.vtbet.controller
 
 import jakarta.persistence.PersistenceException
 import jakarta.validation.ConstraintViolationException
-import org.hibernate.HibernateException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler

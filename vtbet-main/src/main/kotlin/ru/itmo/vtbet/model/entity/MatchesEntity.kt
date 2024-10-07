@@ -21,7 +21,7 @@ data class MatchesEntity(
     val matchName: String,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sport_id")
-    val sportEntity: SportEntity,
+    val sport: SportEntity,
     @Column(name = "ended", nullable = false)
     val ended: Boolean
 )

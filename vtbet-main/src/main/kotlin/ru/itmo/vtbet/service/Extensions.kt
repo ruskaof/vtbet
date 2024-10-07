@@ -67,7 +67,7 @@ fun TypeOfBetEntity.toDto(): TypeOfBetDto = TypeOfBetDto(
 fun MatchesEntity.toDto() = MatchDto(
     id = matchId!!,
     name = matchName,
-    sport = sportEntity.toDto(),
+    sport = sport.toDto(),
     ended = ended
 )
 
