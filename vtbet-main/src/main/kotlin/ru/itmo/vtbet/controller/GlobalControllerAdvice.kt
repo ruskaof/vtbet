@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import ru.itmo.vtbet.exception.IllegalBetException
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 
 @RestControllerAdvice
@@ -30,6 +31,12 @@ class MethodArgumentNotValidExceptionAdvice {
     @ExceptionHandler(ResourceNotFoundException::class)
     fun handleResourceNotFoundException(e: ResourceNotFoundException): String {
         return e.message ?: "Could not find requested resource"
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalBetException::class)
+    fun handleResourceNotFoundException(e: IllegalBetException): String {
+        return e.message ?: "Illegal bet"
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

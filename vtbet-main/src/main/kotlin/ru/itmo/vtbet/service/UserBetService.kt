@@ -2,6 +2,8 @@ package ru.itmo.vtbet.service
 
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import ru.itmo.vtbet.exception.IllegalBetException
+import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.BetDto
 import ru.itmo.vtbet.model.entity.BetsEntity
 import ru.itmo.vtbet.model.request.MakeBetRequest
@@ -25,17 +27,21 @@ class UserBetService(
     @Transactional
     fun makeBet(id: Long, makeBetRequest: MakeBetRequest): BetDto {
         val userAccount = userAccountRepository.findById(makeBetRequest.userId)
-            .orElseThrow { IllegalArgumentException("No user found with ID: ${makeBetRequest.userId}") }
+            .orElseThrow { ResourceNotFoundException("No user found with ID: ${makeBetRequest.userId}") }
 
         val user = usersRepository.findById(makeBetRequest.userId)
-            .orElseThrow { IllegalArgumentException("No user found with ID: ${makeBetRequest.userId}") }
+            .orElseThrow { ResourceNotFoundException("No user found with ID: ${makeBetRequest.userId}") }
 
         val typeOfBetMatch = typeOfBetMatchRepository.findById(id)
-            .orElseThrow { IllegalArgumentException("No bet found with ID: $id") }
+            .orElseThrow { ResourceNotFoundException("No bet found with ID: $id") }
+
+        if (typeOfBetMatch.ratioNow != makeBetRequest.ratio) {
+            throw IllegalBetException("Wrong ratio: ratio now is ${typeOfBetMatch.ratioNow}")
+        }
 
         // Проверка, что сумма ставки не превышает баланс пользователя
         if (userAccount.balanceAmount < makeBetRequest.amount) {
-            throw IllegalArgumentException("Not enough funds to make bet")
+            throw IllegalBetException("Not enough funds to make bet")
         }
 
         // Произведение ставки

@@ -2,6 +2,7 @@ package ru.itmo.vtbet.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.BetGroupDto
 import ru.itmo.vtbet.model.dto.TypeOfBetMatchDto
 import ru.itmo.vtbet.model.entity.BetGroupEntity
@@ -66,10 +67,10 @@ class AdminBetService(
         matchId: Long
     ): TypeOfBetMatchDto {
         val typeOfBetEntity = typeOfBetRepository.findById(createTypeOfBetMatchRequest.typeOfBetId).getOrElse {
-            throw IllegalArgumentException("Invalid id: $matchId")
+            throw ResourceNotFoundException("Invalid id: $matchId")
         }
         val matchesEntity = matchesRepository.findById(matchId).getOrElse {
-            throw IllegalArgumentException("Invalid id: $matchId")
+            throw ResourceNotFoundException("Invalid id: $matchId")
         }
         val typeOfBetMatchEntity = typeOfBetMatchRepository.save(
             TypeOfBetMatchEntity(

@@ -14,6 +14,7 @@ import jakarta.validation.constraints.Size
 data class TypeOfBetEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "type_of_bet_id")
     val typeOfBetId: Long? = null,
     @Column(name = "description", nullable = false)
     @field:Size(max = 255, min = 1, message = "String length 1 and 255")

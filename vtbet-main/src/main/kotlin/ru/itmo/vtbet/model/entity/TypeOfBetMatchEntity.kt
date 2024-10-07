@@ -14,6 +14,7 @@ import java.math.BigDecimal
 data class TypeOfBetMatchEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "type_of_bet_match_id")
     val typeOfBetMatchId: Long? = null,
     @Column(name = "ratio_now", nullable = false)
     @field:PositiveOrZero(message = "ratio must be positive or zero")

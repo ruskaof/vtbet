@@ -3,6 +3,7 @@ package ru.itmo.vtbet.service
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.MatchDto
 import ru.itmo.vtbet.model.dto.PagingDto
 import ru.itmo.vtbet.model.dto.SimpleTypeOfBetMatchDto
@@ -45,7 +46,7 @@ class MatchesService(
     @Transactional
     fun updateMatch(updateMatchRequest: UpdateMatchRequest, matchId: Long): MatchDto {
         val oldMatch = matchesRepository.findById(matchId).getOrElse {
-            throw IllegalArgumentException("Invalid id: $matchId")
+            throw ResourceNotFoundException("Invalid id: $matchId")
         }
         val match = matchesRepository.save(
             MatchesEntity(
@@ -62,7 +63,7 @@ class MatchesService(
     @Transactional
     fun endMatch(matchId: Long, successfulBets: Set<Long>) {
         val match = matchesRepository.findById(matchId)
-            .orElseThrow { IllegalArgumentException("No Match found with ID: $matchId") }
+            .orElseThrow { ResourceNotFoundException("No Match found with ID: $matchId") }
 
         if (match.ended) {
             throw IllegalArgumentException("Match with ID: $matchId has already ended")
