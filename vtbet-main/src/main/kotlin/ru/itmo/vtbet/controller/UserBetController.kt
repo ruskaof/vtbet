@@ -1,13 +1,10 @@
 package ru.itmo.vtbet.controller;
 
 import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import ru.itmo.vtbet.model.request.MakeBetRequest
 import ru.itmo.vtbet.model.response.BetResponse
 import ru.itmo.vtbet.service.UserBetService
@@ -19,6 +16,7 @@ class UserBetController(
     private val userBetService: UserBetService,
 ) {
     @PostMapping("/bet/{typeOfBetMatchId}")
+    @ResponseStatus(HttpStatus.CREATED)
     fun makeBet(
         @PathVariable("typeOfBetMatchId") id: Long,
         @RequestBody @Valid makeBetRequest: MakeBetRequest,

@@ -41,6 +41,7 @@ class SportController(
     }
 
     @PostMapping("/sport")
+    @ResponseStatus(HttpStatus.CREATED)
     fun createSport(
         @RequestBody @Valid createSportRequest: CreateSportRequest,
     ): SportResponse =
@@ -62,6 +63,7 @@ class SportController(
     }
 
     @PostMapping("/sport/{id}/matches")
+    @ResponseStatus(HttpStatus.CREATED)
     fun createMatch(
         @PathVariable id: Long,
         @RequestBody @Valid createMatchRequest: CreateMatchRequest,
@@ -69,6 +71,7 @@ class SportController(
         sportService.createMatch(createMatchRequest, sportId = id).toResponse()
 
     @GetMapping("matches/{matchId}/types-of-bets")
+    @ResponseStatus(HttpStatus.CREATED)
     fun createTypeOfBetMatch(
         @PathVariable matchId: Long,
         @RequestParam pageNumber: Int,

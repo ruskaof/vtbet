@@ -5,14 +5,7 @@ import jakarta.validation.constraints.PositiveOrZero
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import ru.itmo.vtbet.model.dto.MatchDto
 import ru.itmo.vtbet.model.dto.SimpleTypeOfBetMatchDto
 import ru.itmo.vtbet.model.request.UpdateMatchRequest
@@ -66,13 +59,15 @@ class MatchesController(
         matchesService.updateMatch(updateMatchRequest, matchId).toResponse()
 
     @DeleteMapping("match/{matchId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteMatch(
         @PathVariable("matchId") matchId: Long,
-    ) = matchesService.delete(matchId)
+    ): Unit = matchesService.delete(matchId)
 
     @PostMapping("match/{matchId}/end")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun endMatch(
         @PathVariable("matchId") matchId: Long,
         @RequestBody successfulBets: Set<Long>,
-    ) = matchesService.endMatch(matchId, successfulBets)
+    ): Unit = matchesService.endMatch(matchId, successfulBets)
 }
