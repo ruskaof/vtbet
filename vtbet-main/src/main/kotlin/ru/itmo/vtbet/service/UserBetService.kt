@@ -45,8 +45,8 @@ class UserBetService(
         }
 
         // Произведение ставки
-        userAccount.balanceAmount -= makeBetRequest.amount
-        userAccountRepository.save(userAccount)
+        val accountToSave = userAccount.copy( balanceAmount = userAccount.balanceAmount - makeBetRequest.amount)
+        userAccountRepository.save(accountToSave)
 
         // Запись о ставке в историю ставок
         val bet = BetsEntity(

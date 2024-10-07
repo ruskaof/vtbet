@@ -80,7 +80,6 @@ class AdminBetService(
             )
         )
 
-
         return TypeOfBetMatchDto(
             id = typeOfBetMatchEntity.typeOfBetMatchId!!,
             ratioNow = typeOfBetMatchEntity.ratioNow,
