@@ -69,7 +69,7 @@ class MatchesService(
         }
 
         val typeOfBets = typeOfBetMatchRepository.findAllByMatchMatchId(matchId)
-        val allBetsForMatch = betsRepository.findByTypeOfBetMatchIdIn(typeOfBets.mapNotNull { it.typeOfBetMatchId })
+        val allBetsForMatch = betsRepository.findByTypeOfBetMatchTypeOfBetMatchIdIn(typeOfBets.mapNotNull { it.typeOfBetMatchId })
 
         for (bet in allBetsForMatch) {
             if (successfulBets.contains(bet.id)) {
