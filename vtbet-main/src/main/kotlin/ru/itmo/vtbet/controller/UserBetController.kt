@@ -1,5 +1,6 @@
 package ru.itmo.vtbet.controller;
 
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PathVariable
@@ -20,7 +21,7 @@ class UserBetController(
     @PostMapping("/bet/{typeOfBetMatchId}")
     fun makeBet(
         @PathVariable("typeOfBetMatchId") id: Long,
-        @RequestBody makeBetRequest: MakeBetRequest,
+        @RequestBody @Valid makeBetRequest: MakeBetRequest,
     ): ResponseEntity<BetResponse> {
         return ResponseEntity.ok(userBetService.makeBet(id, makeBetRequest).toResponse())
     }

@@ -35,7 +35,7 @@ class UserBetService(
         val typeOfBetMatch = typeOfBetMatchRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("No bet found with ID: $id") }
 
-        if (typeOfBetMatch.ratioNow != makeBetRequest.ratio) {
+        if (typeOfBetMatch.ratioNow.stripTrailingZeros() != makeBetRequest.ratio.stripTrailingZeros()) {
             throw IllegalBetException("Wrong ratio: ratio now is ${typeOfBetMatch.ratioNow}")
         }
 
