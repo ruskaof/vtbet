@@ -7,5 +7,6 @@ import ru.itmo.vtbet.model.entity.MatchesEntity
 
 
 interface MatchesRepository : JpaRepository<MatchesEntity, Long> {
-    fun findBySportEntity_SportId(sportId: Long, pageable: Pageable): Page<MatchesEntity>
+    fun findBySportEntity(sportId: Long, pageable: Pageable): Page<MatchesEntity>
+    override fun findAll(pageable: Pageable): Page<MatchesEntity>
 }

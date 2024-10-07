@@ -9,18 +9,17 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import ru.itmo.vtbet.model.dto.toResponse
 import ru.itmo.vtbet.model.request.AddMoneyRequest
 import ru.itmo.vtbet.model.request.CreateUserRequest
 import ru.itmo.vtbet.model.response.UserResponse
 import ru.itmo.vtbet.service.UserService
+import ru.itmo.vtbet.service.toResponse
 
 @RestController
 @Validated
 class UserController(
     private val userService: UserService,
 ) {
-
     @GetMapping("/users/{id}")
     fun getUser(
         @PathVariable id: Long,

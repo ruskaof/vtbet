@@ -6,10 +6,17 @@ import ru.itmo.vtbet.model.response.TypeOfBetMatchResponse
 import java.math.BigDecimal
 
 data class TypeOfBetMatchDto(
+    val id: Long,
+    val ratioNow: BigDecimal,
+    val typeOfBet: TypeOfBetDto,
+    val match: MatchDto,
+)
+
+data class SimpleTypeOfBetMatchDto(
         val id: Long,
         val ratioNow: BigDecimal,
         val typeOfBet: TypeOfBetDto,
-        val match: MatchDto,
+        val matchId: Long,
 )
 
 fun TypeOfBetMatchDto.toResponse() = TypeOfBetMatchResponse(
