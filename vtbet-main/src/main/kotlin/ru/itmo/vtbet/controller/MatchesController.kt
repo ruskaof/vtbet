@@ -1,6 +1,7 @@
 package ru.itmo.vtbet.controller
 
 import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.PositiveOrZero
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -27,8 +28,10 @@ class MatchesController(
 ) {
     @GetMapping("/matches")
     fun getMatches(
+        @PositiveOrZero
         @RequestParam pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
+        @PositiveOrZero
         @RequestParam pageSize: Int,
     ): ResponseEntity<List<MatchResponse>> {
         val result = matchesService.getMatches(pageNumber, pageSize)

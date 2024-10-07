@@ -32,13 +32,6 @@ class AdminBetController(
         @RequestBody createBetGroupRequest: CreateBetGroupRequest,
     ) = adminBetService.createBetGroup(createBetGroupRequest).toResponse()
 
-    @PatchMapping("admin/match/{id}")
-    fun updateMatch(
-        @PathVariable("id") id: Long,
-        @Valid
-        @RequestBody createBetGroupRequest: CreateBetGroupRequest,
-    ) = adminBetService.createBetGroup(createBetGroupRequest).toResponse()
-
     @PatchMapping("admin/bet/{id}")
     fun createBetGroup(
         @PathVariable id: Long,
@@ -46,7 +39,7 @@ class AdminBetController(
         @RequestBody updateTypeOfBetMatchRequest: UpdateTypeOfBetMatchRequest,
     ) = adminBetService.updateBetMatch(id, updateTypeOfBetMatchRequest)
 
-    @PostMapping("admin/matches/{matchId}")
+    @PostMapping("admin/matches/{matchId}/bet")
     fun createTypeOfBetMatch(
         @PathVariable matchId: Long,
         @RequestBody createTypeOfBetMatchRequest: CreateTypeOfBetMatchRequest,

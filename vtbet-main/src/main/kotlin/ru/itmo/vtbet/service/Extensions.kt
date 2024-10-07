@@ -24,7 +24,7 @@ import ru.itmo.vtbet.model.response.UserResponse
 
 fun TypeOfBetMatchEntity.toResponse() =
     SimpleTypeOfBetMatchResponse(
-        id = this.id!!,
+        id = this.typeOfBetMatchId!!,
         matchId = this.match.matchId!!,
         typeOfBetId = this.typeOfBets.typeOfBetId!!,
         typeOfBetDescription = this.typeOfBets.description,
@@ -94,7 +94,7 @@ fun TypeOfBetMatchDto.toResponse() =
 
 fun TypeOfBetMatchEntity.toSimpleDto() =
     SimpleTypeOfBetMatchDto(
-        id = this.id!!,
+        id = this.typeOfBetMatchId!!,
         ratioNow = this.ratioNow,
         matchId = this.match.matchId!!,
         typeOfBet = this.typeOfBets.toDto(),

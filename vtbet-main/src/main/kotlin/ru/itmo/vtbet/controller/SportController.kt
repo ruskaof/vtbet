@@ -2,6 +2,7 @@ package ru.itmo.vtbet.controller
 
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.PositiveOrZero
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -26,6 +27,7 @@ class SportController(
 
     @GetMapping("/sport")
     fun getSports(
+        @PositiveOrZero
         @RequestParam pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
