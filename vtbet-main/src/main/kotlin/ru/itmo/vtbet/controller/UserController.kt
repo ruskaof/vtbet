@@ -2,9 +2,11 @@ package ru.itmo.vtbet.controller
 
 import jakarta.validation.Valid
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import ru.itmo.vtbet.model.dto.toResponse
@@ -31,6 +33,20 @@ class UserController(
         request: CreateUserRequest,
     ): UserResponse? =
         userService.createUser(request).toResponse()
+
+    @DeleteMapping("/users/{id}")
+    fun deleteUser(
+        @PathVariable
+        id: Long,
+    ): Unit = userService.deleteUser(id)
+
+    @PutMapping("users/{id}")
+    fun updateUser(
+        @PathVariable
+        id: Long,
+        @RequestBody
+        request: CreateUserRequest,
+    ) = userService.updateUser(id, request)
 
     @PostMapping("users/{id}/balance/add")
     fun addMoney(

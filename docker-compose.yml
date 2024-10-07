@@ -6,9 +6,9 @@ services:
     restart: always
     environment:
       POSTGRES_DB: vtbet
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      PGDATA: /var/lib/pgsql/data
+      POSTGRES_USER: vtbet
+      POSTGRES_PASSWORD: vtbet
+      PGDATA: /var/lib/postgresql/vtbet/data
     volumes:
       - postgres:/var/lib/pgsql/data
     networks:
@@ -16,7 +16,7 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: [ "CMD", "pg_isready" ]
+      test: [ "CMD", "pg_isready", "-U", "vtbet" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -31,8 +31,8 @@ services:
       - --changelog-file=master.xml
       - --driver=org.postgresql.Driver
       - --url=jdbc:postgresql://postgresql:5432/vtbet
-      - --username=root
-      - --password=root
+      - --username=vtbet
+      - --password=vtbet
       - update
     volumes:
       - ./migrations:/liquibase/changelog

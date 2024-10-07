@@ -1,5 +1,6 @@
 package ru.itmo.vtbet.controller
 
+import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -28,7 +29,7 @@ class SportController(
     fun getSports(
             @RequestParam pageNumber: Int,
             @Max(MAX_PAGE_SIZE)
-            @RequestParam pageSize: Int,
+            @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<SportResponse>> {
         val result = sportService.getSports(pageNumber, pageSize)
         return ResponseEntity(
@@ -40,7 +41,7 @@ class SportController(
 
     @PostMapping("/sport")
     fun createSport(
-            @RequestBody createSportRequest: CreateSportRequest,
+        @RequestBody @Valid createSportRequest: CreateSportRequest,
     ): SportResponse =
             sportService.createSport(createSportRequest).toResponse()
 
@@ -49,7 +50,7 @@ class SportController(
             @PathVariable id: Long,
             @RequestParam pageNumber: Int,
             @Max(MAX_PAGE_SIZE)
-            @RequestParam pageSize: Int,
+            @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<MatchResponse>> {
         val result = sportService.getMatches(id, pageNumber, pageSize)
         return ResponseEntity(
@@ -62,7 +63,7 @@ class SportController(
     @PostMapping("/sport/{id}/matches")
     fun createMatch(
             @PathVariable id: Long,
-            @RequestBody createMatchRequest: CreateMatchRequest,
+            @RequestBody @Valid createMatchRequest: CreateMatchRequest,
     ): MatchResponse =
             sportService.createMatch(createMatchRequest, sportId = id).toResponse()
 

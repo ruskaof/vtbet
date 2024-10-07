@@ -7,8 +7,8 @@ spring:
         show_sql: true
 
   datasource:
-    username: root
-    password: root
+    username: vtbet
+    password: vtbet
     url: jdbc:postgresql://postgresql:5432/vtbet
 
 server:
