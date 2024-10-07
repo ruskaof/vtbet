@@ -88,6 +88,9 @@ class MatchesService(
     }
 
     fun delete(matchId: Long) {
+        if (!matchesRepository.existsById(matchId)) {
+            throw ResourceNotFoundException("No Match found with ID: $matchId")
+        }
         matchesRepository.deleteById(matchId)
     }
 }

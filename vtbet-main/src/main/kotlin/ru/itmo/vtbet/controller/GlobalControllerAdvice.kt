@@ -13,7 +13,7 @@ import ru.itmo.vtbet.exception.ResourceNotFoundException
 @RestControllerAdvice
 class MethodArgumentNotValidExceptionAdvice {
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): String {
         val message = e.bindingResult.fieldErrors.map { it.defaultMessage }.joinToString(", ")
@@ -27,7 +27,7 @@ class MethodArgumentNotValidExceptionAdvice {
         return "Invalid data: $message, ${e.message}"
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException::class)
     fun handleResourceNotFoundException(e: ResourceNotFoundException): String {
         return e.message ?: "Could not find requested resource"

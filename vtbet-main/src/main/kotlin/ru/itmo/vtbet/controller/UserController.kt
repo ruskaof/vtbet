@@ -28,6 +28,7 @@ class UserController(
     ): UserResponse? = userService.getUser(id).toResponse()
 
     @PostMapping("/users")
+    @ResponseStatus(HttpStatus.CREATED)
     fun createUser(
         @RequestBody
         @Valid

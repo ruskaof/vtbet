@@ -11,6 +11,7 @@ import ru.itmo.vtbet.repository.BetsRepository
 import ru.itmo.vtbet.repository.TypeOfBetMatchRepository
 import ru.itmo.vtbet.repository.UserAccountRepository
 import ru.itmo.vtbet.repository.UsersRepository
+import java.math.BigDecimal
 
 /**
  * Тут логика работы со ставками пользователей
@@ -45,7 +46,7 @@ class UserBetService(
         }
 
         // Произведение ставки
-        val accountToSave = userAccount.copy( balanceAmount = userAccount.balanceAmount - makeBetRequest.amount)
+        val accountToSave = userAccount.copy(balanceAmount = userAccount.balanceAmount - makeBetRequest.amount)
         userAccountRepository.save(accountToSave)
 
         // Запись о ставке в историю ставок
@@ -57,6 +58,14 @@ class UserBetService(
             usersEntity = user,
         )
         betRepository.save(bet)
+
+        // уменьшение коэффициента
+        typeOfBetMatchRepository.save(
+            typeOfBetMatch.copy(
+                ratioNow = typeOfBetMatch.ratioNow - BigDecimal(0.01),
+            )
+        )
+
         return bet.toDto()
     }
 }
