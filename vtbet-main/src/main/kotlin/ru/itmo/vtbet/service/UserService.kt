@@ -11,6 +11,7 @@ import ru.itmo.vtbet.repository.UserAccountRepository
 import ru.itmo.vtbet.repository.UsersRepository
 import java.math.BigDecimal
 import java.time.Instant
+import java.time.ZoneOffset
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -19,23 +20,23 @@ class UserService(
     private val userAccountRepository: UserAccountRepository,
 ) {
 
-     fun getUser(id: Long): UserDto {
-         val usersEntity = usersRepository.findById(id).getOrNull()
-         val userAccountEntity = userAccountRepository.findById(id).getOrNull()
+    fun getUser(id: Long): UserDto {
+        val usersEntity = usersRepository.findById(id).getOrNull()
+        val userAccountEntity = userAccountRepository.findById(id).getOrNull()
 
-         if (usersEntity == null || userAccountEntity == null) {
-             throw ResourceNotFoundException("User with id $id not found")
-         }
+        if (usersEntity == null || userAccountEntity == null) {
+            throw ResourceNotFoundException("User with id $id not found")
+        }
 
-         return UserDto(
-             id = usersEntity.id!!,
-             registrationDate = usersEntity.registrationDate,
-             balanceAmount = userAccountEntity.balanceAmount,
-             username = userAccountEntity.username,
-             email = userAccountEntity.email,
-             phoneNumber = userAccountEntity.phoneNumber,
-         )
-     }
+        return UserDto(
+            id = usersEntity.id!!,
+            registrationDate = usersEntity.registrationDate.atOffset(ZoneOffset.ofHours(3)).toInstant(),
+            balanceAmount = userAccountEntity.balanceAmount,
+            username = userAccountEntity.username,
+            email = userAccountEntity.email,
+            phoneNumber = userAccountEntity.phoneNumber,
+        )
+    }
 
     @Transactional
     fun createUser(
@@ -78,5 +79,40 @@ class UserService(
 
         userAccountEntity.balanceAmount = userAccountEntity.balanceAmount.subtract(amount)
         userAccountRepository.save(userAccountEntity)
+    }
+
+    @Transactional
+    fun deleteUser(id: Long) {
+        usersRepository.findById(id).getOrNull()
+            ?: throw ResourceNotFoundException("User with id $id not found")
+        usersRepository.deleteById(id)
+    }
+
+    @Transactional
+    fun updateUser(id: Long, request: CreateUserRequest): UserDto {
+        val usersEntity = usersRepository.findById(id).getOrNull()
+            ?: throw ResourceNotFoundException("User with id $id not found")
+
+        val userAccountEntity = userAccountRepository.findById(id).getOrNull()
+            ?: throw ResourceNotFoundException("User with id $id not found")
+
+        userAccountEntity.email = request.email
+            ?: userAccountEntity.email
+
+        userAccountEntity.phoneNumber = request.phoneNumber
+            ?: userAccountEntity.phoneNumber
+
+        userAccountEntity.username = request.username
+
+        userAccountRepository.saveAndFlush(userAccountEntity)
+
+        return UserDto(
+            id = userAccountEntity.userId,
+            registrationDate = usersEntity.registrationDate,
+            balanceAmount = userAccountEntity.balanceAmount,
+            username = userAccountEntity.username,
+            email = userAccountEntity.email,
+            phoneNumber = userAccountEntity.phoneNumber,
+        )
     }
 }
