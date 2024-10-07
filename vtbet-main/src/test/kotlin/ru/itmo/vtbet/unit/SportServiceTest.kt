@@ -10,14 +10,8 @@ import org.mockito.Mockito.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
-import ru.itmo.vtbet.model.dto.PagingDto
-import ru.itmo.vtbet.model.dto.SportDto
-import ru.itmo.vtbet.model.dto.UserDto
-import ru.itmo.vtbet.model.dto.toDto
-import ru.itmo.vtbet.model.entity.MatchesEntity
-import ru.itmo.vtbet.model.entity.SportEntity
-import ru.itmo.vtbet.model.entity.UserAccountEntity
-import ru.itmo.vtbet.model.entity.UsersEntity
+import ru.itmo.vtbet.model.dto.*
+import ru.itmo.vtbet.model.entity.*
 import ru.itmo.vtbet.service.SportService
 import java.math.BigDecimal
 import java.time.Instant
@@ -40,25 +34,30 @@ class SportServiceTest {
         val sport2Name = "football"
         val pageSize = 20
         val pageNumber = 1
-        val listSports = listOf(SportEntity(sportId, sportName), SportEntity(sport2Id, sport2Name))
+        val pageSports = PageImpl<SportEntity>(listOf(SportEntity(sportId, sportName), SportEntity(sport2Id, sport2Name)))
 
-        `when`(sportRepository.findAll()).thenReturn(listSports)
+        `when`(sportRepository.findAll(PageRequest.of(pageNumber, pageSize))).thenReturn(pageSports)
 
         // when
         val result = sportService.getSports(pageNumber, pageSize)
 
         // then
-        val expectedResult = listOf(
-                SportDto(
-                        id = sportId,
-                        name = sportName,
-                ),
-                SportDto(
-                        id = sport2Id,
-                        name = sport2Name,
-                ),
-                )
+        val expectedResult = PagingDto<SportDto>(
+                listOf(
+                        SportDto(
+                                id = sportId,
+                                name = sportName,
+                        ),
+                        SportDto(
+                                id = sport2Id,
+                                name = sport2Name,
+                        )
 
+                ),
+                2,
+                pageNumber,
+                pageSize
+        )
         Assertions.assertEquals(expectedResult, result)
     }
 
@@ -71,16 +70,16 @@ class SportServiceTest {
         val matchName = "El Clasico"
         val pageSize = 20
         val pageNumber = 1
-        val pageMatches = PageImpl<MatchesEntity>(listOf(MatchesEntity(matchId, matchName, SportEntity(sportId, sportName),true)))
+        val pageMatches = PageImpl<MatchesEntity>(listOf(MatchesEntity(matchId, matchName, SportEntity(sportId, sportName), true)))
 
-        `when`(matchesRepository.findBySportEntity_SportId(sportId, PageRequest.of(pageNumber, pageSize))).thenReturn((pageMatches))
+        `when`(matchesRepository.findAllBySportSportId(sportId, PageRequest.of(pageNumber, pageSize))).thenReturn((pageMatches))
 
         // when
         val result = sportService.getMatches(sportId, pageNumber, pageSize)
 
         // then
-        val expectedResult = PagingDto(
-                items = listOf(MatchesEntity(matchId, matchName, SportEntity(sportId, sportName),true)),
+        val expectedResult = PagingDto<MatchDto>(
+                items = listOf(MatchDto(matchId, matchName, SportDto(sportId, sportName), true)),
                 total = 1L,
                 pageSize = pageSize,
                 page = pageNumber,
