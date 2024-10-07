@@ -1,4 +1,6 @@
 spring:
+  transaction:
+    default-timeout: 5s
   jpa:
     hibernate:
       ddl-auto: none
@@ -12,5 +14,6 @@ spring:
     url: jdbc:postgresql://postgresql:5432/vtbet
 
 server:
+  port: 8080
   error:
     include-message: always
