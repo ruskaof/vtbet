@@ -176,7 +176,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
         val updateMatchRequest = UpdateMatchRequest(name = "new name")
 
         mockMvc.perform(
-            put("/matches/${match.matchId}")
+            put("/match/${match.matchId}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateMatchRequest))
         ).andExpect(status().isOk)
@@ -220,7 +220,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
 
         val successfulBets = setOf(1L, 2L, 3L)   // Предполагаем, что эти ставки существуют
         mockMvc.perform(
-            put("/matches/${match.matchId}/end")
+            put("/match/${match.matchId}/end")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(successfulBets))
         )
