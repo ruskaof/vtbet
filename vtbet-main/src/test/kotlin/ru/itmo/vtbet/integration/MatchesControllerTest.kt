@@ -12,11 +12,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delet
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.testcontainers.shaded.org.hamcrest.Matchers.hasSize
 import ru.itmo.vtbet.model.entity.BetGroupEntity
 import ru.itmo.vtbet.model.entity.MatchesEntity
 import ru.itmo.vtbet.model.entity.SportEntity
@@ -77,7 +75,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
             .andExpect(header().exists("X-Total-Count"))
             .andExpect(header().exists("X-Current-Page"))
             .andExpect(header().exists("X-Page-Size"))
-            // .andExpect(jsonPath("$").value(pageSize))
+        // .andExpect(jsonPath("$").value(pageSize))
         /*
                 .andExpect(jsonPath("$", hasSize<Any>(greaterThan(0))))   // проверка размера списка
         .andExpect(jsonPath("$[0].matchId", is(notNullValue())))  // проверка на 'не пустое' поле matchId
@@ -87,7 +85,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
     }
 
     @Test
-    fun `getBetsByMatchId test`(){
+    fun `getBetsByMatchId test`() {
         val sport = sportRepository.save(
             SportEntity(
                 sportName = "test sport",
