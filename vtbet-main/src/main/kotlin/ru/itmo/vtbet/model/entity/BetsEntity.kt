@@ -19,11 +19,9 @@ class BetsEntity(
     val amount: BigDecimal,
     @Column(nullable = false)
     val ratio: BigDecimal,
-    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val usersEntity: UsersEntity,
-    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_of_bet_match_id")
     val typeOfBetMatch: TypeOfBetMatchEntity,
