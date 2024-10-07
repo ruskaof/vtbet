@@ -10,6 +10,8 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -122,7 +124,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
         val pageSize = 5    // предполагаемый размер страницы
 
         mockMvc.perform(
-            get("/matches/${match.matchId}/bets")
+            get("/match/${match.matchId}/bets")
                 .param("pageNumber", pageNumber.toString())
                 .param("pageSize", pageSize.toString())
         )
@@ -176,7 +178,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
         val updateMatchRequest = UpdateMatchRequest(name = "new name")
 
         mockMvc.perform(
-            put("/match/${match.matchId}")
+            patch("/match/${match.matchId}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateMatchRequest))
         ).andExpect(status().isOk)
@@ -220,7 +222,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
 
         val successfulBets = setOf(1L, 2L, 3L)   // Предполагаем, что эти ставки существуют
         mockMvc.perform(
-            put("/match/${match.matchId}/end")
+            post("/match/${match.matchId}/end")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(successfulBets))
         )
