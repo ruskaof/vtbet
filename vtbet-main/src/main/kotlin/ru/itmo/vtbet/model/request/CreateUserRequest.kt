@@ -8,10 +8,12 @@ import jakarta.validation.constraints.Size
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class CreateUserRequest(
-    @field:Size(max = 255, min = 1, message = "String length 1 and 255")
+    @field:Size(max = 255, min = 1, message = "String length must be between 1 and 255")
     val username: String,
+    @field:Size(max = 255, min = 1, message = "String length must be between 1 and 255")
     @field:Email(message = "Invalid email address")
     val email: String? = null,
+    @field:Size(max = 255, min = 1, message = "String length must be between 1 and 255")
     @field:Pattern(regexp = "[0-9]{10}", message = "Invalid phone number")
     val phoneNumber: String? = null,
 )
