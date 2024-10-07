@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import ru.itmo.vtbet.model.request.MakeBetRequest
@@ -16,10 +17,10 @@ import ru.itmo.vtbet.service.toResponse
 class UserBetController(
     private val userBetService: UserBetService,
 ) {
-    @PostMapping("/bet/{id}")
+    @PostMapping("/bet/{typeOfBetMatchId}")
     fun makeBet(
-        @PathVariable("id") id: Long,
-        @RequestParam makeBetRequest: MakeBetRequest,
+        @PathVariable("typeOfBetMatchId") id: Long,
+        @RequestBody makeBetRequest: MakeBetRequest,
     ): ResponseEntity<BetResponse> {
         return ResponseEntity.ok(userBetService.makeBet(id, makeBetRequest).toResponse())
     }
