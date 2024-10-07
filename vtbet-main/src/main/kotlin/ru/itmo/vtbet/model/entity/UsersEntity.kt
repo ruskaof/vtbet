@@ -11,7 +11,7 @@ import java.time.Instant
 data class UsersEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long?= null,
+    val id: Long? = null,
     @Column(nullable = false)
     val registrationDate: Instant,
 )

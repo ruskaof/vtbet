@@ -5,6 +5,4 @@ import ru.itmo.vtbet.model.entity.SportEntity
 import java.util.*
 
 
-interface SportRepository : JpaRepository<SportEntity, Long> {
-    fun findBySportName(sportName: String): Optional<SportEntity>
-}
+interface SportRepository : JpaRepository<SportEntity, Long>

@@ -19,7 +19,6 @@ class UserService(
     private val usersRepository: UsersRepository,
     private val userAccountRepository: UserAccountRepository,
 ) {
-
     fun getUser(id: Long): UserDto {
         val usersEntity = usersRepository.findById(id).getOrNull()
         val userAccountEntity = userAccountRepository.findById(id).getOrNull()
