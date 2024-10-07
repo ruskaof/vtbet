@@ -48,6 +48,7 @@ class UserController(
         @PathVariable
         id: Long,
         @RequestBody
+        @Valid
         request: CreateUserRequest,
     ) = userService.updateUser(id, request)
 
