@@ -1,5 +1,6 @@
 package ru.itmo.vtbet.model.dto
 
+import ru.itmo.vtbet.model.entity.TypeOfBetMatchEntity
 import ru.itmo.vtbet.model.response.MatchResponse
 import ru.itmo.vtbet.model.response.TypeOfBetMatchResponse
 import java.math.BigDecimal
@@ -16,4 +17,11 @@ fun TypeOfBetMatchDto.toResponse() = TypeOfBetMatchResponse(
         ratioNow = ratioNow,
         matchResponse = match.toResponse(),
         typeOfBetResponse = typeOfBet.toResponse(),
+)
+
+fun TypeOfBetMatchEntity.toDto() = TypeOfBetMatchDto(
+        id = id!!,
+        ratioNow = ratioNow,
+        match = matchesEntity.toDto(),
+        typeOfBet = typeOfBetEntity.toDto(),
 )
