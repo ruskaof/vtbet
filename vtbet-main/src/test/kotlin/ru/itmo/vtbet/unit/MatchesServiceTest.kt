@@ -211,4 +211,11 @@ class MatchesServiceTest {
             matchId
         )
     }
+
+    @Test
+    fun `delete unknown match`() {
+        val matchId = 1L
+        Mockito.`when`(matchesRepository.existsById(matchId)).thenReturn(false)
+        assertThrows<ResourceNotFoundException> { matchesService.delete(matchId) }
+    }
 }
