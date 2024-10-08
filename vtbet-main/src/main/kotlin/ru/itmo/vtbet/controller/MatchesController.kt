@@ -39,6 +39,7 @@ class MatchesController(
     @GetMapping("/match/{id}/bets")
     fun getMatchBets(
         @PathVariable("id") id: Long,
+        @PositiveOrZero
         @RequestParam pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,

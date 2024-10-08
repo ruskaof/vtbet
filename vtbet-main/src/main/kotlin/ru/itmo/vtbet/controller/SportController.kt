@@ -76,7 +76,7 @@ class SportController(
         @PathVariable matchId: Long,
         @RequestParam pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
-        @RequestParam pageSize: Int,
+        @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<SimpleTypeOfBetMatchResponse>> {
         val result = sportService.getTypeOfBetMatch(matchId, pageNumber, pageSize)
         return ResponseEntity(
