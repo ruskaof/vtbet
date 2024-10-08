@@ -18,7 +18,6 @@ class UserServiceIntegrationTest : BaseIntegrationTest() {
 
     @Test
     fun `create and get user`() {
-        // when
         val result = userService.createUser(
             CreateUserRequest(
                 username = "username",
@@ -27,7 +26,6 @@ class UserServiceIntegrationTest : BaseIntegrationTest() {
             )
         )
 
-        // then
         val userInDb = userService.getUser(result.id)
         assertEquals(result.id, userInDb.id)
         assertEquals("username", userInDb.username)
@@ -37,7 +35,6 @@ class UserServiceIntegrationTest : BaseIntegrationTest() {
 
     @Test
     fun `change user balance`() {
-        // given
         val user = userService.createUser(
             CreateUserRequest(
                 username = "username",
@@ -46,17 +43,13 @@ class UserServiceIntegrationTest : BaseIntegrationTest() {
             )
         )
 
-        // when
         userService.addMoneyToUser(user.id, BigDecimal(100))
 
-        // then
         val userInDb1 = userService.getUser(user.id)
         assertEquals(BigDecimal(100).toInt(), userInDb1.balanceAmount.toInt())
 
-        // when
         userService.subtractMoneyFromUser(user.id, BigDecimal(50))
 
-        // then
         val userInDb2 = userService.getUser(user.id)
         assertEquals(BigDecimal(50).toInt(), userInDb2.balanceAmount.toInt())
     }

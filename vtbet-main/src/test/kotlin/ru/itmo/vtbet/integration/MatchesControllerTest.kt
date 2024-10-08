@@ -75,13 +75,6 @@ class MatchesControllerTest : BaseIntegrationTest() {
             .andExpect(header().exists("X-Total-Count"))
             .andExpect(header().exists("X-Current-Page"))
             .andExpect(header().exists("X-Page-Size"))
-        // .andExpect(jsonPath("$").value(pageSize))
-        /*
-                .andExpect(jsonPath("$", hasSize<Any>(greaterThan(0))))   // проверка размера списка
-        .andExpect(jsonPath("$[0].matchId", is(notNullValue())))  // проверка на 'не пустое' поле matchId
-        .andExpect(jsonPath("$[0].matchName", is(notNullValue()))) // проверка поле matchName
-
-         */
     }
 
     @Test
@@ -118,8 +111,8 @@ class MatchesControllerTest : BaseIntegrationTest() {
             )
         )
 
-        val pageNumber = 0  // предполагаемый номер страницы
-        val pageSize = 5    // предполагаемый размер страницы
+        val pageNumber = 0
+        val pageSize = 5
 
         mockMvc.perform(
             get("/match/${match.matchId}/bets")
@@ -210,7 +203,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
             )
         )
 
-        val typeOfBetMatch = typeOfBetMatchesRepository.save(
+        typeOfBetMatchesRepository.save(
             TypeOfBetMatchEntity(
                 ratioNow = 1.0.toBigDecimal(),
                 match = match,
@@ -218,7 +211,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
             )
         )
 
-        val successfulBets = setOf(1L, 2L, 3L)   // Предполагаем, что эти ставки существуют
+        val successfulBets = setOf(1L, 2L, 3L)
         mockMvc.perform(
             post("/match/${match.matchId}/end")
                 .contentType(MediaType.APPLICATION_JSON)

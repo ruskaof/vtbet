@@ -3,7 +3,12 @@ package ru.itmo.vtbet.unit
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.junit.jupiter.api.assertThrows
+import org.mockito.Mockito.any
+import org.mockito.Mockito.argThat
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.UserDto
 import ru.itmo.vtbet.model.entity.UserAccountEntity
@@ -14,7 +19,8 @@ import ru.itmo.vtbet.repository.UsersRepository
 import ru.itmo.vtbet.service.UserService
 import java.math.BigDecimal
 import java.time.Instant
-import java.util.*
+import java.time.OffsetDateTime
+import java.util.Optional
 
 class UserServiceTest {
 
@@ -24,7 +30,6 @@ class UserServiceTest {
 
     @Test
     fun `get user`() {
-        // given
         val userId = 1L
         val registrationDate = Instant.now()
 
@@ -60,20 +65,26 @@ class UserServiceTest {
 
     @Test
     fun `create user`() {
-        // given
         val request = CreateUserRequest(
             username = "username",
             email = "email@email.com",
             phoneNumber = null,
         )
         `when`(usersRepository.save(any())).thenReturn(UsersEntity(1L, Instant.now()))
-        `when`(userAccountRepository.save(any())).thenReturn(UserAccountEntity(1L, BigDecimal.ZERO, "username", "email@email.com", null, true))
+        `when`(userAccountRepository.save(any())).thenReturn(
+            UserAccountEntity(
+                1L,
+                BigDecimal.ZERO,
+                "username",
+                "email@email.com",
+                null,
+                true
+            )
+        )
 
-        // when
         userService.createUser(request)
 
-        // then
-        verify(usersRepository).save(argThat { it.id == null})
+        verify(usersRepository).save(argThat { it.id == null })
         verify(userAccountRepository).save(
             UserAccountEntity(
                 userId = 1L,
@@ -88,13 +99,11 @@ class UserServiceTest {
 
     @Test
     fun `get user throws exception when user not found`() {
-        // given
         val userId = 1L
 
         `when`(usersRepository.findById(userId)).thenReturn(Optional.empty())
         `when`(userAccountRepository.findById(userId)).thenReturn(Optional.empty())
 
-        // then
         assertThrows(ResourceNotFoundException::class.java) {
             userService.getUser(userId)
         }
@@ -198,5 +207,61 @@ class UserServiceTest {
         assertThrows(ResourceNotFoundException::class.java) {
             userService.subtractMoneyFromUser(userId, amount)
         }
+    }
+
+    @Test
+    fun `deleteUser test`() {
+        val id = 1L
+        `when`(usersRepository.findById(id)).thenReturn(Optional.of(UsersEntity(id, OffsetDateTime.now().toInstant())))
+        userService.deleteUser(id)
+
+        verify(usersRepository).deleteById(id)
+    }
+
+    @Test
+    fun `deleteUser test fail`() {
+        val id = 1L
+        `when`(usersRepository.findById(id)).thenReturn(Optional.empty())
+        assertThrows<ResourceNotFoundException> { userService.deleteUser(id) }
+    }
+
+    @Test
+    fun `updateUser test`() {
+        val id = 1L
+        val createUserRequest = CreateUserRequest("username", "email", "phoneNumber")
+        val usersEntity = UsersEntity(id, OffsetDateTime.now().toInstant())
+        val userAccountEntity = UserAccountEntity(1, BigDecimal.ONE, "username", "username1", "email1", true)
+
+        `when`(usersRepository.findById(id)).thenReturn(Optional.of(usersEntity))
+        `when`(userAccountRepository.findById(id)).thenReturn(Optional.of(userAccountEntity))
+
+        val updatedUser = userService.updateUser(id, createUserRequest)
+
+        assertEquals(updatedUser.username, createUserRequest.username)
+        assertEquals(updatedUser.email, createUserRequest.email)
+        assertEquals(updatedUser.phoneNumber, createUserRequest.phoneNumber)
+
+        verify(usersRepository).findById(id)
+        verify(userAccountRepository).findById(id)
+        verify(userAccountRepository).saveAndFlush(any())
+    }
+
+    @Test
+    fun `updateUser user not found test`() {
+        val id = 1L
+        val createUserRequest = CreateUserRequest("username", "email", "phoneNumber")
+
+        assertThrows<ResourceNotFoundException> { userService.updateUser(id, createUserRequest) }
+    }
+
+    @Test
+    fun `updateUser user account not found test`() {
+        val id = 1L
+        val createUserRequest = CreateUserRequest("username", "email", "phoneNumber")
+        val usersEntity = UsersEntity(id, OffsetDateTime.now().toInstant())
+
+        `when`(usersRepository.findById(id)).thenReturn(Optional.of(usersEntity))
+
+        assertThrows<ResourceNotFoundException> { userService.updateUser(id, createUserRequest) }
     }
 }

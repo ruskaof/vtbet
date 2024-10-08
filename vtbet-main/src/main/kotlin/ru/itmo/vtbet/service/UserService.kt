@@ -12,6 +12,7 @@ import ru.itmo.vtbet.repository.UsersRepository
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.ZoneOffset
+import kotlin.jvm.optionals.getOrElse
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -82,8 +83,9 @@ class UserService(
 
     @Transactional
     fun deleteUser(id: Long) {
-        usersRepository.findById(id).getOrNull()
-            ?: throw ResourceNotFoundException("User with id $id not found")
+        usersRepository.findById(id).getOrElse {
+            throw ResourceNotFoundException("User with id $id not found")
+        }
         usersRepository.deleteById(id)
     }
 

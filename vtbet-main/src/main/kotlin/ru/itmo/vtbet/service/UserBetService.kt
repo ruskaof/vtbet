@@ -40,16 +40,13 @@ class UserBetService(
             throw IllegalBetException("Wrong ratio: ratio now is ${typeOfBetMatch.ratioNow}")
         }
 
-        // Проверка, что сумма ставки не превышает баланс пользователя
         if (userAccount.balanceAmount < makeBetRequest.amount) {
             throw IllegalBetException("Not enough funds to make bet")
         }
 
-        // Произведение ставки
         val accountToSave = userAccount.copy(balanceAmount = userAccount.balanceAmount - makeBetRequest.amount)
         userAccountRepository.save(accountToSave)
 
-        // Запись о ставке в историю ставок
         val bet = BetsEntity(
             id = id,
             amount = makeBetRequest.amount,
@@ -59,7 +56,6 @@ class UserBetService(
         )
         betRepository.save(bet)
 
-        // уменьшение коэффициента
         typeOfBetMatchRepository.save(
             typeOfBetMatch.copy(
                 ratioNow = typeOfBetMatch.ratioNow - BigDecimal(0.01),
