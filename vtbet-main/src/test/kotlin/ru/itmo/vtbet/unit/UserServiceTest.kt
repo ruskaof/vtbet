@@ -47,10 +47,7 @@ class UserServiceTest {
             )
         )
 
-        // when
         val result = userService.getUser(userId)
-
-        // then
         val expectedResult = UserDto(
             id = userId,
             registrationDate = registrationDate,
