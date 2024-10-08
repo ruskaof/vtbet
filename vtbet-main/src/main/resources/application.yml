@@ -9,9 +9,9 @@ spring:
         show_sql: true
 
   datasource:
-    username: vtbet
-    password: vtbet
-    url: jdbc:postgresql://postgresql:5432/vtbet
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}
 
 server:
   port: 8080

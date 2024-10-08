@@ -54,7 +54,7 @@ class AdminBetService(
         updateTypeOfBetMatchRequest: UpdateTypeOfBetMatchRequest
     ): SimpleTypeOfBetMatchResponse {
         val typeOfBetMatch =
-            typeOfBetMatchRepository.findById(id).orElseThrow { IllegalArgumentException("Invalid id: $id") }
+            typeOfBetMatchRepository.findById(id).orElseThrow { ResourceNotFoundException("Invalid id: $id") }
         val newTypeOfBetMatch = typeOfBetMatch.copy(
             ratioNow = updateTypeOfBetMatchRequest.ratio.toBigDecimal(),
         )

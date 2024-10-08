@@ -66,7 +66,7 @@ class MatchesService(
             .orElseThrow { ResourceNotFoundException("No Match found with ID: $matchId") }
 
         if (match.ended) {
-            throw IllegalArgumentException("Match with ID: $matchId has already ended")
+            throw ResourceNotFoundException("Match with ID: $matchId has already ended")
         }
 
         val typeOfBets = typeOfBetMatchRepository.findAllByMatchMatchId(matchId)
