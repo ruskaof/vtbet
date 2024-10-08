@@ -8,6 +8,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
+import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.MatchDto
 import ru.itmo.vtbet.model.dto.PagingDto
 import ru.itmo.vtbet.model.dto.SimpleTypeOfBetMatchDto
@@ -198,7 +199,7 @@ class MatchesServiceTest {
         val matchEntity = MatchesEntity(matchId, matchName, SportEntity(sportId, sportName), true)
 
         Mockito.`when`(matchesRepository.findById(matchId)).thenReturn(Optional.of(matchEntity))
-        assertThrows<IllegalArgumentException> { matchesService.endMatch(matchId, setOf(id)) }
+        assertThrows<ResourceNotFoundException> { matchesService.endMatch(matchId, setOf(id)) }
     }
 
     @Test
