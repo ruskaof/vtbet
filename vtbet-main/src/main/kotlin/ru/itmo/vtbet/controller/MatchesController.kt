@@ -23,7 +23,7 @@ class MatchesController(
     @GetMapping("/matches")
     fun getMatches(
         @PositiveOrZero
-        @RequestParam pageNumber: Int,
+        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @PositiveOrZero
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
@@ -40,7 +40,7 @@ class MatchesController(
     fun getMatchBets(
         @PathVariable("id") id: Long,
         @PositiveOrZero
-        @RequestParam pageNumber: Int,
+        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<SimpleTypeOfBetMatchResponse>> {

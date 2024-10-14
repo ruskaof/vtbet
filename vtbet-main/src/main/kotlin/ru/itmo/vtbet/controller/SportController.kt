@@ -28,7 +28,7 @@ class SportController(
     @GetMapping("/sport")
     fun getSports(
         @PositiveOrZero
-        @RequestParam pageNumber: Int,
+        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<SportResponse>> {
@@ -50,7 +50,7 @@ class SportController(
     @GetMapping("/sport/{id}/matches")
     fun getMatches(
         @PathVariable id: Long,
-        @RequestParam pageNumber: Int,
+        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<MatchResponse>> {
@@ -74,7 +74,7 @@ class SportController(
     @ResponseStatus(HttpStatus.CREATED)
     fun createTypeOfBetMatch(
         @PathVariable matchId: Long,
-        @RequestParam pageNumber: Int,
+        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<SimpleTypeOfBetMatchResponse>> {
