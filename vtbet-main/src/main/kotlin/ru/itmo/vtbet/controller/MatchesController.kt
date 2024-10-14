@@ -52,23 +52,23 @@ class MatchesController(
         )
     }
 
-    @PatchMapping("match/{matchId}")
+    @PatchMapping("match/{id}")
     fun updateMatch(
-        @PathVariable("matchId") matchId: Long,
+        @PathVariable id: Long,
         @RequestBody updateMatchRequest: UpdateMatchRequest,
     ): MatchResponse =
-        matchesService.updateMatch(updateMatchRequest, matchId).toResponse()
+        matchesService.updateMatch(updateMatchRequest, id).toResponse()
 
-    @DeleteMapping("match/{matchId}")
+    @DeleteMapping("match/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteMatch(
-        @PathVariable("matchId") matchId: Long,
-    ): Unit = matchesService.delete(matchId)
+        @PathVariable id: Long,
+    ): Unit = matchesService.delete(id)
 
-    @PostMapping("match/{matchId}/end")
+    @PostMapping("match/{id}/end")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun endMatch(
-        @PathVariable("matchId") matchId: Long,
+        @PathVariable id: Long,
         @RequestBody successfulBets: Set<Long>,
-    ): Unit = matchesService.endMatch(matchId, successfulBets)
+    ): Unit = matchesService.endMatch(id, successfulBets)
 }

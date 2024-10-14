@@ -70,15 +70,15 @@ class SportController(
     ): MatchResponse =
         sportService.createMatch(createMatchRequest, sportId = id).toResponse()
 
-    @GetMapping("matches/{matchId}/types-of-bets")
+    @GetMapping("matches/{id}/types-of-bets")
     @ResponseStatus(HttpStatus.CREATED)
     fun createTypeOfBetMatch(
-        @PathVariable matchId: Long,
+        @PathVariable id: Long,
         @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<SimpleTypeOfBetMatchResponse>> {
-        val result = sportService.getTypeOfBetMatch(matchId, pageNumber, pageSize)
+        val result = sportService.getTypeOfBetMatch(id, pageNumber, pageSize)
         return ResponseEntity(
             result.items.map(SimpleTypeOfBetMatchDto::toResponse),
             preparePagingHeaders(result.total, result.page, result.pageSize),
