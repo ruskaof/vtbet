@@ -36,7 +36,7 @@ class MatchesController(
         )
     }
 
-    @GetMapping("/match/{id}/bets")
+    @GetMapping("/matches/{id}/bets")
     fun getMatchBets(
         @PathVariable("id") id: Long,
         @PositiveOrZero
@@ -52,20 +52,20 @@ class MatchesController(
         )
     }
 
-    @PatchMapping("match/{id}")
+    @PatchMapping("matches/{id}")
     fun updateMatch(
         @PathVariable id: Long,
         @RequestBody updateMatchRequest: UpdateMatchRequest,
     ): MatchResponse =
         matchesService.updateMatch(updateMatchRequest, id).toResponse()
 
-    @DeleteMapping("match/{id}")
+    @DeleteMapping("matches/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteMatch(
         @PathVariable id: Long,
     ): Unit = matchesService.delete(id)
 
-    @PostMapping("match/{id}/end")
+    @PostMapping("matches/{id}/end")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun endMatch(
         @PathVariable id: Long,
