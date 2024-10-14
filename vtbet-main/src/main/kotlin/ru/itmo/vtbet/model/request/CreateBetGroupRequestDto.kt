@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.Size
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-data class CreateBetGroupRequest(
+data class CreateBetGroupRequestDto(
     val typeOfBets: List<TypeOfBetRequest>
 )
 

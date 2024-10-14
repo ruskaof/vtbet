@@ -6,13 +6,9 @@ import ru.itmo.vtbet.model.dto.MatchDto
 import ru.itmo.vtbet.model.dto.SimpleTypeOfBetMatchDto
 import ru.itmo.vtbet.model.dto.SportDto
 import ru.itmo.vtbet.model.dto.TypeOfBetDto
-import ru.itmo.vtbet.model.dto.TypeOfBetMatchDto
+import ru.itmo.vtbet.model.dto.AvailableBetDto
 import ru.itmo.vtbet.model.dto.UserDto
-import ru.itmo.vtbet.model.entity.BetsEntity
-import ru.itmo.vtbet.model.entity.MatchesEntity
-import ru.itmo.vtbet.model.entity.SportEntity
-import ru.itmo.vtbet.model.entity.TypeOfBetEntity
-import ru.itmo.vtbet.model.entity.TypeOfBetMatchEntity
+import ru.itmo.vtbet.model.entity.*
 import ru.itmo.vtbet.model.response.BetGroupResponse
 import ru.itmo.vtbet.model.response.BetResponse
 import ru.itmo.vtbet.model.response.FullTypeOfBetMatchResponse
@@ -22,14 +18,6 @@ import ru.itmo.vtbet.model.response.SportResponse
 import ru.itmo.vtbet.model.response.TypeOfBetResponse
 import ru.itmo.vtbet.model.response.UserResponse
 
-fun TypeOfBetMatchEntity.toResponse() =
-    SimpleTypeOfBetMatchResponse(
-        id = this.typeOfBetMatchId!!,
-        matchId = this.match.matchId!!,
-        typeOfBetId = this.typeOfBets.typeOfBetId!!,
-        typeOfBetDescription = this.typeOfBets.description,
-        ratioNow = this.ratioNow,
-    )
 
 fun BetsEntity.toDto() =
     BetDto(
@@ -37,16 +25,7 @@ fun BetsEntity.toDto() =
         ratio = this.ratio,
         amount = this.amount,
         userId = this.usersEntity.id!!,
-        typeOfBetMatch = this.typeOfBetMatch.toSimpleDto(),
-    )
-
-fun BetDto.toResponse() =
-    BetResponse(
-        id = this.id,
-        ratio = this.ratio,
-        amount = this.amount,
-        userId = this.userId,
-        typeOfBetMatch = this.typeOfBetMatch.toResponse(),
+        availableBetId = this.availableBetId,
     )
 
 fun TypeOfBetDto.toResponse(): TypeOfBetResponse = TypeOfBetResponse(
@@ -60,7 +39,7 @@ fun BetGroupDto.toResponse(): BetGroupResponse = BetGroupResponse(
 )
 
 fun TypeOfBetEntity.toDto(): TypeOfBetDto = TypeOfBetDto(
-    id = typeOfBetId!!,
+    id = id!!,
     description = description,
 )
 
@@ -84,22 +63,6 @@ fun SportEntity.toDto(): SportDto =
 fun SportDto.toResponse(): SportResponse =
     SportResponse(id, name)
 
-fun TypeOfBetMatchDto.toResponse() =
-    FullTypeOfBetMatchResponse(
-        id = id,
-        ratioNow = ratioNow,
-        matchResponse = match.toResponse(),
-        typeOfBetResponse = typeOfBet.toResponse(),
-    )
-
-fun TypeOfBetMatchEntity.toSimpleDto() =
-    SimpleTypeOfBetMatchDto(
-        id = this.typeOfBetMatchId!!,
-        ratioNow = this.ratioNow,
-        matchId = this.match.matchId!!,
-        typeOfBet = this.typeOfBets.toDto(),
-    )
-
 fun SimpleTypeOfBetMatchDto.toResponse() =
     SimpleTypeOfBetMatchResponse(
         id = this.id,
@@ -117,3 +80,23 @@ fun UserDto.toResponse() = UserResponse(
     email = email,
     phoneNumber = phoneNumber,
 )
+
+fun SportDto.toEntity() =
+    SportEntity(id, name)
+
+fun MatchDto.toEntity() =
+    MatchesEntity(
+        matchId = id,
+        matchName = name,
+        sport = sport.toEntity(),
+        ended = ended,
+    )
+
+fun UserDto.toUsersEntity() =
+    UsersEntity(
+        id = id,
+        registrationDate = registrationDate,
+    )
+
+fun AvailableBetEntity.toDto() =
+    AvailableBetDto(id!!, ratioNow, typeOfBetId, betsClosed, matchId)

@@ -19,12 +19,12 @@ import ru.itmo.vtbet.model.entity.BetGroupEntity
 import ru.itmo.vtbet.model.entity.MatchesEntity
 import ru.itmo.vtbet.model.entity.SportEntity
 import ru.itmo.vtbet.model.entity.TypeOfBetEntity
-import ru.itmo.vtbet.model.entity.TypeOfBetMatchEntity
-import ru.itmo.vtbet.model.request.UpdateMatchRequest
+import ru.itmo.vtbet.model.entity.AvailableBetEntity
+import ru.itmo.vtbet.model.request.UpdateMatchRequestDto
 import ru.itmo.vtbet.repository.BetGroupRepository
 import ru.itmo.vtbet.repository.MatchesRepository
 import ru.itmo.vtbet.repository.SportRepository
-import ru.itmo.vtbet.repository.TypeOfBetMatchRepository
+import ru.itmo.vtbet.repository.AvailableBetRepository
 import ru.itmo.vtbet.repository.TypeOfBetRepository
 
 @SpringBootTest
@@ -47,7 +47,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
     lateinit var typeOfBetRepository: TypeOfBetRepository
 
     @Autowired
-    lateinit var typeOfBetMatchesRepository: TypeOfBetMatchRepository
+    lateinit var typeOfBetMatchesRepository: AvailableBetRepository
 
     @Autowired
     lateinit var betGroupRepository: BetGroupRepository
@@ -104,7 +104,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
         )
 
         val typeOfBetMatch = typeOfBetMatchesRepository.save(
-            TypeOfBetMatchEntity(
+            AvailableBetEntity(
                 ratioNow = 1.0.toBigDecimal(),
                 match = match,
                 typeOfBets = typeOfBet,
@@ -125,11 +125,11 @@ class MatchesControllerTest : BaseIntegrationTest() {
             .andExpect(header().exists("X-Current-Page"))
             .andExpect(header().exists("X-Page-Size"))
 
-            .andExpect(jsonPath("$[0].id").value(typeOfBetMatch.typeOfBetMatchId))
+            .andExpect(jsonPath("$[0].id").value(typeOfBetMatch.id))
             .andExpect(jsonPath("$[0].ratio_now").value(typeOfBetMatch.ratioNow))
             .andExpect(jsonPath("$[0].match_id").value(typeOfBetMatch.match.matchId))
             .andExpect(jsonPath("$[0].type_of_bet_description").value(typeOfBetMatch.typeOfBets.description))
-            .andExpect(jsonPath("$[0].type_of_bet_id").value(typeOfBetMatch.typeOfBets.typeOfBetId))
+            .andExpect(jsonPath("$[0].type_of_bet_id").value(typeOfBetMatch.typeOfBets.id))
     }
 
     @Test
@@ -159,19 +159,19 @@ class MatchesControllerTest : BaseIntegrationTest() {
         )
 
         val typeOfBetMatch = typeOfBetMatchesRepository.save(
-            TypeOfBetMatchEntity(
+            AvailableBetEntity(
                 ratioNow = 1.0.toBigDecimal(),
                 match = match,
                 typeOfBets = typeOfBet,
             )
         )
 
-        val updateMatchRequest = UpdateMatchRequest(name = "new name")
+        val updateMatchRequestDto = UpdateMatchRequestDto(name = "new name")
 
         mockMvc.perform(
             patch("/match/${match.matchId}")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateMatchRequest))
+                .content(objectMapper.writeValueAsString(updateMatchRequestDto))
         ).andExpect(status().isOk)
             .andExpect(jsonPath("$.id").value(match.matchId))
             .andExpect(jsonPath("$.name").value("new name"))
@@ -204,7 +204,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
         )
 
         typeOfBetMatchesRepository.save(
-            TypeOfBetMatchEntity(
+            AvailableBetEntity(
                 ratioNow = 1.0.toBigDecimal(),
                 match = match,
                 typeOfBets = typeOfBet,

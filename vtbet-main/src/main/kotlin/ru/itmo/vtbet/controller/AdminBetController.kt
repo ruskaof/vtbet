@@ -9,38 +9,40 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import ru.itmo.vtbet.model.request.CreateBetGroupRequest
-import ru.itmo.vtbet.model.request.CreateTypeOfBetMatchRequest
+import ru.itmo.vtbet.model.request.CreateBetGroupRequestDto
+import ru.itmo.vtbet.model.request.CreateAvailableBetRequestDto
 import ru.itmo.vtbet.model.request.UpdateTypeOfBetMatchRequest
 import ru.itmo.vtbet.model.response.FullTypeOfBetMatchResponse
 import ru.itmo.vtbet.model.response.SimpleTypeOfBetMatchResponse
 import ru.itmo.vtbet.service.AdminBetService
+import ru.itmo.vtbet.service.BetService
 import ru.itmo.vtbet.service.toResponse
 
 @RestController
 @Validated
 class AdminBetController(
     private val adminBetService: AdminBetService,
+    private val betService: BetService,
 ) {
 
-    @PostMapping("admin/bet")
+    @PostMapping("admin/bet/group")
     @ResponseStatus(HttpStatus.CREATED)
     fun createBetGroup(
         @Valid
-        @RequestBody createBetGroupRequest: CreateBetGroupRequest,
-    ) = adminBetService.createBetGroup(createBetGroupRequest).toResponse()
+        @RequestBody createBetGroupRequestDto: CreateBetGroupRequestDto,
+    ) = betService.createBetGroup(createBetGroupRequestDto).toResponse()
 
     @PutMapping("admin/bet/{id}")
     fun modifyBetGroup(
         @PathVariable id: Long,
         @Valid
         @RequestBody updateTypeOfBetMatchRequest: UpdateTypeOfBetMatchRequest,
-    ): SimpleTypeOfBetMatchResponse = adminBetService.updateBetMatch(id, updateTypeOfBetMatchRequest)
+    ): SimpleTypeOfBetMatchResponse = adminBetService.updateAvailableBet(id, updateTypeOfBetMatchRequest)
 
     @PostMapping("admin/matches/{id}/bet")
     fun createTypeOfBetMatch(
         @PathVariable id: Long,
-        @RequestBody createTypeOfBetMatchRequest: CreateTypeOfBetMatchRequest,
+        @RequestBody createAvailableBetRequestDto: CreateAvailableBetRequestDto,
     ): FullTypeOfBetMatchResponse =
-        adminBetService.createTypeOfBetMatch(createTypeOfBetMatchRequest, id).toResponse()
+        adminBetService.createAvailableBet(createAvailableBetRequestDto, id).toResponse()
 }

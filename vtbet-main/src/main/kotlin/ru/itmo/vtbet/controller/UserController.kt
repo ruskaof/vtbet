@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import ru.itmo.vtbet.model.dto.UserDto
-import ru.itmo.vtbet.model.request.AddMoneyRequest
-import ru.itmo.vtbet.model.request.CreateUserRequest
+import ru.itmo.vtbet.model.request.AddMoneyRequestDto
+import ru.itmo.vtbet.model.request.CreateUserRequestDto
 import ru.itmo.vtbet.model.response.UserResponse
 import ru.itmo.vtbet.service.UserService
 import ru.itmo.vtbet.service.toResponse
@@ -33,7 +32,7 @@ class UserController(
     fun createUser(
         @RequestBody
         @Valid
-        request: CreateUserRequest,
+        request: CreateUserRequestDto,
     ): UserResponse? =
         userService.createUser(request).toResponse()
 
@@ -50,7 +49,7 @@ class UserController(
         id: Long,
         @RequestBody
         @Valid
-        request: CreateUserRequest,
+        request: CreateUserRequestDto,
     ): UserResponse = userService.updateUser(id, request).toResponse()
 
     @PostMapping("users/{id}/balance/add")
@@ -59,7 +58,7 @@ class UserController(
         id: Long,
         @RequestBody
         @Valid
-        request: AddMoneyRequest,
+        request: AddMoneyRequestDto,
     ): Unit =
         userService.addMoneyToUser(id, request.amount)
 }

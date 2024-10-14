@@ -6,7 +6,7 @@ import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.UserDto
 import ru.itmo.vtbet.model.entity.UserAccountEntity
 import ru.itmo.vtbet.model.entity.UsersEntity
-import ru.itmo.vtbet.model.request.CreateUserRequest
+import ru.itmo.vtbet.model.request.CreateUserRequestDto
 import ru.itmo.vtbet.repository.UserAccountRepository
 import ru.itmo.vtbet.repository.UsersRepository
 import java.math.BigDecimal
@@ -20,13 +20,9 @@ class UserService(
     private val usersRepository: UsersRepository,
     private val userAccountRepository: UserAccountRepository,
 ) {
-    fun getUser(id: Long): UserDto {
-        val usersEntity = usersRepository.findById(id).getOrNull()
-        val userAccountEntity = userAccountRepository.findById(id).getOrNull()
-
-        if (usersEntity == null || userAccountEntity == null) {
-            throw ResourceNotFoundException("User with id $id not found")
-        }
+    fun getUser(id: Long): UserDto? {
+        val usersEntity = usersRepository.findById(id).getOrNull() ?: return null
+        val userAccountEntity = userAccountRepository.findById(id).getOrNull() ?: return null
 
         return UserDto(
             id = usersEntity.id!!,
@@ -40,7 +36,7 @@ class UserService(
 
     @Transactional
     fun createUser(
-        request: CreateUserRequest,
+        request: CreateUserRequestDto,
     ): UserDto {
         val usersEntity = usersRepository.save(UsersEntity(registrationDate = Instant.now()))
         val userAccountEntity = UserAccountEntity(
@@ -90,7 +86,7 @@ class UserService(
     }
 
     @Transactional
-    fun updateUser(id: Long, request: CreateUserRequest): UserDto {
+    fun updateUser(id: Long, request: CreateUserRequestDto): UserDto {
         val usersEntity = usersRepository.findById(id).getOrNull()
             ?: throw ResourceNotFoundException("User with id $id not found")
 

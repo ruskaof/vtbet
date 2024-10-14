@@ -8,7 +8,7 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import ru.itmo.vtbet.model.dto.MatchDto
 import ru.itmo.vtbet.model.dto.SimpleTypeOfBetMatchDto
-import ru.itmo.vtbet.model.request.UpdateMatchRequest
+import ru.itmo.vtbet.model.request.UpdateMatchRequestDto
 import ru.itmo.vtbet.model.response.MatchResponse
 import ru.itmo.vtbet.model.response.SimpleTypeOfBetMatchResponse
 import ru.itmo.vtbet.service.MAX_PAGE_SIZE
@@ -55,9 +55,9 @@ class MatchesController(
     @PatchMapping("matches/{id}")
     fun updateMatch(
         @PathVariable id: Long,
-        @RequestBody updateMatchRequest: UpdateMatchRequest,
+        @RequestBody updateMatchRequestDto: UpdateMatchRequestDto,
     ): MatchResponse =
-        matchesService.updateMatch(updateMatchRequest, id).toResponse()
+        matchesService.updateMatch(updateMatchRequestDto, id).toResponse()
 
     @DeleteMapping("matches/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

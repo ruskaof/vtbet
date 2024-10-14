@@ -5,15 +5,14 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import ru.itmo.vtbet.repository.MatchesRepository
 import ru.itmo.vtbet.repository.SportRepository
-import ru.itmo.vtbet.repository.TypeOfBetMatchRepository
+import ru.itmo.vtbet.repository.AvailableBetRepository
 import org.mockito.Mockito.*
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import ru.itmo.vtbet.model.dto.*
 import ru.itmo.vtbet.model.entity.*
-import ru.itmo.vtbet.model.request.CreateMatchRequest
-import ru.itmo.vtbet.model.request.CreateSportRequest
-import ru.itmo.vtbet.service.SportService
+import ru.itmo.vtbet.model.request.CreateMatchRequestDto
+import ru.itmo.vtbet.model.request.CreateSportRequestDto
 import java.math.BigDecimal
 import java.util.*
 
@@ -21,7 +20,7 @@ class SportServiceTest {
 
     private val sportRepository = mock(SportRepository::class.java)
     private val matchesRepository = mock(MatchesRepository::class.java)
-    private val typeOfBetMatchRepository = mock(TypeOfBetMatchRepository::class.java)
+    private val typeOfBetMatchRepository = mock(AvailableBetRepository::class.java)
     private val sportService = SportService(sportRepository, matchesRepository, typeOfBetMatchRepository)
 
     @Test
@@ -90,7 +89,7 @@ class SportServiceTest {
         val matchName = "El Clasico"
         val pageSize = 20
         val pageNumber = 1
-        val typeOfBetMatch = PageImpl(listOf(TypeOfBetMatchEntity(matchId, ratioNow, MatchesEntity(matchId, matchName, SportEntity(sportId, sportName), true),  TypeOfBetEntity(typeOfBetMatchId, description, BetGroupEntity(1L)))))
+        val typeOfBetMatch = PageImpl(listOf(AvailableBetEntity(matchId, ratioNow, MatchesEntity(matchId, matchName, SportEntity(sportId, sportName), true),  TypeOfBetEntity(typeOfBetMatchId, description, BetGroupEntity(1L)))))
 
         `when`(typeOfBetMatchRepository.findAllByMatchMatchId(matchId, PageRequest.of(pageNumber, pageSize))).thenReturn((typeOfBetMatch))
 
@@ -108,7 +107,7 @@ class SportServiceTest {
 
     @Test
     fun `create sport`() {
-        val request = CreateSportRequest(
+        val request = CreateSportRequestDto(
                 name = "football",
         )
 
@@ -123,7 +122,7 @@ class SportServiceTest {
 
     @Test
     fun `create match`() {
-        val request = CreateMatchRequest(
+        val request = CreateMatchRequestDto(
                 name = "El clasico",
         )
 

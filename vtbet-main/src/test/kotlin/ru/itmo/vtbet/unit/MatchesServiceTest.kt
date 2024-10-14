@@ -19,13 +19,13 @@ import ru.itmo.vtbet.model.entity.BetsEntity
 import ru.itmo.vtbet.model.entity.MatchesEntity
 import ru.itmo.vtbet.model.entity.SportEntity
 import ru.itmo.vtbet.model.entity.TypeOfBetEntity
-import ru.itmo.vtbet.model.entity.TypeOfBetMatchEntity
+import ru.itmo.vtbet.model.entity.AvailableBetEntity
 import ru.itmo.vtbet.model.entity.UserAccountEntity
 import ru.itmo.vtbet.model.entity.UsersEntity
-import ru.itmo.vtbet.model.request.UpdateMatchRequest
+import ru.itmo.vtbet.model.request.UpdateMatchRequestDto
 import ru.itmo.vtbet.repository.BetsRepository
 import ru.itmo.vtbet.repository.MatchesRepository
-import ru.itmo.vtbet.repository.TypeOfBetMatchRepository
+import ru.itmo.vtbet.repository.AvailableBetRepository
 import ru.itmo.vtbet.repository.UserAccountRepository
 import ru.itmo.vtbet.service.MatchesService
 import java.math.BigDecimal
@@ -36,7 +36,7 @@ class MatchesServiceTest {
     private val matchesRepository = Mockito.mock(MatchesRepository::class.java)
     private val betsRepository = Mockito.mock(BetsRepository::class.java)
     private val userAccountRepository = Mockito.mock(UserAccountRepository::class.java)
-    private val typeOfBetMatchRepository = Mockito.mock(TypeOfBetMatchRepository::class.java)
+    private val typeOfBetMatchRepository = Mockito.mock(AvailableBetRepository::class.java)
     private val matchesService =
         MatchesService(matchesRepository, betsRepository, userAccountRepository, typeOfBetMatchRepository)
 
@@ -85,7 +85,7 @@ class MatchesServiceTest {
         val ratioNow = BigDecimal(2)
         val pageSports = PageImpl(
             listOf(
-                TypeOfBetMatchEntity(
+                AvailableBetEntity(
                     matchId,
                     ratioNow,
                     MatchesEntity(matchId, matchName, SportEntity(sportId, sportName), true),
@@ -128,7 +128,7 @@ class MatchesServiceTest {
 
         Mockito.`when`(matchesRepository.findById(matchId)).thenReturn(Optional.of(matchesEntity))
         Mockito.`when`(matchesRepository.save(matches2Entity)).thenReturn(matches2Entity)
-        val result = matchesService.updateMatch(UpdateMatchRequest(name), matchId)
+        val result = matchesService.updateMatch(UpdateMatchRequestDto(name), matchId)
         val expectedResult = MatchDto(
             matchId,
             name,
@@ -152,20 +152,20 @@ class MatchesServiceTest {
         val user = UsersEntity(userId, OffsetDateTime.now().toInstant())
         val matchEntity = MatchesEntity(matchId, matchName, SportEntity(sportId, sportName), false)
         val typeOfBet = TypeOfBetEntity(
-            typeOfBetId = 1,
+            id = 1,
             description = "",
             betGroupEntity = BetGroupEntity(
                 betGroupId = 1,
             ),
         )
         val typeOfBetMatch =
-            TypeOfBetMatchEntity(typeOfBetMatchId = id, ratioNow = ratio, match = matchEntity, typeOfBets = typeOfBet)
+            AvailableBetEntity(id = id, ratioNow = ratio, match = matchEntity, typeOfBets = typeOfBet)
         val winningBet = BetsEntity(id, amount, ratio, user, typeOfBetMatch)
         val losingBet = BetsEntity(id + 1, amount, ratio, user, typeOfBetMatch)
 
         Mockito.`when`(matchesRepository.findById(matchId)).thenReturn(Optional.of(matchEntity))
         Mockito.`when`(typeOfBetMatchRepository.findAllByMatchMatchId(matchId)).thenReturn(listOf(typeOfBetMatch))
-        Mockito.`when`(betsRepository.findByTypeOfBetMatchTypeOfBetMatchIdIn(listOf(typeOfBetMatch.typeOfBetMatchId!!)))
+        Mockito.`when`(betsRepository.findByTypeOfBetMatchTypeOfBetMatchIdIn(listOf(typeOfBetMatch.id!!)))
             .thenReturn(listOf(winningBet, losingBet))
 
         val winningUserAccount =

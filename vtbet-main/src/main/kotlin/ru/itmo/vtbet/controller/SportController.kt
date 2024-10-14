@@ -10,13 +10,12 @@ import org.springframework.web.bind.annotation.*
 import ru.itmo.vtbet.model.dto.MatchDto
 import ru.itmo.vtbet.model.dto.SimpleTypeOfBetMatchDto
 import ru.itmo.vtbet.model.dto.SportDto
-import ru.itmo.vtbet.model.request.CreateMatchRequest
-import ru.itmo.vtbet.model.request.CreateSportRequest
+import ru.itmo.vtbet.model.request.CreateMatchRequestDto
+import ru.itmo.vtbet.model.request.CreateSportRequestDto
 import ru.itmo.vtbet.model.response.MatchResponse
 import ru.itmo.vtbet.model.response.SimpleTypeOfBetMatchResponse
 import ru.itmo.vtbet.model.response.SportResponse
 import ru.itmo.vtbet.service.MAX_PAGE_SIZE
-import ru.itmo.vtbet.service.SportService
 import ru.itmo.vtbet.service.toResponse
 
 @RestController
@@ -43,9 +42,9 @@ class SportController(
     @PostMapping("/sport")
     @ResponseStatus(HttpStatus.CREATED)
     fun createSport(
-        @RequestBody @Valid createSportRequest: CreateSportRequest,
+        @RequestBody @Valid createSportRequestDto: CreateSportRequestDto,
     ): SportResponse =
-        sportService.createSport(createSportRequest).toResponse()
+        sportService.createSport(createSportRequestDto).toResponse()
 
     @GetMapping("/sport/{id}/matches")
     fun getMatches(
@@ -66,9 +65,9 @@ class SportController(
     @ResponseStatus(HttpStatus.CREATED)
     fun createMatch(
         @PathVariable id: Long,
-        @RequestBody @Valid createMatchRequest: CreateMatchRequest,
+        @RequestBody @Valid createMatchRequestDto: CreateMatchRequestDto,
     ): MatchResponse =
-        sportService.createMatch(createMatchRequest, sportId = id).toResponse()
+        sportService.createMatch(createMatchRequestDto, sportId = id).toResponse()
 
     @GetMapping("matches/{id}/types-of-bets")
     @ResponseStatus(HttpStatus.CREATED)

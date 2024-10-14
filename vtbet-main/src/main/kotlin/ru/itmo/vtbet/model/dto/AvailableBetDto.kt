@@ -2,11 +2,12 @@ package ru.itmo.vtbet.model.dto
 
 import java.math.BigDecimal
 
-data class TypeOfBetMatchDto(
+data class AvailableBetDto(
     val id: Long,
     val ratioNow: BigDecimal,
-    val typeOfBet: TypeOfBetDto,
-    val match: MatchDto,
+    val typeOfBetId: Long,
+    val betsClosed: Boolean,
+    val matchId: Long,
 )
 
 data class SimpleTypeOfBetMatchDto(

@@ -2,15 +2,11 @@ package ru.itmo.vtbet.service
 
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
-import ru.itmo.vtbet.exception.IllegalBetException
+import ru.itmo.vtbet.exception.IllegalBetActionException
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.BetDto
 import ru.itmo.vtbet.model.entity.BetsEntity
-import ru.itmo.vtbet.model.request.MakeBetRequest
-import ru.itmo.vtbet.repository.BetsRepository
-import ru.itmo.vtbet.repository.TypeOfBetMatchRepository
-import ru.itmo.vtbet.repository.UserAccountRepository
-import ru.itmo.vtbet.repository.UsersRepository
+import ru.itmo.vtbet.model.request.MakeBetRequestDto
 import java.math.BigDecimal
 
 /**
@@ -20,48 +16,35 @@ import java.math.BigDecimal
  */
 @Service
 class UserBetService(
-    private val usersRepository: UsersRepository,
-    private val userAccountRepository: UserAccountRepository,
-    private val betRepository: BetsRepository,
-    private val typeOfBetMatchRepository: TypeOfBetMatchRepository,
+    private val userService: UserService,
+    private val betService: BetService,
 ) {
     @Transactional
-    fun makeBet(id: Long, makeBetRequest: MakeBetRequest): BetDto {
-        val userAccount = userAccountRepository.findById(makeBetRequest.userId)
-            .orElseThrow { ResourceNotFoundException("No user found with ID: ${makeBetRequest.userId}") }
+    fun makeBet(userId: Long, makeBetRequestDto: MakeBetRequestDto): BetDto {
+        val user = userService.getUser(userId)
+            ?: throw ResourceNotFoundException("No user found with ID: $userId")
 
-        val user = usersRepository.findById(makeBetRequest.userId)
-            .orElseThrow { ResourceNotFoundException("No user found with ID: ${makeBetRequest.userId}") }
-
-        val typeOfBetMatch = typeOfBetMatchRepository.findById(id)
-            .orElseThrow { ResourceNotFoundException("No bet found with ID: $id") }
-
-        if (typeOfBetMatch.ratioNow.stripTrailingZeros() != makeBetRequest.ratio.stripTrailingZeros()) {
-            throw IllegalBetException("Wrong ratio: ratio now is ${typeOfBetMatch.ratioNow}")
+        if (user.balanceAmount < makeBetRequestDto.amount) {
+            throw IllegalBetActionException("User $userId doesn't have enough money to make bet")
         }
 
-        if (userAccount.balanceAmount < makeBetRequest.amount) {
-            throw IllegalBetException("Not enough funds to make bet")
-        }
+        val availableBet = betService.getAvailableBet(makeBetRequestDto.availableBetId)
+            ?: throw ResourceNotFoundException("No available bet found with ID: ${makeBetRequestDto.availableBetId}")
 
-        val accountToSave = userAccount.copy(balanceAmount = userAccount.balanceAmount - makeBetRequest.amount)
-        userAccountRepository.save(accountToSave)
-
-        val bet = BetsEntity(
-            id = id,
-            amount = makeBetRequest.amount,
-            typeOfBetMatch = typeOfBetMatch,
-            ratio = makeBetRequest.ratio,
-            usersEntity = user,
-        )
-        betRepository.save(bet)
-
-        typeOfBetMatchRepository.save(
-            typeOfBetMatch.copy(
-                ratioNow = typeOfBetMatch.ratioNow - BigDecimal(0.01),
+        if (availableBet.betsClosed) {
+            throw IllegalBetActionException(
+                "Bets on available bet with ID: ${makeBetRequestDto.availableBetId} are closed",
             )
-        )
+        }
 
-        return bet.toDto()
+        if (makeBetRequestDto.ratio != availableBet.ratioNow) {
+            throw IllegalBetActionException("Wrong ratio: ratio now is ${availableBet.ratioNow}")
+        }
+
+        val bet = betService.createBet(user, availableBet, makeBetRequestDto.ratio, makeBetRequestDto.amount)
+
+        userService.subtractMoneyFromUser(user.id, makeBetRequestDto.amount)
+
+        return bet
     }
 }

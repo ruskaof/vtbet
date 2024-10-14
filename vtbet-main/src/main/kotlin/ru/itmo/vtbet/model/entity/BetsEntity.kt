@@ -22,8 +22,6 @@ class BetsEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val usersEntity: UsersEntity,
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_of_bet_match_id")
-    val typeOfBetMatch: TypeOfBetMatchEntity,
-) {
-}
+    @Column(name = "available_bet_id", nullable = false)
+    val availableBetId: Long,
+)

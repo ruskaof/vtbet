@@ -13,7 +13,7 @@ import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.UserDto
 import ru.itmo.vtbet.model.entity.UserAccountEntity
 import ru.itmo.vtbet.model.entity.UsersEntity
-import ru.itmo.vtbet.model.request.CreateUserRequest
+import ru.itmo.vtbet.model.request.CreateUserRequestDto
 import ru.itmo.vtbet.repository.UserAccountRepository
 import ru.itmo.vtbet.repository.UsersRepository
 import ru.itmo.vtbet.service.UserService
@@ -62,7 +62,7 @@ class UserServiceTest {
 
     @Test
     fun `create user`() {
-        val request = CreateUserRequest(
+        val request = CreateUserRequestDto(
             username = "username",
             email = "email@email.com",
             phoneNumber = null,
@@ -225,18 +225,18 @@ class UserServiceTest {
     @Test
     fun `updateUser test`() {
         val id = 1L
-        val createUserRequest = CreateUserRequest("username", "email", "phoneNumber")
+        val createUserRequestDto = CreateUserRequestDto("username", "email", "phoneNumber")
         val usersEntity = UsersEntity(id, OffsetDateTime.now().toInstant())
         val userAccountEntity = UserAccountEntity(1, BigDecimal.ONE, "username", "username1", "email1", true)
 
         `when`(usersRepository.findById(id)).thenReturn(Optional.of(usersEntity))
         `when`(userAccountRepository.findById(id)).thenReturn(Optional.of(userAccountEntity))
 
-        val updatedUser = userService.updateUser(id, createUserRequest)
+        val updatedUser = userService.updateUser(id, createUserRequestDto)
 
-        assertEquals(updatedUser.username, createUserRequest.username)
-        assertEquals(updatedUser.email, createUserRequest.email)
-        assertEquals(updatedUser.phoneNumber, createUserRequest.phoneNumber)
+        assertEquals(updatedUser.username, createUserRequestDto.username)
+        assertEquals(updatedUser.email, createUserRequestDto.email)
+        assertEquals(updatedUser.phoneNumber, createUserRequestDto.phoneNumber)
 
         verify(usersRepository).findById(id)
         verify(userAccountRepository).findById(id)
@@ -246,19 +246,19 @@ class UserServiceTest {
     @Test
     fun `updateUser user not found test`() {
         val id = 1L
-        val createUserRequest = CreateUserRequest("username", "email", "phoneNumber")
+        val createUserRequestDto = CreateUserRequestDto("username", "email", "phoneNumber")
 
-        assertThrows<ResourceNotFoundException> { userService.updateUser(id, createUserRequest) }
+        assertThrows<ResourceNotFoundException> { userService.updateUser(id, createUserRequestDto) }
     }
 
     @Test
     fun `updateUser user account not found test`() {
         val id = 1L
-        val createUserRequest = CreateUserRequest("username", "email", "phoneNumber")
+        val createUserRequestDto = CreateUserRequestDto("username", "email", "phoneNumber")
         val usersEntity = UsersEntity(id, OffsetDateTime.now().toInstant())
 
         `when`(usersRepository.findById(id)).thenReturn(Optional.of(usersEntity))
 
-        assertThrows<ResourceNotFoundException> { userService.updateUser(id, createUserRequest) }
+        assertThrows<ResourceNotFoundException> { userService.updateUser(id, createUserRequestDto) }
     }
 }

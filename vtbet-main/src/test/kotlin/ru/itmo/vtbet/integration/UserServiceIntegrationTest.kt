@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import ru.itmo.vtbet.model.request.CreateUserRequest
+import ru.itmo.vtbet.model.request.CreateUserRequestDto
 import ru.itmo.vtbet.service.UserService
 import java.math.BigDecimal
 
@@ -19,7 +19,7 @@ class UserServiceIntegrationTest : BaseIntegrationTest() {
     @Test
     fun `create and get user`() {
         val result = userService.createUser(
-            CreateUserRequest(
+            CreateUserRequestDto(
                 username = "username",
                 email = "email@email.com",
                 phoneNumber = null,
@@ -36,7 +36,7 @@ class UserServiceIntegrationTest : BaseIntegrationTest() {
     @Test
     fun `change user balance`() {
         val user = userService.createUser(
-            CreateUserRequest(
+            CreateUserRequestDto(
                 username = "username",
                 email = "email@email.com",
                 phoneNumber = null,

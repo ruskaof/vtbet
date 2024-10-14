@@ -46,16 +46,17 @@ CREATE TABLE IF NOT EXISTS bet_group
 --changeset svytoq:create_type_of_bet_table
 CREATE TABLE IF NOT EXISTS type_of_bet
 (
-    type_of_bet_id BIGSERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     description VARCHAR(255) NOT NULL,
     bet_group_id BIGINT NOT NULL REFERENCES bet_group (bet_group_id) ON DELETE CASCADE
 );
 
 --changeset svytoq:create_type_of_bet_match_table
-CREATE TABLE IF NOT EXISTS type_of_bet_match
+CREATE TABLE IF NOT EXISTS available_bet
 (
-    type_of_bet_match_id BIGSERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     ratio_now DECIMAL(100,2) NOT NULL,
+    bets_closed BOOLEAN NOT NULL DEFAULT FALSE,
     match_id BIGINT NOT NULL REFERENCES matches (match_id) ON DELETE CASCADE,
     type_of_bet_id BIGINT NOT NULL REFERENCES type_of_bet (type_of_bet_id) ON DELETE CASCADE
 );
@@ -67,6 +68,6 @@ CREATE TABLE IF NOT EXISTS bets
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     amount DECIMAL(100,2) NOT NULL,
-    type_of_bet_match_id BIGINT NOT NULL REFERENCES type_of_bet_match (type_of_bet_match_id) ON DELETE CASCADE,
+    available_bet_id BIGINT NOT NULL REFERENCES available_bet (type_of_bet_match_id) ON DELETE CASCADE,
     ratio DECIMAL(100,2) NOT NULL
 );

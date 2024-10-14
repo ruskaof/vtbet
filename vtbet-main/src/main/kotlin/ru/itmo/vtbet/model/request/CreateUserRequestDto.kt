@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-data class CreateUserRequest(
+data class CreateUserRequestDto(
     @field:Size(max = 255, min = 1, message = "String length must be between 1 and 255")
     val username: String,
     @field:Size(max = 255, min = 1, message = "String length must be between 1 and 255")

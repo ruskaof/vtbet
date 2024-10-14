@@ -10,5 +10,5 @@ data class BetResponse(
     val ratio: BigDecimal,
     val amount: BigDecimal,
     val userId: Long,
-    val typeOfBetMatch: SimpleTypeOfBetMatchResponse,
+    val availableBetId: Long,
 )
