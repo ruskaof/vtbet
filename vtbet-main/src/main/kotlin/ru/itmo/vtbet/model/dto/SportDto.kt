@@ -1,6 +1,6 @@
 package ru.itmo.vtbet.model.dto
 
 data class SportDto(
-    val id: Long,
+    val sportId: Long,
     val name: String,
 )

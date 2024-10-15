@@ -7,18 +7,18 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import ru.itmo.vtbet.model.dto.MatchDto
-import ru.itmo.vtbet.model.dto.SimpleTypeOfBetMatchDto
+import ru.itmo.vtbet.model.dto.SimpleAvailableBetsDto
 import ru.itmo.vtbet.model.request.UpdateMatchRequestDto
 import ru.itmo.vtbet.model.response.MatchResponse
-import ru.itmo.vtbet.model.response.SimpleTypeOfBetMatchResponse
+import ru.itmo.vtbet.model.response.SimpleAvailableBetsResponse
+import ru.itmo.vtbet.service.ComplexMatchesService
 import ru.itmo.vtbet.service.MAX_PAGE_SIZE
-import ru.itmo.vtbet.service.MatchesService
 import ru.itmo.vtbet.service.toResponse
 
 @RestController
 @Validated
 class MatchesController(
-    private val matchesService: MatchesService,
+    private val complexMatchesService: ComplexMatchesService,
 ) {
     @GetMapping("/matches")
     fun getMatches(
@@ -28,7 +28,7 @@ class MatchesController(
         @PositiveOrZero
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<MatchResponse>> {
-        val result = matchesService.getMatches(pageNumber, pageSize)
+        val result = complexMatchesService.getMatches(pageNumber, pageSize)
         return ResponseEntity(
             result.items.map(MatchDto::toResponse),
             preparePagingHeaders(result.total, result.page, result.pageSize),
@@ -36,39 +36,55 @@ class MatchesController(
         )
     }
 
-    @GetMapping("/matches/{id}/bets")
+    @GetMapping("/match/{id}/bets")
     fun getMatchBets(
-        @PathVariable("id") id: Long,
+        @PathVariable("id") matchId: Long,
         @PositiveOrZero
         @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
-    ): ResponseEntity<List<SimpleTypeOfBetMatchResponse>> {
-        val result = matchesService.getBetsByMatchId(id, pageNumber, pageSize)
+    ): ResponseEntity<List<SimpleAvailableBetsResponse>> {
+        val result = complexMatchesService.getBetsByMatchId(matchId, pageNumber, pageSize)
         return ResponseEntity(
-            result.items.map(SimpleTypeOfBetMatchDto::toResponse),
+            result.items.map(SimpleAvailableBetsDto::toResponse),
             preparePagingHeaders(result.total, result.page, result.pageSize),
             HttpStatus.OK
         )
     }
 
-    @PatchMapping("matches/{id}")
+    @PatchMapping("match/{id}")
     fun updateMatch(
         @PathVariable id: Long,
         @RequestBody updateMatchRequestDto: UpdateMatchRequestDto,
     ): MatchResponse =
-        matchesService.updateMatch(updateMatchRequestDto, id).toResponse()
+        complexMatchesService.updateMatch(updateMatchRequestDto, id).toResponse()
 
-    @DeleteMapping("matches/{id}")
+    @DeleteMapping("match/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteMatch(
         @PathVariable id: Long,
-    ): Unit = matchesService.delete(id)
+    ): Unit = complexMatchesService.delete(id)
 
-    @PostMapping("matches/{id}/end")
+    @PostMapping("match/{id}/end")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun endMatch(
         @PathVariable id: Long,
         @RequestBody successfulBets: Set<Long>,
-    ): Unit = matchesService.endMatch(id, successfulBets)
+    ): Unit = complexMatchesService.endMatch(id, successfulBets)
+
+    @GetMapping("matches/{id}/types-of-bets")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createTypeOfBetMatch(
+        @PathVariable id: Long,
+        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
+        @Max(MAX_PAGE_SIZE)
+        @RequestParam(defaultValue = "50", required = false) pageSize: Int,
+    ): ResponseEntity<List<SimpleAvailableBetsResponse>> {
+        val result = sportsService.getTypeOfBetMatch(id, pageNumber, pageSize)
+        return ResponseEntity(
+            result.items.map(SimpleAvailableBetsDto::toResponse),
+            preparePagingHeaders(result.total, result.page, result.pageSize),
+            HttpStatus.OK
+        )
+    }
 }

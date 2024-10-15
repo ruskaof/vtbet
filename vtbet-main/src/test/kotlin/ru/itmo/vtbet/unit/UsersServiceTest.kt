@@ -11,22 +11,22 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.UserDto
-import ru.itmo.vtbet.model.entity.UserAccountEntity
+import ru.itmo.vtbet.model.entity.UsersAccountsEntity
 import ru.itmo.vtbet.model.entity.UsersEntity
 import ru.itmo.vtbet.model.request.CreateUserRequestDto
-import ru.itmo.vtbet.repository.UserAccountRepository
+import ru.itmo.vtbet.repository.UsersAccountsRepository
 import ru.itmo.vtbet.repository.UsersRepository
-import ru.itmo.vtbet.service.UserService
+import ru.itmo.vtbet.service.UsersService
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.util.Optional
 
-class UserServiceTest {
+class UsersServiceTest {
 
     private val usersRepository = mock(UsersRepository::class.java)
-    private val userAccountRepository = mock(UserAccountRepository::class.java)
-    private val userService = UserService(usersRepository, userAccountRepository)
+    private val usersAccountsRepository = mock(UsersAccountsRepository::class.java)
+    private val usersService = UsersService(usersRepository, usersAccountsRepository)
 
     @Test
     fun `get user`() {
@@ -34,9 +34,9 @@ class UserServiceTest {
         val registrationDate = Instant.now()
 
         `when`(usersRepository.findById(userId)).thenReturn(Optional.of(UsersEntity(userId, registrationDate)))
-        `when`(userAccountRepository.findById(userId)).thenReturn(
+        `when`(usersAccountsRepository.findById(userId)).thenReturn(
             Optional.of(
-                UserAccountEntity(
+                UsersAccountsEntity(
                     userId = userId,
                     balanceAmount = BigDecimal.TEN,
                     username = "username",
@@ -47,7 +47,7 @@ class UserServiceTest {
             )
         )
 
-        val result = userService.getUser(userId)
+        val result = usersService.getUser(userId)
         val expectedResult = UserDto(
             id = userId,
             registrationDate = registrationDate,
@@ -68,8 +68,8 @@ class UserServiceTest {
             phoneNumber = null,
         )
         `when`(usersRepository.save(any())).thenReturn(UsersEntity(1L, Instant.now()))
-        `when`(userAccountRepository.save(any())).thenReturn(
-            UserAccountEntity(
+        `when`(usersAccountsRepository.save(any())).thenReturn(
+            UsersAccountsEntity(
                 1L,
                 BigDecimal.ZERO,
                 "username",
@@ -79,11 +79,11 @@ class UserServiceTest {
             )
         )
 
-        userService.createUser(request)
+        usersService.createUser(request)
 
         verify(usersRepository).save(argThat { it.id == null })
-        verify(userAccountRepository).save(
-            UserAccountEntity(
+        verify(usersAccountsRepository).save(
+            UsersAccountsEntity(
                 userId = 1L,
                 balanceAmount = BigDecimal.ZERO,
                 username = "username",
@@ -99,10 +99,10 @@ class UserServiceTest {
         val userId = 1L
 
         `when`(usersRepository.findById(userId)).thenReturn(Optional.empty())
-        `when`(userAccountRepository.findById(userId)).thenReturn(Optional.empty())
+        `when`(usersAccountsRepository.findById(userId)).thenReturn(Optional.empty())
 
         assertThrows(ResourceNotFoundException::class.java) {
-            userService.getUser(userId)
+            usersService.getUser(userId)
         }
     }
 
@@ -112,9 +112,9 @@ class UserServiceTest {
         val userId = 1L
         val amount = BigDecimal.TEN
 
-        `when`(userAccountRepository.findById(userId)).thenReturn(
+        `when`(usersAccountsRepository.findById(userId)).thenReturn(
             Optional.of(
-                UserAccountEntity(
+                UsersAccountsEntity(
                     userId = userId,
                     balanceAmount = BigDecimal.ZERO,
                     username = "username",
@@ -126,12 +126,12 @@ class UserServiceTest {
         )
 
         // when
-        userService.addMoneyToUser(userId, amount)
+        usersService.addMoneyToUser(userId, amount)
 
         // then
-        verify(userAccountRepository).findById(userId)
-        verify(userAccountRepository).save(
-            UserAccountEntity(
+        verify(usersAccountsRepository).findById(userId)
+        verify(usersAccountsRepository).save(
+            UsersAccountsEntity(
                 userId = userId,
                 balanceAmount = BigDecimal.TEN,
                 username = "username",
@@ -148,11 +148,11 @@ class UserServiceTest {
         val userId = 1L
         val amount = BigDecimal.TEN
 
-        `when`(userAccountRepository.findById(userId)).thenReturn(Optional.empty())
+        `when`(usersAccountsRepository.findById(userId)).thenReturn(Optional.empty())
 
         // then
         assertThrows(ResourceNotFoundException::class.java) {
-            userService.addMoneyToUser(userId, amount)
+            usersService.addMoneyToUser(userId, amount)
         }
     }
 
@@ -162,9 +162,9 @@ class UserServiceTest {
         val userId = 1L
         val amount = BigDecimal.TEN
 
-        `when`(userAccountRepository.findById(userId)).thenReturn(
+        `when`(usersAccountsRepository.findById(userId)).thenReturn(
             Optional.of(
-                UserAccountEntity(
+                UsersAccountsEntity(
                     userId = userId,
                     balanceAmount = BigDecimal.TEN,
                     username = "username",
@@ -176,12 +176,12 @@ class UserServiceTest {
         )
 
         // when
-        userService.subtractMoneyFromUser(userId, amount)
+        usersService.subtractMoneyFromUser(userId, amount)
 
         // then
-        verify(userAccountRepository).findById(userId)
-        verify(userAccountRepository).save(
-            UserAccountEntity(
+        verify(usersAccountsRepository).findById(userId)
+        verify(usersAccountsRepository).save(
+            UsersAccountsEntity(
                 userId = userId,
                 balanceAmount = BigDecimal.ZERO,
                 username = "username",
@@ -198,11 +198,11 @@ class UserServiceTest {
         val userId = 1L
         val amount = BigDecimal.TEN
 
-        `when`(userAccountRepository.findById(userId)).thenReturn(Optional.empty())
+        `when`(usersAccountsRepository.findById(userId)).thenReturn(Optional.empty())
 
         // then
         assertThrows(ResourceNotFoundException::class.java) {
-            userService.subtractMoneyFromUser(userId, amount)
+            usersService.subtractMoneyFromUser(userId, amount)
         }
     }
 
@@ -210,7 +210,7 @@ class UserServiceTest {
     fun `deleteUser test`() {
         val id = 1L
         `when`(usersRepository.findById(id)).thenReturn(Optional.of(UsersEntity(id, OffsetDateTime.now().toInstant())))
-        userService.deleteUser(id)
+        usersService.deleteUser(id)
 
         verify(usersRepository).deleteById(id)
     }
@@ -219,7 +219,7 @@ class UserServiceTest {
     fun `deleteUser test fail`() {
         val id = 1L
         `when`(usersRepository.findById(id)).thenReturn(Optional.empty())
-        assertThrows<ResourceNotFoundException> { userService.deleteUser(id) }
+        assertThrows<ResourceNotFoundException> { usersService.deleteUser(id) }
     }
 
     @Test
@@ -227,20 +227,20 @@ class UserServiceTest {
         val id = 1L
         val createUserRequestDto = CreateUserRequestDto("username", "email", "phoneNumber")
         val usersEntity = UsersEntity(id, OffsetDateTime.now().toInstant())
-        val userAccountEntity = UserAccountEntity(1, BigDecimal.ONE, "username", "username1", "email1", true)
+        val usersAccountsEntity = UsersAccountsEntity(1, BigDecimal.ONE, "username", "username1", "email1", true)
 
         `when`(usersRepository.findById(id)).thenReturn(Optional.of(usersEntity))
-        `when`(userAccountRepository.findById(id)).thenReturn(Optional.of(userAccountEntity))
+        `when`(usersAccountsRepository.findById(id)).thenReturn(Optional.of(usersAccountsEntity))
 
-        val updatedUser = userService.updateUser(id, createUserRequestDto)
+        val updatedUser = usersService.updateUser(id, createUserRequestDto)
 
         assertEquals(updatedUser.username, createUserRequestDto.username)
         assertEquals(updatedUser.email, createUserRequestDto.email)
         assertEquals(updatedUser.phoneNumber, createUserRequestDto.phoneNumber)
 
         verify(usersRepository).findById(id)
-        verify(userAccountRepository).findById(id)
-        verify(userAccountRepository).saveAndFlush(any())
+        verify(usersAccountsRepository).findById(id)
+        verify(usersAccountsRepository).saveAndFlush(any())
     }
 
     @Test
@@ -248,7 +248,7 @@ class UserServiceTest {
         val id = 1L
         val createUserRequestDto = CreateUserRequestDto("username", "email", "phoneNumber")
 
-        assertThrows<ResourceNotFoundException> { userService.updateUser(id, createUserRequestDto) }
+        assertThrows<ResourceNotFoundException> { usersService.updateUser(id, createUserRequestDto) }
     }
 
     @Test
@@ -259,6 +259,6 @@ class UserServiceTest {
 
         `when`(usersRepository.findById(id)).thenReturn(Optional.of(usersEntity))
 
-        assertThrows<ResourceNotFoundException> { userService.updateUser(id, createUserRequestDto) }
+        assertThrows<ResourceNotFoundException> { usersService.updateUser(id, createUserRequestDto) }
     }
 }

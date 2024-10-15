@@ -13,10 +13,10 @@ data class FullTypeOfBetMatchResponse(
 )
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-data class SimpleTypeOfBetMatchResponse(
+data class SimpleAvailableBetsResponse(
     val id: Long,
     val matchId: Long,
-    val typeOfBetId: Long,
-    val typeOfBetDescription: String,
-    val ratioNow: BigDecimal,
+    val groupId: Long,
+    val ratio: String,
+    val betsClosed: Boolean,
 )

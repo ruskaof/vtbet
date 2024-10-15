@@ -13,16 +13,16 @@ import ru.itmo.vtbet.model.request.CreateBetGroupRequestDto
 import ru.itmo.vtbet.model.request.CreateAvailableBetRequestDto
 import ru.itmo.vtbet.model.request.UpdateTypeOfBetMatchRequest
 import ru.itmo.vtbet.model.response.FullTypeOfBetMatchResponse
-import ru.itmo.vtbet.model.response.SimpleTypeOfBetMatchResponse
+import ru.itmo.vtbet.model.response.SimpleAvailableBetsResponse
 import ru.itmo.vtbet.service.AdminBetService
-import ru.itmo.vtbet.service.BetService
+import ru.itmo.vtbet.service.BetsService
 import ru.itmo.vtbet.service.toResponse
 
 @RestController
 @Validated
 class AdminBetController(
     private val adminBetService: AdminBetService,
-    private val betService: BetService,
+    private val betsService: BetsService,
 ) {
 
     @PostMapping("admin/bet/group")
@@ -30,14 +30,14 @@ class AdminBetController(
     fun createBetGroup(
         @Valid
         @RequestBody createBetGroupRequestDto: CreateBetGroupRequestDto,
-    ) = betService.createBetGroup(createBetGroupRequestDto).toResponse()
+    ) = betsService.createBetGroup(createBetGroupRequestDto).toResponse()
 
     @PutMapping("admin/bet/{id}")
     fun modifyBetGroup(
         @PathVariable id: Long,
         @Valid
         @RequestBody updateTypeOfBetMatchRequest: UpdateTypeOfBetMatchRequest,
-    ): SimpleTypeOfBetMatchResponse = adminBetService.updateAvailableBet(id, updateTypeOfBetMatchRequest)
+    ): SimpleAvailableBetsResponse = adminBetService.updateAvailableBet(id, updateTypeOfBetMatchRequest)
 
     @PostMapping("admin/matches/{id}/bet")
     fun createTypeOfBetMatch(

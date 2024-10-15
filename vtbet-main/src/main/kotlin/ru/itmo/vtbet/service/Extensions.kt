@@ -1,102 +1,155 @@
 package ru.itmo.vtbet.service
 
-import ru.itmo.vtbet.model.dto.BetDto
-import ru.itmo.vtbet.model.dto.BetGroupDto
-import ru.itmo.vtbet.model.dto.MatchDto
-import ru.itmo.vtbet.model.dto.SimpleTypeOfBetMatchDto
-import ru.itmo.vtbet.model.dto.SportDto
-import ru.itmo.vtbet.model.dto.TypeOfBetDto
-import ru.itmo.vtbet.model.dto.AvailableBetDto
-import ru.itmo.vtbet.model.dto.UserDto
+import ru.itmo.vtbet.model.dto.*
 import ru.itmo.vtbet.model.entity.*
 import ru.itmo.vtbet.model.response.BetGroupResponse
-import ru.itmo.vtbet.model.response.BetResponse
-import ru.itmo.vtbet.model.response.FullTypeOfBetMatchResponse
 import ru.itmo.vtbet.model.response.MatchResponse
-import ru.itmo.vtbet.model.response.SimpleTypeOfBetMatchResponse
+import ru.itmo.vtbet.model.response.SimpleAvailableBetsResponse
 import ru.itmo.vtbet.model.response.SportResponse
-import ru.itmo.vtbet.model.response.TypeOfBetResponse
 import ru.itmo.vtbet.model.response.UserResponse
 
+fun UsersAccountsEntity.toDto() =
+    UserAccountDto(
+        accountId = accountId!!,
+        userId = usersEntity.userId!!,
+        balanceAmount = balanceAmount,
+    )
+
+fun UsersEntity.toDto() =
+    UserDto(
+        userId = userId!!,
+        username = username,
+        email = email,
+        phoneNumber = phoneNumber,
+        accountVerified = accountVerified,
+        registrationDate = registrationDate,
+    )
 
 fun BetsEntity.toDto() =
     BetDto(
-        id = this.id!!,
+        betId = this.id!!,
         ratio = this.ratio,
         amount = this.amount,
         userId = this.usersEntity.id!!,
         availableBetId = this.availableBetId,
     )
 
-fun TypeOfBetDto.toResponse(): TypeOfBetResponse = TypeOfBetResponse(
-    id = id,
-    description = description
-)
+//fun BetGroup.toResponse(): TypeOfBetResponse = TypeOfBetResponse(
+//    id = id,
+//    description = description
+//)
 
 fun BetGroupDto.toResponse(): BetGroupResponse = BetGroupResponse(
-    id = id,
-    typeOfBets = typeOfBets.map(TypeOfBetDto::toResponse)
-)
-
-fun TypeOfBetEntity.toDto(): TypeOfBetDto = TypeOfBetDto(
-    id = id!!,
-    description = description,
+    id = groupId,
+    typeOfBets = typeOfBets.map(BetGroup::toResponse)
 )
 
 fun MatchesEntity.toDto() = MatchDto(
-    id = matchId!!,
+    matchId = matchId!!,
     name = matchName,
     sport = sport.toDto(),
     ended = ended
 )
 
 fun MatchDto.toResponse() = MatchResponse(
-    id = id,
+    id = matchId,
     name = name,
     sport = sport.toResponse(),
     ended = ended,
 )
 
-fun SportEntity.toDto(): SportDto =
+fun SportsEntity.toDto(): SportDto =
     SportDto(sportId!!, sportName)
 
 fun SportDto.toResponse(): SportResponse =
-    SportResponse(id, name)
-
-fun SimpleTypeOfBetMatchDto.toResponse() =
-    SimpleTypeOfBetMatchResponse(
-        id = this.id,
-        ratioNow = this.ratioNow,
-        matchId = this.matchId,
-        typeOfBetDescription = this.typeOfBet.description,
-        typeOfBetId = this.typeOfBet.id,
+    SportResponse(
+        id = sportId,
+        name = name,
     )
 
-fun UserDto.toResponse() = UserResponse(
-    id = id,
-    registrationDate = registrationDate,
-    balanceAmount = balanceAmount,
-    username = username,
-    email = email,
-    phoneNumber = phoneNumber,
-)
+fun SimpleAvailableBetsDto.toResponse() =
+    SimpleAvailableBetsResponse(
+        id = this.availableBetId,
+        ratio = this.ratio.toPlainString(),
+        matchId = this.matchId,
+        groupId = this.groupId,
+        betsClosed = this.betsClosed,
+    )
+
+//fun UserDto.toResponse() = UserResponse(
+//    id = id,
+//    registrationDate = registrationDate,
+//    balanceAmount = balanceAmount,
+//    username = username,
+//    email = email,
+//    phoneNumber = phoneNumber,
+//)
+
+fun ComplexUserDto.toResponse() =
+    UserResponse(
+        id = userId,
+        registrationDate = registrationDate,
+        balanceAmount = balanceAmount,
+        username = username,
+        email = email,
+        phoneNumber = phoneNumber,
+        accountVerified = accountVerified,
+    )
 
 fun SportDto.toEntity() =
-    SportEntity(id, name)
+    SportsEntity(sportId, name)
 
 fun MatchDto.toEntity() =
     MatchesEntity(
-        matchId = id,
+        matchId = matchId,
         matchName = name,
         sport = sport.toEntity(),
         ended = ended,
     )
 
-fun UserDto.toUsersEntity() =
+fun UserDto.toEntity() =
     UsersEntity(
-        id = id,
+        userId = userId,
+        username = username,
+        email = email,
+        phoneNumber = phoneNumber,
+        accountVerified = accountVerified,
         registrationDate = registrationDate,
     )
 
-fun AvailableBetEntity.toDto() =
+fun UserDto.toResponse() =
+    UserResponse(
+        id = userId,
+        username = username,
+        email = email,
+        phoneNumber = phoneNumber,
+        accountVerified = accountVerified,
+        registrationDate = registrationDate,
+        balanceAmount = null,
+    )
+
+fun ComplexUserDto.toEntity() =
+    UsersAccountsEntity(
+        accountId = accountId,
+        usersEntity = UsersEntity(
+            userId = userId,
+            username = username,
+            email = email,
+            phoneNumber = phoneNumber,
+            accountVerified = accountVerified,
+            registrationDate = registrationDate,
+        ),
+        balanceAmount = balanceAmount,
+    )
+
+fun AvailableBetsEntity.toDto() =
     AvailableBetDto(id!!, ratioNow, typeOfBetId, betsClosed, matchId)
+
+fun AvailableBetsEntity.toSimpleDto() =
+    SimpleAvailableBetsDto(
+        availableBetId = availableBetId!!,
+        ratio = ratio,
+        betsClosed = betsClosed,
+        matchId = matchId,
+        groupId = betsGroupsEntity.groupId!!,
+    )

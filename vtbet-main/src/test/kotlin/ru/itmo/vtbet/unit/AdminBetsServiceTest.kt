@@ -9,43 +9,42 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import ru.itmo.vtbet.model.dto.BetGroupDto
-import ru.itmo.vtbet.model.entity.BetGroupEntity
+import ru.itmo.vtbet.model.entity.BetsGroupsEntity
 import ru.itmo.vtbet.model.entity.MatchesEntity
-import ru.itmo.vtbet.model.entity.SportEntity
-import ru.itmo.vtbet.model.entity.TypeOfBetEntity
-import ru.itmo.vtbet.model.entity.AvailableBetEntity
+import ru.itmo.vtbet.model.entity.SportsEntity
+import ru.itmo.vtbet.model.entity.AvailableBetsEntity
 import ru.itmo.vtbet.model.request.CreateBetGroupRequestDto
 import ru.itmo.vtbet.model.request.CreateAvailableBetRequestDto
 import ru.itmo.vtbet.model.request.TypeOfBetRequest
 import ru.itmo.vtbet.model.request.UpdateTypeOfBetMatchRequest
-import ru.itmo.vtbet.repository.BetGroupRepository
+import ru.itmo.vtbet.repository.BetsGroupsRepository
 import ru.itmo.vtbet.repository.MatchesRepository
-import ru.itmo.vtbet.repository.AvailableBetRepository
+import ru.itmo.vtbet.repository.AvailableBetsRepository
 import ru.itmo.vtbet.repository.TypeOfBetRepository
 import ru.itmo.vtbet.service.AdminBetService
 import ru.itmo.vtbet.service.toDto
 import java.math.BigDecimal
 import java.util.Optional
 
-class AdminBetServiceTest {
-    private val betGroupRepository = mock(BetGroupRepository::class.java)
+class AdminBetsServiceTest {
+    private val betsGroupsRepository = mock(BetsGroupsRepository::class.java)
     private val typeOfBetRepository = mock(TypeOfBetRepository::class.java)
-    private val typeOfBetMatchRepository = mock(AvailableBetRepository::class.java)
+    private val typeOfBetMatchRepository = mock(AvailableBetsRepository::class.java)
     private val matchesRepository = mock(MatchesRepository::class.java)
 
     private val adminBetService =
-        AdminBetService(betGroupRepository, typeOfBetRepository, typeOfBetMatchRepository, matchesRepository)
+        AdminBetService(betsGroupsRepository, typeOfBetRepository, typeOfBetMatchRepository, matchesRepository)
 
     @Test
     fun createBetGroup() {
         val betGroupId = 1L
-        val betGroupEntity = BetGroupEntity(betGroupId)
+        val betsGroupsEntity = BetsGroupsEntity(betGroupId)
 
         val createBetGroupRequestDto =
             CreateBetGroupRequestDto(listOf(TypeOfBetRequest("description1"), TypeOfBetRequest("description2")))
         val typeOfBets = listOf(
-            TypeOfBetEntity(1L, "description1", betGroupEntity),
-            TypeOfBetEntity(1L, "description2", betGroupEntity),
+            TypeOfBetEntity(1L, "description1", betsGroupsEntity),
+            TypeOfBetEntity(1L, "description2", betsGroupsEntity),
         )
 
         val expectedBetGroupDto = BetGroupDto(
@@ -53,7 +52,7 @@ class AdminBetServiceTest {
             typeOfBets.map(TypeOfBetEntity::toDto)
         )
 
-        Mockito.`when`(betGroupRepository.save(any(BetGroupEntity::class.java))).thenReturn(betGroupEntity)
+        Mockito.`when`(betsGroupsRepository.save(any(BetsGroupsEntity::class.java))).thenReturn(betsGroupsEntity)
         Mockito.`when`(typeOfBetRepository.save(any(TypeOfBetEntity::class.java))).thenReturn(
             typeOfBets[0],
             typeOfBets[1],
@@ -63,8 +62,8 @@ class AdminBetServiceTest {
 
         assertEquals(expectedBetGroupDto, betGroupDto)
 
-        val inOrder = inOrder(betGroupRepository, typeOfBetRepository)
-        inOrder.verify(betGroupRepository).save(any(BetGroupEntity::class.java))
+        val inOrder = inOrder(betsGroupsRepository, typeOfBetRepository)
+        inOrder.verify(betsGroupsRepository).save(any(BetsGroupsEntity::class.java))
         inOrder.verify(typeOfBetRepository, times(2)).save(any(TypeOfBetEntity::class.java))
     }
 
@@ -77,18 +76,18 @@ class AdminBetServiceTest {
         val matchId = 1L
         val matchName = "El Clasico"
 
-        val matchEntity = MatchesEntity(matchId, matchName, SportEntity(sportId, sportName), false)
+        val matchEntity = MatchesEntity(matchId, matchName, SportsEntity(sportId, sportName), false)
         val typeOfBet = TypeOfBetEntity(
             id = 1,
             description = "",
-            betGroupEntity = BetGroupEntity(
+            betGroupEntity = BetsGroupsEntity(
                 betGroupId = 1,
             ),
         )
         val newRatio = 1.1
         val request = UpdateTypeOfBetMatchRequest(newRatio)
         val oldTypeOfBetMatch =
-            AvailableBetEntity(id = id, ratioNow = ratio, match = matchEntity, typeOfBets = typeOfBet)
+            AvailableBetsEntity(id = id, ratioNow = ratio, match = matchEntity, typeOfBets = typeOfBet)
 
         Mockito.`when`(typeOfBetMatchRepository.findById(id)).thenReturn(Optional.of(oldTypeOfBetMatch))
         Mockito.`when`(typeOfBetMatchRepository.save(any()))
@@ -109,15 +108,15 @@ class AdminBetServiceTest {
         val matchId = 1L
         val matchName = "El Clasico"
 
-        val matchEntity = MatchesEntity(matchId, matchName, SportEntity(sportId, sportName), false)
+        val matchEntity = MatchesEntity(matchId, matchName, SportsEntity(sportId, sportName), false)
         val typeOfBet = TypeOfBetEntity(
             id = 1,
             description = "",
-            betGroupEntity = BetGroupEntity(
+            betGroupEntity = BetsGroupsEntity(
                 betGroupId = 1,
             ),
         )
-        val typeOfBetMatch = AvailableBetEntity(id = id, ratioNow = ratio, match = matchEntity, typeOfBets = typeOfBet)
+        val typeOfBetMatch = AvailableBetsEntity(id = id, ratioNow = ratio, match = matchEntity, typeOfBets = typeOfBet)
         val typeOfBetId = 1L
         val createRequest = CreateAvailableBetRequestDto(typeOfBetId, 1.1.toBigDecimal())
 

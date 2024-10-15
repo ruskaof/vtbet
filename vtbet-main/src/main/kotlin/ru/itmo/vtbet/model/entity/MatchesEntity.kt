@@ -1,13 +1,6 @@
 package ru.itmo.vtbet.model.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
+import jakarta.persistence.*
 import jakarta.validation.constraints.Size
 
 @Entity(name = "matches")
@@ -21,7 +14,7 @@ data class MatchesEntity(
     val matchName: String,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sport_id")
-    val sport: SportEntity,
+    val sport: SportsEntity,
     @Column(name = "ended", nullable = false)
     val ended: Boolean
 )

@@ -4,9 +4,6 @@ import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import ru.itmo.vtbet.exception.IllegalBetActionException
 import ru.itmo.vtbet.exception.ResourceNotFoundException
-import ru.itmo.vtbet.model.request.UpdateTypeOfBetMatchRequest
-import ru.itmo.vtbet.model.response.SimpleTypeOfBetMatchResponse
-import kotlin.jvm.optionals.getOrElse
 
 /**
  * Тут логика работы с созданием ставок
@@ -15,37 +12,37 @@ import kotlin.jvm.optionals.getOrElse
  */
 @Service
 class AdminBetService(
-    private val betService: BetService,
-    private val matchService: MatchService,
-    private val userService: UserService,
+    private val betsService: BetsService,
+    private val matchesService: MatchesService,
+    private val usersService: UsersService,
 ) {
 
     @Transactional
     fun closeMatchBets(matchId: Long) {
-        val match = matchService.getMatch(matchId)
+        val match = matchesService.getMatch(matchId)
             ?: throw ResourceNotFoundException("No Match found with ID: $matchId")
 
-        betService.getMatchAvailableBets(matchId).forEach {
-            betService.closeAvailableBet(it.id)
+        betsService.getMatchAvailableBets(matchId).forEach {
+            betsService.closeAvailableBet(it.availableBetId)
         }
     }
 
     @Transactional
     fun submitMatchResult(matchId: Long, successfulBets: Set<Long>) {
-        val match = matchService.getMatch(matchId)
+        val match = matchesService.getMatch(matchId)
             ?: throw ResourceNotFoundException("No Match found with ID: $matchId")
 
         if (match.ended) {
             throw IllegalBetActionException("Match with ID: $matchId has already ended")
         }
 
-        val allBetsForMatch = betService.getMatchBets(matchId)
+        val allBetsForMatch = betsService.getMatchBets(matchId)
 
-        allBetsForMatch.filter { it.id in successfulBets }
+        allBetsForMatch.filter { it.betId in successfulBets }
             .forEach {
-                userService.addMoneyToUser(it.userId, it.amount * it.ratio)
+                usersService.addMoneyToUser(it.userId, it.amount * it.ratio)
             }
 
-        matchService.endMatch(matchId)
+        matchesService.endMatch(matchId)
     }
 }

@@ -4,8 +4,8 @@ package ru.itmo.vtbet.unit
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import ru.itmo.vtbet.repository.MatchesRepository
-import ru.itmo.vtbet.repository.SportRepository
-import ru.itmo.vtbet.repository.AvailableBetRepository
+import ru.itmo.vtbet.repository.SportsRepository
+import ru.itmo.vtbet.repository.AvailableBetsRepository
 import org.mockito.Mockito.*
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -18,10 +18,10 @@ import java.util.*
 
 class SportServiceTest {
 
-    private val sportRepository = mock(SportRepository::class.java)
+    private val sportsRepository = mock(SportsRepository::class.java)
     private val matchesRepository = mock(MatchesRepository::class.java)
-    private val typeOfBetMatchRepository = mock(AvailableBetRepository::class.java)
-    private val sportService = SportService(sportRepository, matchesRepository, typeOfBetMatchRepository)
+    private val typeOfBetMatchRepository = mock(AvailableBetsRepository::class.java)
+    private val sportService = SportService(sportsRepository, matchesRepository, typeOfBetMatchRepository)
 
     @Test
     fun `get sports`() {
@@ -31,19 +31,19 @@ class SportServiceTest {
         val sport2Name = "football"
         val pageSize = 20
         val pageNumber = 1
-        val pageSports = PageImpl(listOf(SportEntity(sportId, sportName), SportEntity(sport2Id, sport2Name)))
+        val pageSports = PageImpl(listOf(SportsEntity(sportId, sportName), SportsEntity(sport2Id, sport2Name)))
 
-        `when`(sportRepository.findAll(PageRequest.of(pageNumber, pageSize))).thenReturn(pageSports)
+        `when`(sportsRepository.findAll(PageRequest.of(pageNumber, pageSize))).thenReturn(pageSports)
 
         val result = sportService.getSports(pageNumber, pageSize)
         val expectedResult = PagingDto(
                 listOf(
                         SportDto(
-                                id = sportId,
+                                sportId = sportId,
                                 name = sportName,
                         ),
                         SportDto(
-                                id = sport2Id,
+                                sportId = sport2Id,
                                 name = sport2Name,
                         )
 
@@ -63,7 +63,7 @@ class SportServiceTest {
         val matchName = "El Clasico"
         val pageSize = 20
         val pageNumber = 1
-        val pageMatches = PageImpl(listOf(MatchesEntity(matchId, matchName, SportEntity(sportId, sportName), true)))
+        val pageMatches = PageImpl(listOf(MatchesEntity(matchId, matchName, SportsEntity(sportId, sportName), true)))
 
         `when`(matchesRepository.findAllBySportSportId(sportId, PageRequest.of(pageNumber, pageSize))).thenReturn((pageMatches))
 
@@ -89,13 +89,13 @@ class SportServiceTest {
         val matchName = "El Clasico"
         val pageSize = 20
         val pageNumber = 1
-        val typeOfBetMatch = PageImpl(listOf(AvailableBetEntity(matchId, ratioNow, MatchesEntity(matchId, matchName, SportEntity(sportId, sportName), true),  TypeOfBetEntity(typeOfBetMatchId, description, BetGroupEntity(1L)))))
+        val typeOfBetMatch = PageImpl(listOf(AvailableBetsEntity(matchId, ratioNow, MatchesEntity(matchId, matchName, SportsEntity(sportId, sportName), true),  TypeOfBetEntity(typeOfBetMatchId, description, BetsGroupsEntity(1L)))))
 
         `when`(typeOfBetMatchRepository.findAllByMatchMatchId(matchId, PageRequest.of(pageNumber, pageSize))).thenReturn((typeOfBetMatch))
 
         val result = sportService.getTypeOfBetMatch(matchId, pageNumber, pageSize)
         val expectedResult = PagingDto(
-                items = listOf(SimpleTypeOfBetMatchDto(matchId, ratioNow, TypeOfBetDto(typeOfBetMatchId, description), matchId)),
+                items = listOf(SimpleAvailableBetsDto(matchId, ratioNow, BetGroup(typeOfBetMatchId, description), matchId)),
                 total = 1L,
                 pageSize = pageSize,
                 page = pageNumber,
@@ -111,12 +111,12 @@ class SportServiceTest {
                 name = "football",
         )
 
-        `when`(sportRepository.save(any())).thenReturn(SportEntity(1L, "football"))
+        `when`(sportsRepository.save(any())).thenReturn(SportsEntity(1L, "football"))
 
         sportService.createSport(request)
 
-        verify(sportRepository).save(
-                SportEntity(null, "football")
+        verify(sportsRepository).save(
+                SportsEntity(null, "football")
         )
     }
 
@@ -126,12 +126,12 @@ class SportServiceTest {
                 name = "El clasico",
         )
 
-        `when`(matchesRepository.save(any())).thenReturn(MatchesEntity(1L, "El clasico", SportEntity(1L, "football"), false))
-        `when`(sportRepository.findById(any())).thenReturn(Optional.of(SportEntity(1L, "football")))
+        `when`(matchesRepository.save(any())).thenReturn(MatchesEntity(1L, "El clasico", SportsEntity(1L, "football"), false))
+        `when`(sportsRepository.findById(any())).thenReturn(Optional.of(SportsEntity(1L, "football")))
         sportService.createMatch(request, 1L)
 
         verify(matchesRepository).save(
-                MatchesEntity(null, "El clasico", SportEntity(1L, "football"), false)
+                MatchesEntity(null, "El clasico", SportsEntity(1L, "football"), false)
         )
     }
 

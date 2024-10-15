@@ -15,16 +15,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import ru.itmo.vtbet.model.entity.BetGroupEntity
+import ru.itmo.vtbet.model.entity.BetsGroupsEntity
 import ru.itmo.vtbet.model.entity.MatchesEntity
-import ru.itmo.vtbet.model.entity.SportEntity
-import ru.itmo.vtbet.model.entity.TypeOfBetEntity
-import ru.itmo.vtbet.model.entity.AvailableBetEntity
+import ru.itmo.vtbet.model.entity.SportsEntity
+import ru.itmo.vtbet.model.entity.AvailableBetsEntity
 import ru.itmo.vtbet.model.request.UpdateMatchRequestDto
-import ru.itmo.vtbet.repository.BetGroupRepository
+import ru.itmo.vtbet.repository.BetsGroupsRepository
 import ru.itmo.vtbet.repository.MatchesRepository
-import ru.itmo.vtbet.repository.SportRepository
-import ru.itmo.vtbet.repository.AvailableBetRepository
+import ru.itmo.vtbet.repository.SportsRepository
+import ru.itmo.vtbet.repository.AvailableBetsRepository
 import ru.itmo.vtbet.repository.TypeOfBetRepository
 
 @SpringBootTest
@@ -38,7 +37,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
     lateinit var objectMapper: ObjectMapper
 
     @Autowired
-    lateinit var sportRepository: SportRepository
+    lateinit var sportsRepository: SportsRepository
 
     @Autowired
     lateinit var matchesRepository: MatchesRepository
@@ -47,15 +46,15 @@ class MatchesControllerTest : BaseIntegrationTest() {
     lateinit var typeOfBetRepository: TypeOfBetRepository
 
     @Autowired
-    lateinit var typeOfBetMatchesRepository: AvailableBetRepository
+    lateinit var typeOfBetMatchesRepository: AvailableBetsRepository
 
     @Autowired
-    lateinit var betGroupRepository: BetGroupRepository
+    lateinit var betsGroupsRepository: BetsGroupsRepository
 
     @Test
     fun `getMatches test`() {
-        val sport = sportRepository.save(
-            SportEntity(
+        val sport = sportsRepository.save(
+            SportsEntity(
                 sportName = "test sport",
             )
         )
@@ -79,8 +78,8 @@ class MatchesControllerTest : BaseIntegrationTest() {
 
     @Test
     fun `getBetsByMatchId test`() {
-        val sport = sportRepository.save(
-            SportEntity(
+        val sport = sportsRepository.save(
+            SportsEntity(
                 sportName = "test sport",
             )
         )
@@ -92,8 +91,8 @@ class MatchesControllerTest : BaseIntegrationTest() {
             )
         )
 
-        val betGroup = betGroupRepository.save(
-            BetGroupEntity()
+        val betGroup = betsGroupsRepository.save(
+            BetsGroupsEntity()
         )
 
         val typeOfBet = typeOfBetRepository.save(
@@ -104,7 +103,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
         )
 
         val typeOfBetMatch = typeOfBetMatchesRepository.save(
-            AvailableBetEntity(
+            AvailableBetsEntity(
                 ratioNow = 1.0.toBigDecimal(),
                 match = match,
                 typeOfBets = typeOfBet,
@@ -134,8 +133,8 @@ class MatchesControllerTest : BaseIntegrationTest() {
 
     @Test
     fun `updateMatch test`() {
-        val sport = sportRepository.save(
-            SportEntity(
+        val sport = sportsRepository.save(
+            SportsEntity(
                 sportName = "test sport",
             )
         )
@@ -147,8 +146,8 @@ class MatchesControllerTest : BaseIntegrationTest() {
             )
         )
 
-        val betGroup = betGroupRepository.save(
-            BetGroupEntity()
+        val betGroup = betsGroupsRepository.save(
+            BetsGroupsEntity()
         )
 
         val typeOfBet = typeOfBetRepository.save(
@@ -159,7 +158,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
         )
 
         val typeOfBetMatch = typeOfBetMatchesRepository.save(
-            AvailableBetEntity(
+            AvailableBetsEntity(
                 ratioNow = 1.0.toBigDecimal(),
                 match = match,
                 typeOfBets = typeOfBet,
@@ -179,8 +178,8 @@ class MatchesControllerTest : BaseIntegrationTest() {
 
     @Test
     fun `endMatch test`() {
-        val sport = sportRepository.save(
-            SportEntity(
+        val sport = sportsRepository.save(
+            SportsEntity(
                 sportName = "test sport",
             )
         )
@@ -192,8 +191,8 @@ class MatchesControllerTest : BaseIntegrationTest() {
             )
         )
 
-        val betGroup = betGroupRepository.save(
-            BetGroupEntity()
+        val betGroup = betsGroupsRepository.save(
+            BetsGroupsEntity()
         )
 
         val typeOfBet = typeOfBetRepository.save(
@@ -204,7 +203,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
         )
 
         typeOfBetMatchesRepository.save(
-            AvailableBetEntity(
+            AvailableBetsEntity(
                 ratioNow = 1.0.toBigDecimal(),
                 match = match,
                 typeOfBets = typeOfBet,
@@ -222,8 +221,8 @@ class MatchesControllerTest : BaseIntegrationTest() {
 
     @Test
     fun `deleteMatch test`() {
-        val sport = sportRepository.save(
-            SportEntity(
+        val sport = sportsRepository.save(
+            SportsEntity(
                 sportName = "test sport",
             )
         )

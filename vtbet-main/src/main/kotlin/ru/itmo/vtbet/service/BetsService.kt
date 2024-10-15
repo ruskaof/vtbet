@@ -4,51 +4,50 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.*
-import ru.itmo.vtbet.model.entity.AvailableBetEntity
-import ru.itmo.vtbet.model.entity.BetGroupEntity
+import ru.itmo.vtbet.model.entity.AvailableBetsEntity
+import ru.itmo.vtbet.model.entity.BetsGroupsEntity
 import ru.itmo.vtbet.model.entity.BetsEntity
-import ru.itmo.vtbet.model.entity.TypeOfBetEntity
 import ru.itmo.vtbet.model.request.CreateAvailableBetRequestDto
 import ru.itmo.vtbet.model.request.CreateBetGroupRequestDto
-import ru.itmo.vtbet.repository.AvailableBetRepository
-import ru.itmo.vtbet.repository.BetGroupRepository
+import ru.itmo.vtbet.repository.AvailableBetsRepository
+import ru.itmo.vtbet.repository.BetsGroupsRepository
 import ru.itmo.vtbet.repository.BetsRepository
 import ru.itmo.vtbet.repository.TypeOfBetRepository
 import java.math.BigDecimal
 import kotlin.jvm.optionals.getOrNull
 
 @Service
-class BetService(
+class BetsService(
     private val betsRepository: BetsRepository,
-    private val betGroupRepository: BetGroupRepository,
+    private val betsGroupsRepository: BetsGroupsRepository,
     private val typeOfBetRepository: TypeOfBetRepository,
-    private val availableBetRepository: AvailableBetRepository,
+    private val availableBetsRepository: AvailableBetsRepository,
 ) {
 
     fun createTypeOfBet(
         betGroupDto: BetGroupDto,
-        typeOfBetDto: TypeOfBetDto,
+        betGroup: BetGroup,
     ) = typeOfBetRepository.save(
         TypeOfBetEntity(
-            description = typeOfBetDto.description,
-            betGroupId = betGroupDto.id,
+            description = betGroup.description,
+            betGroupId = betGroupDto.groupId,
         )
     )
 
     @Transactional
     fun createBetGroup(createBetGroupRequestDto: CreateBetGroupRequestDto): BetGroupDto {
-        val betGroupEntity = betGroupRepository.save(BetGroupEntity())
+        val betsGroupsEntity = betsGroupsRepository.save(BetsGroupsEntity())
         val typeOfBets = createBetGroupRequestDto.typeOfBets.map {
             typeOfBetRepository.save(
                 TypeOfBetEntity(
                     description = it.description,
-                    betGroupId = betGroupEntity.betGroupId!!,
+                    betGroupId = betsGroupsEntity.betGroupId!!,
                 )
             )
         }
 
         return BetGroupDto(
-            id = betGroupEntity.betGroupId!!,
+            groupId = betsGroupsEntity.betGroupId!!,
             typeOfBets = typeOfBets.map(TypeOfBetEntity::toDto)
         )
     }
@@ -57,33 +56,33 @@ class BetService(
     fun createAvailableBet(
         createAvailableBetRequestDto: CreateAvailableBetRequestDto,
         matchDto: MatchDto,
-        typeOfBetDto: TypeOfBetDto,
+        betGroup: BetGroup,
     ): AvailableBetDto {
-        return availableBetRepository.save(
-            AvailableBetEntity(
+        return availableBetsRepository.save(
+            AvailableBetsEntity(
                 ratioNow = createAvailableBetRequestDto.ratioNow,
-                matchId = matchDto.id,
-                typeOfBetId = typeOfBetDto.id,
+                matchId = matchDto.matchId,
+                typeOfBetId = betGroup.id,
                 betsClosed = false,
             )
         ).toDto()
     }
 
     fun getAvailableBet(id: Long): AvailableBetDto? =
-        availableBetRepository.findById(id).getOrNull()?.toDto()
+        availableBetsRepository.findById(id).getOrNull()?.toDto()
 
     fun getMatchAvailableBets(matchId: Long): List<AvailableBetDto> =
-        availableBetRepository.findAllByMatchMatchId(matchId).map(AvailableBetEntity::toDto)
+        availableBetsRepository.findAllByMatchMatchId(matchId).map(AvailableBetsEntity::toDto)
 
     fun getMatchBets(matchId: Long): List<BetDto> =
         betsRepository.findAllByMatchMatchId(matchId).map(BetsEntity::toDto)
 
     @Transactional
     fun closeAvailableBet(id: Long) {
-        val availableBet = availableBetRepository.findById(id).orElseThrow {
+        val availableBet = availableBetsRepository.findById(id).orElseThrow {
             ResourceNotFoundException("Available bet with id $id not found")
         }
-        availableBetRepository.save(availableBet.copy(betsClosed = true))
+        availableBetsRepository.save(availableBet.copy(betsClosed = true))
     }
 
     fun createBet(
@@ -96,8 +95,8 @@ class BetService(
             BetsEntity(
                 amount = amount,
                 ratio = ratio,
-                usersEntity = userDto.toUsersEntity(),
-                availableBetId = availableBetDto.id,
+                usersEntity = userDto.toEntity(),
+                availableBetId = availableBetDto.availableBetId,
             )
         )
             .toDto()

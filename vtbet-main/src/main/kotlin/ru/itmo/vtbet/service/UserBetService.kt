@@ -5,9 +5,7 @@ import org.springframework.stereotype.Service
 import ru.itmo.vtbet.exception.IllegalBetActionException
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.BetDto
-import ru.itmo.vtbet.model.entity.BetsEntity
 import ru.itmo.vtbet.model.request.MakeBetRequestDto
-import java.math.BigDecimal
 
 /**
  * Тут логика работы со ставками пользователей
@@ -16,19 +14,19 @@ import java.math.BigDecimal
  */
 @Service
 class UserBetService(
-    private val userService: UserService,
-    private val betService: BetService,
+    private val usersService: UsersService,
+    private val betsService: BetsService,
 ) {
     @Transactional
     fun makeBet(userId: Long, makeBetRequestDto: MakeBetRequestDto): BetDto {
-        val user = userService.getUser(userId)
+        val user = usersService.getUser(userId)
             ?: throw ResourceNotFoundException("No user found with ID: $userId")
 
         if (user.balanceAmount < makeBetRequestDto.amount) {
             throw IllegalBetActionException("User $userId doesn't have enough money to make bet")
         }
 
-        val availableBet = betService.getAvailableBet(makeBetRequestDto.availableBetId)
+        val availableBet = betsService.getAvailableBet(makeBetRequestDto.availableBetId)
             ?: throw ResourceNotFoundException("No available bet found with ID: ${makeBetRequestDto.availableBetId}")
 
         if (availableBet.betsClosed) {
@@ -37,13 +35,13 @@ class UserBetService(
             )
         }
 
-        if (makeBetRequestDto.ratio != availableBet.ratioNow) {
-            throw IllegalBetActionException("Wrong ratio: ratio now is ${availableBet.ratioNow}")
+        if (makeBetRequestDto.ratio != availableBet.ratio) {
+            throw IllegalBetActionException("Wrong ratio: ratio now is ${availableBet.ratio}")
         }
 
-        val bet = betService.createBet(user, availableBet, makeBetRequestDto.ratio, makeBetRequestDto.amount)
+        val bet = betsService.createBet(user, availableBet, makeBetRequestDto.ratio, makeBetRequestDto.amount)
 
-        userService.subtractMoneyFromUser(user.id, makeBetRequestDto.amount)
+        usersService.subtractMoneyFromUser(user.id, makeBetRequestDto.amount)
 
         return bet
     }
