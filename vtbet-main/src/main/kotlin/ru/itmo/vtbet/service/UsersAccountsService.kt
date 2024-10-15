@@ -12,6 +12,9 @@ class UsersAccountsService(
     fun getUserAccount(userId: Long) =
         usersAccountsRepository.findByIdOrNull(userId)?.toDto()
 
+    fun getComplexUserAccount(userId: Long) =
+        usersAccountsRepository.findByIdOrNull(userId)?.toComplexDto()
+
     fun save(userAccountDto: ComplexUserDto) =
         usersAccountsRepository.saveAndFlush(
             userAccountDto

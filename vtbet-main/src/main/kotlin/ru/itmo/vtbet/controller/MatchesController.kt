@@ -6,11 +6,12 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import ru.itmo.vtbet.model.dto.AvailableBetDto
 import ru.itmo.vtbet.model.dto.MatchDto
-import ru.itmo.vtbet.model.dto.SimpleAvailableBetsDto
 import ru.itmo.vtbet.model.request.UpdateMatchRequestDto
+import ru.itmo.vtbet.model.response.AvailableBetsResponse
 import ru.itmo.vtbet.model.response.MatchResponse
-import ru.itmo.vtbet.model.response.SimpleAvailableBetsResponse
+import ru.itmo.vtbet.service.AvailableBetsService
 import ru.itmo.vtbet.service.ComplexMatchesService
 import ru.itmo.vtbet.service.MAX_PAGE_SIZE
 import ru.itmo.vtbet.service.toResponse
@@ -19,6 +20,7 @@ import ru.itmo.vtbet.service.toResponse
 @Validated
 class MatchesController(
     private val complexMatchesService: ComplexMatchesService,
+    private val availableBetsService: AvailableBetsService,
 ) {
     @GetMapping("/matches")
     fun getMatches(
@@ -36,55 +38,39 @@ class MatchesController(
         )
     }
 
-    @GetMapping("/match/{id}/bets")
+    @GetMapping("/matches/{id}/bets")
     fun getMatchBets(
         @PathVariable("id") matchId: Long,
         @PositiveOrZero
         @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
-    ): ResponseEntity<List<SimpleAvailableBetsResponse>> {
-        val result = complexMatchesService.getBetsByMatchId(matchId, pageNumber, pageSize)
+    ): ResponseEntity<List<AvailableBetsResponse>> {
+        val result = availableBetsService.getAllByMatchId(matchId, pageNumber, pageSize)
         return ResponseEntity(
-            result.items.map(SimpleAvailableBetsDto::toResponse),
+            result.items.map(AvailableBetDto::toResponse),
             preparePagingHeaders(result.total, result.page, result.pageSize),
             HttpStatus.OK
         )
     }
 
-    @PatchMapping("match/{id}")
+    @PatchMapping("matches/{id}")
     fun updateMatch(
         @PathVariable id: Long,
         @RequestBody updateMatchRequestDto: UpdateMatchRequestDto,
     ): MatchResponse =
         complexMatchesService.updateMatch(updateMatchRequestDto, id).toResponse()
 
-    @DeleteMapping("match/{id}")
+    @DeleteMapping("matches/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteMatch(
         @PathVariable id: Long,
     ): Unit = complexMatchesService.delete(id)
 
-    @PostMapping("match/{id}/end")
+    @PostMapping("matches/{id}/end")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun endMatch(
         @PathVariable id: Long,
         @RequestBody successfulBets: Set<Long>,
     ): Unit = complexMatchesService.endMatch(id, successfulBets)
-
-    @GetMapping("matches/{id}/types-of-bets")
-    @ResponseStatus(HttpStatus.CREATED)
-    fun createTypeOfBetMatch(
-        @PathVariable id: Long,
-        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
-        @Max(MAX_PAGE_SIZE)
-        @RequestParam(defaultValue = "50", required = false) pageSize: Int,
-    ): ResponseEntity<List<SimpleAvailableBetsResponse>> {
-        val result = sportsService.getTypeOfBetMatch(id, pageNumber, pageSize)
-        return ResponseEntity(
-            result.items.map(SimpleAvailableBetsDto::toResponse),
-            preparePagingHeaders(result.total, result.page, result.pageSize),
-            HttpStatus.OK
-        )
-    }
 }

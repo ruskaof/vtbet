@@ -40,7 +40,6 @@ class SportsController(
         )
     }
 
-    // FIXME: сделать ручки согласно соглашению REST https://restfulapi.net/resource-naming/
     @PostMapping("/sports")
     @ResponseStatus(HttpStatus.CREATED)
     fun createSport(
@@ -48,7 +47,7 @@ class SportsController(
     ): SportResponse =
         sportsService.createSport(createSportRequestDto).toResponse()
 
-    @GetMapping("/sport/{id}/matches")
+    @GetMapping("/sports/{id}/matches")
     fun getMatches(
         @PathVariable("id") sportId: Long,
         @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
@@ -63,7 +62,7 @@ class SportsController(
         )
     }
 
-    @PostMapping("/sport/{id}/matches")
+    @PostMapping("/sports/{id}/matches")
     @ResponseStatus(HttpStatus.CREATED)
     fun createMatch(
         // TODO: path variable другой, чтобы в Swagger не светить реальные названия

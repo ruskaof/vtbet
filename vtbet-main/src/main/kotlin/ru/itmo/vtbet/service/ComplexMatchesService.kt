@@ -6,24 +6,16 @@ import org.springframework.transaction.annotation.Transactional
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.MatchDto
 import ru.itmo.vtbet.model.dto.PagingDto
-import ru.itmo.vtbet.model.dto.SimpleAvailableBetsDto
-import ru.itmo.vtbet.model.dto.SportDto
-import ru.itmo.vtbet.model.entity.MatchesEntity
-import ru.itmo.vtbet.model.entity.SportsEntity
 import ru.itmo.vtbet.model.request.CreateMatchRequestDto
-import ru.itmo.vtbet.model.request.CreateSportRequestDto
 import ru.itmo.vtbet.model.request.UpdateMatchRequestDto
-import ru.itmo.vtbet.repository.AvailableBetsRepository
-import ru.itmo.vtbet.repository.MatchesRepository
-import kotlin.jvm.optionals.getOrElse
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class ComplexMatchesService(
     private val matchesService: MatchesService,
     private val sportsService: SportsService,
+    private val betsService: BetsService,
     private val availableBetsService: AvailableBetsService,
-//    private val availableBetsRepository: AvailableBetsRepository,
+    private val usersAccountsService: UsersAccountsService,
 ) {
     fun getMatches(pageNumber: Int, pageSize: Int): PagingDto<MatchDto> {
         val result = matchesService.getMatches(PageRequest.of(pageNumber, pageSize))
@@ -84,31 +76,24 @@ class ComplexMatchesService(
             throw IllegalArgumentException("Match with ID: $matchId has already ended")
         }
 
-        val allBetsForMatch = availableBetsService.getAllByMatchId(match.matchId)
+        val allAvailableBetsForMatch = availableBetsService.getAllByMatchId(match.matchId)
+        val allAvailableBetIds = allAvailableBetsForMatch.map { it.availableBetId }
+        val allBetsForMatch = betsService.getBetsByAvailableBetIds(allAvailableBetIds)
 
         for (bet in allBetsForMatch) {
             if (successfulBets.contains(bet.availableBetId)) {
-                val winnings = bet. * bet.ratio
+                val winnings = bet.amount * bet.ratio
 
-                val userAccount = userAccountRepository.findById(bet.usersEntity.id!!)
-                    .getOrElse { throw NoSuchElementException() }
-                userAccount.balanceAmount += winnings
-                userAccountRepository.save(userAccount)
+                val userAccount = usersAccountsService.getComplexUserAccount(bet.userId)
+                userAccount?.let {
+                    usersAccountsService.save(
+                        it.copy(balanceAmount = it.balanceAmount + winnings)
+                    )
+                }
             }
         }
 
         val matchToSave = match.copy(ended = true)
-        matchesRepository.save(matchToSave)
-    }
-
-    @Transactional
-    fun getBetsByMatchId(matchId: Long, pageNumber: Int, pageSize: Int): PagingDto<SimpleAvailableBetsDto> {
-        val result = availableBetsRepository.findAllByMatchMatchId(matchId, PageRequest.of(pageNumber, pageSize))
-        return PagingDto(
-            items = result.content.map { it.toSimpleDto() },
-            total = result.totalElements,
-            pageSize = pageSize,
-            page = pageNumber,
-        )
+        matchesService.save(matchToSave)
     }
 }

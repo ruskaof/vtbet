@@ -1,11 +1,14 @@
 package ru.itmo.vtbet.integration
 
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import ru.itmo.vtbet.model.request.CreateUserRequestDto
+import ru.itmo.vtbet.service.ComplexUsersService
+import ru.itmo.vtbet.service.UsersAccountsService
 import ru.itmo.vtbet.service.UsersService
 import java.math.BigDecimal
 
@@ -14,11 +17,17 @@ import java.math.BigDecimal
 class UsersServiceIntegrationTest : BaseIntegrationTest() {
 
     @Autowired
+    private lateinit var usersAccountsService: UsersAccountsService
+
+    @Autowired
+    private lateinit var complexUsersService: ComplexUsersService
+
+    @Autowired
     private lateinit var usersService: UsersService
 
     @Test
     fun `create and get user`() {
-        val result = usersService.createUser(
+        val result = complexUsersService.createUser(
             CreateUserRequestDto(
                 username = "username",
                 email = "email@email.com",
@@ -26,8 +35,8 @@ class UsersServiceIntegrationTest : BaseIntegrationTest() {
             )
         )
 
-        val userInDb = usersService.getUser(result.id)
-        assertEquals(result.id, userInDb.id)
+        val userInDb = usersService.getUser(result.userId)
+        assertEquals(result.userId, userInDb!!.userId)
         assertEquals("username", userInDb.username)
         assertEquals("email@email.com", userInDb.email)
         assertNull(userInDb.phoneNumber)
@@ -35,7 +44,7 @@ class UsersServiceIntegrationTest : BaseIntegrationTest() {
 
     @Test
     fun `change user balance`() {
-        val user = usersService.createUser(
+        val user = complexUsersService.createUser(
             CreateUserRequestDto(
                 username = "username",
                 email = "email@email.com",
@@ -43,14 +52,14 @@ class UsersServiceIntegrationTest : BaseIntegrationTest() {
             )
         )
 
-        usersService.addMoneyToUser(user.id, BigDecimal(100))
+        complexUsersService.addMoneyToUser(user.userId, BigDecimal(100))
 
-        val userInDb1 = usersService.getUser(user.id)
-        assertEquals(BigDecimal(100).toInt(), userInDb1.balanceAmount.toInt())
+        val userAccountInDb1 = usersAccountsService.getUserAccount(user.userId)
+        assertEquals(BigDecimal(100).toInt(), userAccountInDb1!!.balanceAmount.toInt())
 
-        usersService.subtractMoneyFromUser(user.id, BigDecimal(50))
+        complexUsersService.subtractMoneyFromUser(user.userId, BigDecimal(50))
 
-        val userInDb2 = usersService.getUser(user.id)
-        assertEquals(BigDecimal(50).toInt(), userInDb2.balanceAmount.toInt())
+        val userAccountInDb2 = usersAccountsService.getUserAccount(user.userId)
+        assertEquals(BigDecimal(50).toInt(), userAccountInDb2!!.balanceAmount.toInt())
     }
 }

@@ -7,7 +7,7 @@ import java.math.BigDecimal
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class CreateAvailableBetRequestDto(
-    val typeOfBetId: Long,
+    val groupId: Long,
     @field:PositiveOrZero
-    val ratioNow: BigDecimal,
+    val ratio: BigDecimal,
 )

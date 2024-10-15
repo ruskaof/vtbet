@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.request.AddMoneyRequestDto
 import ru.itmo.vtbet.model.request.CreateUserRequestDto
+import ru.itmo.vtbet.model.request.UpdateUserRequestDto
 import ru.itmo.vtbet.model.response.UserResponse
 import ru.itmo.vtbet.service.ComplexUsersService
 import ru.itmo.vtbet.service.toResponse
@@ -42,7 +43,7 @@ class UsersController(
         @PathVariable("id") userId: Long,
         @RequestBody
         @Valid
-        request: CreateUserRequestDto,
+        request: UpdateUserRequestDto,
     ): UserResponse = complexUsersService.updateUser(userId, request).toResponse()
 
     @PostMapping("users/{id}/balance/add")

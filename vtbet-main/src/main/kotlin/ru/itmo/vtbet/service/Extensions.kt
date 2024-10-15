@@ -2,17 +2,26 @@ package ru.itmo.vtbet.service
 
 import ru.itmo.vtbet.model.dto.*
 import ru.itmo.vtbet.model.entity.*
-import ru.itmo.vtbet.model.response.BetGroupResponse
-import ru.itmo.vtbet.model.response.MatchResponse
-import ru.itmo.vtbet.model.response.SimpleAvailableBetsResponse
-import ru.itmo.vtbet.model.response.SportResponse
-import ru.itmo.vtbet.model.response.UserResponse
+import ru.itmo.vtbet.model.response.*
 
+//FIXME: нужно бы разнести эти расширения по классам
 fun UsersAccountsEntity.toDto() =
     UserAccountDto(
         accountId = accountId!!,
         userId = usersEntity.userId!!,
         balanceAmount = balanceAmount,
+    )
+
+fun UsersAccountsEntity.toComplexDto() =
+    ComplexUserDto(
+        userId = usersEntity.userId!!,
+        accountId = accountId!!,
+        registrationDate = usersEntity.registrationDate,
+        balanceAmount = balanceAmount,
+        username = usersEntity.username,
+        email = usersEntity.email,
+        phoneNumber = usersEntity.phoneNumber,
+        accountVerified = usersEntity.accountVerified,
     )
 
 fun UsersEntity.toDto() =
@@ -27,22 +36,22 @@ fun UsersEntity.toDto() =
 
 fun BetsEntity.toDto() =
     BetDto(
-        betId = this.id!!,
+        betId = this.betId!!,
         ratio = this.ratio,
         amount = this.amount,
-        userId = this.usersEntity.id!!,
+        userId = this.usersEntity.userId!!,
         availableBetId = this.availableBetId,
     )
 
-//fun BetGroup.toResponse(): TypeOfBetResponse = TypeOfBetResponse(
-//    id = id,
-//    description = description
-//)
-
-fun BetGroupDto.toResponse(): BetGroupResponse = BetGroupResponse(
-    id = groupId,
-    typeOfBets = typeOfBets.map(BetGroup::toResponse)
-)
+fun AvailableBetDto.toResponse() =
+    AvailableBetsResponse(
+        id = availableBetId,
+        matchId = matchId,
+        groupId = groupId,
+        //FIXME
+        ratio = ratio.toPlainString(),
+        betsClosed = betsClosed,
+    )
 
 fun MatchesEntity.toDto() = MatchDto(
     matchId = matchId!!,
@@ -67,29 +76,12 @@ fun SportDto.toResponse(): SportResponse =
         name = name,
     )
 
-fun SimpleAvailableBetsDto.toResponse() =
-    SimpleAvailableBetsResponse(
-        id = this.availableBetId,
-        ratio = this.ratio.toPlainString(),
-        matchId = this.matchId,
-        groupId = this.groupId,
-        betsClosed = this.betsClosed,
-    )
-
-//fun UserDto.toResponse() = UserResponse(
-//    id = id,
-//    registrationDate = registrationDate,
-//    balanceAmount = balanceAmount,
-//    username = username,
-//    email = email,
-//    phoneNumber = phoneNumber,
-//)
-
 fun ComplexUserDto.toResponse() =
     UserResponse(
         id = userId,
         registrationDate = registrationDate,
-        balanceAmount = balanceAmount,
+        // FIXME: проверить конвертацию
+        balanceAmount = balanceAmount.toPlainString(),
         username = username,
         email = email,
         phoneNumber = phoneNumber,
@@ -143,13 +135,64 @@ fun ComplexUserDto.toEntity() =
     )
 
 fun AvailableBetsEntity.toDto() =
-    AvailableBetDto(id!!, ratioNow, typeOfBetId, betsClosed, matchId)
-
-fun AvailableBetsEntity.toSimpleDto() =
-    SimpleAvailableBetsDto(
+    AvailableBetDto(
         availableBetId = availableBetId!!,
         ratio = ratio,
+        groupId = betsGroupsEntity.groupId!!,
         betsClosed = betsClosed,
         matchId = matchId,
-        groupId = betsGroupsEntity.groupId!!,
+        )
+
+fun AvailableBetWithBetGroupDto.toEntity() =
+    AvailableBetsEntity(
+        availableBetId = availableBetId,
+        ratio = ratio,
+        betsGroupsEntity = betGroupDto.toEntity(),
+        matchId = matchId,
+        betsClosed = betsClosed,
+    )
+
+fun BetGroupDto.toEntity() =
+    BetsGroupsEntity(
+        groupId = groupId,
+        description = description,
+    )
+
+fun AvailableBetsEntity.toDtoWithBetGroup() =
+    AvailableBetWithBetGroupDto(
+        availableBetId = availableBetId!!,
+        ratio = ratio,
+        betGroupDto = betsGroupsEntity.toDto(),
+        betsClosed = betsClosed,
+        matchId = matchId,
+    )
+
+fun FullAvailableBetWithBetGroupDto.toResponse() =
+    FullTypeOfBetMatchResponse(
+        id = availableBetId,
+        match = match.toResponse(),
+        group = betGroupDto.toResponse(),
+        //FIXME: проверить
+        ratio = ratio.toPlainString(),
+    )
+
+fun BetDto.toResponse() =
+    BetResponse(
+        id = betId,
+        ratio = ratio,
+        amount = amount,
+        userId = userId,
+        availableBetId = availableBetId,
+    )
+
+fun BetsGroupsEntity.toDto() =
+    BetGroupDto(
+        groupId = groupId!!,
+        description = description,
+    )
+
+fun BetGroupDto.toResponse() =
+    BetGroupResponse(
+        id = groupId,
+        description = description,
     )

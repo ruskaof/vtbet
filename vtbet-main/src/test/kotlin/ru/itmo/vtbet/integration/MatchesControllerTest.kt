@@ -8,28 +8,25 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import ru.itmo.vtbet.model.entity.AvailableBetsEntity
 import ru.itmo.vtbet.model.entity.BetsGroupsEntity
 import ru.itmo.vtbet.model.entity.MatchesEntity
 import ru.itmo.vtbet.model.entity.SportsEntity
-import ru.itmo.vtbet.model.entity.AvailableBetsEntity
 import ru.itmo.vtbet.model.request.UpdateMatchRequestDto
+import ru.itmo.vtbet.repository.AvailableBetsRepository
 import ru.itmo.vtbet.repository.BetsGroupsRepository
 import ru.itmo.vtbet.repository.MatchesRepository
 import ru.itmo.vtbet.repository.SportsRepository
-import ru.itmo.vtbet.repository.AvailableBetsRepository
-import ru.itmo.vtbet.repository.TypeOfBetRepository
 
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 class MatchesControllerTest : BaseIntegrationTest() {
+    @Autowired
+    private lateinit var availableBetsRepository: AvailableBetsRepository
+
     @Autowired
     lateinit var mockMvc: MockMvc
 
@@ -41,9 +38,6 @@ class MatchesControllerTest : BaseIntegrationTest() {
 
     @Autowired
     lateinit var matchesRepository: MatchesRepository
-
-    @Autowired
-    lateinit var typeOfBetRepository: TypeOfBetRepository
 
     @Autowired
     lateinit var typeOfBetMatchesRepository: AvailableBetsRepository
@@ -92,21 +86,18 @@ class MatchesControllerTest : BaseIntegrationTest() {
         )
 
         val betGroup = betsGroupsRepository.save(
-            BetsGroupsEntity()
+            BetsGroupsEntity(description = "some description")
         )
 
-        val typeOfBet = typeOfBetRepository.save(
-            TypeOfBetEntity(
-                description = "test type",
-                betGroupEntity = betGroup
-            )
-        )
-
-        val typeOfBetMatch = typeOfBetMatchesRepository.save(
+        val availableBet = availableBetsRepository.save(
             AvailableBetsEntity(
-                ratioNow = 1.0.toBigDecimal(),
-                match = match,
-                typeOfBets = typeOfBet,
+                ratio = 1.0.toBigDecimal(),
+                matchId = match.matchId!!,
+                betsGroupsEntity = BetsGroupsEntity(
+                    groupId = betGroup.groupId!!,
+                    description = betGroup.description,
+                ),
+                betsClosed = false,
             )
         )
 
@@ -114,7 +105,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
         val pageSize = 5
 
         mockMvc.perform(
-            get("/match/${match.matchId}/bets")
+            get("/matches/${match.matchId}/bets")
                 .param("pageNumber", pageNumber.toString())
                 .param("pageSize", pageSize.toString())
         )
@@ -124,11 +115,11 @@ class MatchesControllerTest : BaseIntegrationTest() {
             .andExpect(header().exists("X-Current-Page"))
             .andExpect(header().exists("X-Page-Size"))
 
-            .andExpect(jsonPath("$[0].id").value(typeOfBetMatch.id))
-            .andExpect(jsonPath("$[0].ratio_now").value(typeOfBetMatch.ratioNow))
-            .andExpect(jsonPath("$[0].match_id").value(typeOfBetMatch.match.matchId))
-            .andExpect(jsonPath("$[0].type_of_bet_description").value(typeOfBetMatch.typeOfBets.description))
-            .andExpect(jsonPath("$[0].type_of_bet_id").value(typeOfBetMatch.typeOfBets.id))
+            .andExpect(jsonPath("$[0].id").value(availableBet.availableBetId))
+            .andExpect(jsonPath("$[0].ratio").value(availableBet.ratio))
+            .andExpect(jsonPath("$[0].match_id").value(availableBet.matchId))
+            .andExpect(jsonPath("$[0].group_id").value(availableBet.betsGroupsEntity.groupId))
+            .andExpect(jsonPath("$[0].bets_closed").value(availableBet.betsClosed))
     }
 
     @Test
@@ -147,28 +138,13 @@ class MatchesControllerTest : BaseIntegrationTest() {
         )
 
         val betGroup = betsGroupsRepository.save(
-            BetsGroupsEntity()
-        )
-
-        val typeOfBet = typeOfBetRepository.save(
-            TypeOfBetEntity(
-                description = "test type",
-                betGroupEntity = betGroup
-            )
-        )
-
-        val typeOfBetMatch = typeOfBetMatchesRepository.save(
-            AvailableBetsEntity(
-                ratioNow = 1.0.toBigDecimal(),
-                match = match,
-                typeOfBets = typeOfBet,
-            )
+            BetsGroupsEntity(description = "some description")
         )
 
         val updateMatchRequestDto = UpdateMatchRequestDto(name = "new name")
 
         mockMvc.perform(
-            patch("/match/${match.matchId}")
+            patch("/matches/${match.matchId}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateMatchRequestDto))
         ).andExpect(status().isOk)
@@ -192,27 +168,24 @@ class MatchesControllerTest : BaseIntegrationTest() {
         )
 
         val betGroup = betsGroupsRepository.save(
-            BetsGroupsEntity()
+            BetsGroupsEntity(description = "some description")
         )
 
-        val typeOfBet = typeOfBetRepository.save(
-            TypeOfBetEntity(
-                description = "test type",
-                betGroupEntity = betGroup
-            )
-        )
-
-        typeOfBetMatchesRepository.save(
+        val availableBet = availableBetsRepository.save(
             AvailableBetsEntity(
-                ratioNow = 1.0.toBigDecimal(),
-                match = match,
-                typeOfBets = typeOfBet,
+                ratio = 1.0.toBigDecimal(),
+                matchId = match.matchId!!,
+                betsGroupsEntity = BetsGroupsEntity(
+                    groupId = betGroup.groupId!!,
+                    description = betGroup.description,
+                ),
+                betsClosed = false,
             )
         )
 
         val successfulBets = setOf(1L, 2L, 3L)
         mockMvc.perform(
-            post("/match/${match.matchId}/end")
+            post("/matches/${match.matchId}/end")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(successfulBets))
         )

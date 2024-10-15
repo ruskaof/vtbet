@@ -10,10 +10,18 @@ data class AvailableBetDto(
     val matchId: Long,
 )
 
-data class SimpleAvailableBetsDto(
+data class AvailableBetWithBetGroupDto(
     val availableBetId: Long,
-    val betsClosed: Boolean,
     val ratio: BigDecimal,
-    val groupId: Long,
+    val betGroupDto: BetGroupDto,
+    val betsClosed: Boolean,
     val matchId: Long,
+)
+
+data class FullAvailableBetWithBetGroupDto(
+    val availableBetId: Long,
+    val ratio: BigDecimal,
+    val betsClosed: Boolean,
+    val betGroupDto: BetGroupDto,
+    val match: MatchDto,
 )
