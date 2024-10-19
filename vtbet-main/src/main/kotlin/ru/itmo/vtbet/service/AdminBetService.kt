@@ -2,6 +2,7 @@ package ru.itmo.vtbet.service
 
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import ru.itmo.vtbet.exception.IllegalBetActionException
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.*
 import ru.itmo.vtbet.model.request.CreateAvailableBetRequestDto
@@ -64,6 +65,10 @@ class AdminBetService(
         val match = matchesService.getMatch(matchId)
             ?: throw ResourceNotFoundException("Match with id $matchId not found")
 
+        if (match.ended) {
+            throw IllegalBetActionException("Match with id $matchId is already ended")
+        }
+
         val allAvailableBetsForMatch = availableBetsService.getAllByMatchId(match.matchId)
         val allAvailableBetIds = allAvailableBetsForMatch.map { it.availableBetId }
         val allBetsForMatch = betsService.getBetsByAvailableBetIds(allAvailableBetIds)
@@ -72,12 +77,14 @@ class AdminBetService(
             .filter { it.availableBetId in successfulBets }
             .forEach {
                 val userAccount = usersAccountsService.getComplexUserAccount(it.userId) ?: return@forEach
-                usersAccountsService.save(
+                usersAccountsService.update(
                     userAccount.copy(
                         balanceAmount = (userAccount.balanceAmount + (it.amount * it.ratio)).scaled()
                     )
                 )
             }
+
+        matchesService.endMatch(matchId)
     }
 
     @Transactional

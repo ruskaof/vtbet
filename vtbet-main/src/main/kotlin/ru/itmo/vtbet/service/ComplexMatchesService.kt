@@ -17,8 +17,8 @@ class ComplexMatchesService(
     fun getMatches(pageNumber: Int, pageSize: Int): PagingDto<MatchDto> {
         val result = matchesService.getMatches(PageRequest.of(pageNumber, pageSize))
         return PagingDto(
-            items = result,
-            total = result.size.toLong(),
+            items = result.content,
+            total = result.totalElements,
             pageSize = pageSize,
             page = pageNumber,
         )
@@ -30,8 +30,8 @@ class ComplexMatchesService(
 
         val result = matchesService.getMatches(sportId, PageRequest.of(pageNumber, pageSize))
         return PagingDto(
-            items = result,
-            total = result.size.toLong(),
+            items = result.content,
+            total = result.totalElements,
             pageSize = pageSize,
             page = pageNumber,
         )

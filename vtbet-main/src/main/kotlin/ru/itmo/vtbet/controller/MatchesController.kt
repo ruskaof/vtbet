@@ -69,12 +69,6 @@ class MatchesController(
         @PathVariable id: Long,
     ): Unit = complexMatchesService.delete(id)
 
-    @PutMapping("matches/{id}/end")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun endMatch(
-        @PathVariable id: Long
-    ): Unit = complexMatchesService.endMatch(id)
-
     @PostMapping("/matches")
     @ResponseStatus(HttpStatus.CREATED)
     fun createMatch(

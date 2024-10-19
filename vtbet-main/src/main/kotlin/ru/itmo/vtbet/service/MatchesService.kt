@@ -1,5 +1,6 @@
 package ru.itmo.vtbet.service
 
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -13,14 +14,14 @@ import ru.itmo.vtbet.repository.MatchesRepository
 class MatchesService(
     private val matchesRepository: MatchesRepository,
 ) {
-    fun getMatches(pageable: Pageable): List<MatchDto> {
+    fun getMatches(pageable: Pageable): Page<MatchDto> {
         val result = matchesRepository.findAll(pageable)
-        return result.content.map(MatchesEntity::toDto)
+        return result.map { it.toDto() }
     }
 
-    fun getMatches(sportId: Long, pageable: Pageable): List<MatchDto> {
+    fun getMatches(sportId: Long, pageable: Pageable): Page<MatchDto> {
         val result = matchesRepository.findAllBySportSportId(sportId, pageable)
-        return result.content.map(MatchesEntity::toDto)
+        return result.map { it.toDto() }
     }
 
     @Transactional
