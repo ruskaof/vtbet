@@ -50,7 +50,11 @@ class ComplexMatchesService(
     }
 
     @Transactional
-    fun delete(matchId: Long) = matchesService.delete(matchId)
+    fun delete(matchId: Long) {
+        matchesService.getMatch(matchId)
+            ?: throw ResourceNotFoundException("Match with id $matchId not found")
+        matchesService.delete(matchId)
+    }
 
     @Transactional
     fun createMatch(createMatchRequestDto: CreateMatchRequestDto): MatchDto {

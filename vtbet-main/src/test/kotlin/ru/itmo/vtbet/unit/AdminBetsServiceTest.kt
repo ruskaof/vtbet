@@ -1,116 +1,154 @@
 package ru.itmo.vtbet.unit
 
-import org.mockito.Mockito.mock
-import ru.itmo.vtbet.repository.BetsGroupsRepository
-import ru.itmo.vtbet.repository.MatchesRepository
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito
+import org.mockito.Mockito.*
+import ru.itmo.vtbet.model.dto.*
+import ru.itmo.vtbet.model.request.CreateAvailableBetRequestDto
+import ru.itmo.vtbet.model.request.UpdateAvailableBetRequestDto
 import ru.itmo.vtbet.service.*
+import java.math.BigDecimal
+import java.time.Instant
 
 class AdminBetsServiceTest {
-    private val betsGroupsRepository = mock(BetsGroupsRepository::class.java)
-    private val availableBetsRepository = mock(AvailableBetsServiceTest::class.java)
-    private val matchesRepository = mock(MatchesRepository::class.java)
-    private val matchesService = mock(MatchesService::class.java)
-    private val betsService = mock(BetsService::class.java)
+    private val matchesService: MatchesService = mock()
+    private val betsService: BetsService = mock()
+    private val availableBetsService: AvailableBetsService = mock()
+    private val complexUsersService: ComplexUsersService = mock()
+    private val adminBetService = AdminBetService(
+        matchesService = matchesService,
+        betsService = betsService,
+        availableBetsService = availableBetsService,
+        complexUsersService = complexUsersService
+    )
 
-//    private val adminBetService =
-//        AdminBetService(
-//            matchesService = matchesService,
-//            betsService = betsService,
-//            availableBetsService = availableBetsRepository,
-//            )
+    private fun <T> any(type: Class<T>): T = Mockito.any(type)
 
-//    @Test
-//    fun createBetGroup() {
-//        val betGroupId = 1L
-//        val betsGroupsEntity = BetsGroupsEntity(betGroupId, "description")
-//
-//        val createBetsGroupsRequestDto =
-//            CreateBetsGroupsRequestDto(listOf(CreateGroupRequestDto("description1"), CreateGroupRequestDto("description2")))
-//
-//        val expectedBetGroupDto = BetGroupDto(
-//            groupId = betGroupId,
-//            description = "description",
-//        )
-//
-//        Mockito.`when`(betsGroupsRepository.save(any(BetsGroupsEntity::class.java))).thenReturn(betsGroupsEntity)
-//        Mockito.`when`(typeOfBetRepository.save(any(TypeOfBetEntity::class.java))).thenReturn(
-//            typeOfBets[0],
-//            typeOfBets[1],
-//        )
-//
-//        val betGroupDto = adminBetService.createAvailableBet(createBetsGroupsRequestDto)
-//
-//        assertEquals(expectedBetGroupDto, betGroupDto)
-//
-//        val inOrder = inOrder(betsGroupsRepository, typeOfBetRepository)
-//        inOrder.verify(betsGroupsRepository).save(any(BetsGroupsEntity::class.java))
-//        inOrder.verify(typeOfBetRepository, times(2)).save(any(TypeOfBetEntity::class.java))
-//    }
-//
-//    @Test
-//    fun `updateBetMatch updates successful when valid id`() {
-//        val id = 2L
-//        val ratio = BigDecimal(2)
-//        val sportId = 1L
-//        val sportName = "football"
-//        val matchId = 1L
-//        val matchName = "El Clasico"
-//
-//        val matchEntity = MatchesEntity(matchId, matchName, SportsEntity(sportId, sportName), false)
-//        val typeOfBet = TypeOfBetEntity(
-//            id = 1,
-//            description = "",
-//            betGroupEntity = BetsGroupsEntity(
-//                betGroupId = 1,
-//            ),
-//        )
-//        val newRatio = 1.1
-//        val request = UpdateAvailableBetRequestDto(newRatio)
-//        val oldTypeOfBetMatch =
-//            AvailableBetsEntity(id = id, ratioNow = ratio, match = matchEntity, typeOfBets = typeOfBet)
-//
-//        Mockito.`when`(availableBetsRepository.findById(id)).thenReturn(Optional.of(oldTypeOfBetMatch))
-//        Mockito.`when`(availableBetsRepository.save(any()))
-//            .thenReturn(oldTypeOfBetMatch.copy(ratioNow = newRatio.toBigDecimal()))
-//
-//        adminBetService.updateAvailableBet(id, request)
-//
-//        verify(availableBetsRepository).findById(id)
-//        verify(availableBetsRepository).save(any())
-//    }
-//
-//    @Test
-//    fun `createTypeOfBetMatch creates bet match successfully`() {
-//        val id = 2L
-//        val ratio = BigDecimal(2)
-//        val sportId = 1L
-//        val sportName = "football"
-//        val matchId = 1L
-//        val matchName = "El Clasico"
-//
-//        val matchEntity = MatchesEntity(matchId, matchName, SportsEntity(sportId, sportName), false)
-//        val typeOfBet = TypeOfBetEntity(
-//            id = 1,
-//            description = "",
-//            betGroupEntity = BetsGroupsEntity(
-//                betGroupId = 1,
-//            ),
-//        )
-//        val typeOfBetMatch = AvailableBetsEntity(id = id, ratioNow = ratio, match = matchEntity, typeOfBets = typeOfBet)
-//        val typeOfBetId = 1L
-//        val createRequest = CreateAvailableBetRequestDto(typeOfBetId, 1.1.toBigDecimal())
-//
-//        Mockito.`when`(typeOfBetRepository.findById(typeOfBetId)).thenReturn(Optional.of(typeOfBet))
-//        Mockito.`when`(matchesRepository.findById(matchId)).thenReturn(Optional.of(matchEntity))
-//        Mockito.`when`(availableBetsRepository.save(any())).thenReturn(typeOfBetMatch)
-//
-//        val createdTypeOfBetMatch = adminBetService.createAvailableBet(createRequest, matchId)
-//
-//        verify(typeOfBetRepository).findById(typeOfBetId)
-//        verify(matchesRepository).findById(matchId)
-//        verify(availableBetsRepository).save(any())
-//
-//        assertEquals(createdTypeOfBetMatch.id, typeOfBetMatch.id)
-//        assertEquals(createdTypeOfBetMatch.ratioNow, typeOfBetMatch.ratioNow)
-//    }
+    @Test
+    fun createAvailableBet() {
+        `when`(betsService.getBetGroup(1)).thenReturn(BetGroupDto(1, "test"))
+        `when`(matchesService.getMatch(1)).thenReturn(MatchDto(1, "test", SportDto(1, "test"), false))
+        `when`(availableBetsService.save(this.any(AvailableBetWithBetGroupDto::class.java))).thenReturn(
+            AvailableBetWithBetGroupDto(1, BigDecimal("3.33"), BetGroupDto(1, "test"), false, 1)
+        )
+
+        val result = adminBetService.createAvailableBet(1, CreateAvailableBetRequestDto(1, BigDecimal(3.333)))
+        verify(availableBetsService).save(
+            AvailableBetWithBetGroupDto(
+                0,
+                BigDecimal("3.33"),
+                BetGroupDto(1, "test"),
+                false,
+                1
+            )
+        )
+        Assertions.assertEquals(
+            FullAvailableBetWithBetGroupDto(
+                1,
+                BigDecimal("3.33"),
+                false,
+                BetGroupDto(1, "test"),
+                MatchDto(1, "test", SportDto(1, "test"), false),
+            ), result
+        )
+    }
+
+    @Test
+    fun updateAvailableBet() {
+        `when`(availableBetsService.getAvailableBetWithGroup(1)).thenReturn(
+            AvailableBetWithBetGroupDto(
+                1,
+                BigDecimal("3.33"),
+                BetGroupDto(1, "test"),
+                false,
+                1
+            )
+        )
+
+        adminBetService.updateAvailableBet(1, UpdateAvailableBetRequestDto(BigDecimal("1.555")))
+
+        verify(availableBetsService).update(
+            AvailableBetWithBetGroupDto(
+                1,
+                BigDecimal("1.55"),
+                BetGroupDto(1, "test"),
+                false,
+                1
+            )
+        )
+    }
+
+    @Test
+    fun countResultsForMatch() {
+        `when`(matchesService.getMatch(1)).thenReturn(MatchDto(1, "test", SportDto(1, "test"), false))
+
+        `when`(availableBetsService.getAllByMatchId(1)).thenReturn(
+            listOf(
+                AvailableBetDto(
+                    1,
+                    BigDecimal("1.5"),
+                    1,
+                    false,
+                    1
+                )
+            )
+        )
+        `when`(betsService.getBetsByAvailableBetIds(listOf(1))).thenReturn(
+            listOf(
+                BetDto(
+                    1,
+                    BigDecimal("1.5"),
+                    BigDecimal("300"),
+                    1,
+                    1
+                )
+            )
+        )
+
+        adminBetService.countResultsForMatch(1, setOf(1))
+
+        verify(complexUsersService).addMoneyToUser(1, BigDecimal("450.0"))
+        verify(matchesService).endMatch(1)
+    }
+
+    @Test
+    fun getBetGroups() {
+        `when`(betsService.getBetGroups(1, 1)).thenReturn(PagingDto(listOf(BetGroupDto(1, "test")), 1, 0, 1))
+        val result = adminBetService.getBetGroups(1, 1)
+
+        Assertions.assertEquals(PagingDto(listOf(BetGroupDto(1, "test")), 1, 0, 1), result)
+    }
+
+    @Test
+    fun getAvailableBets() {
+        `when`(availableBetsService.getAvailableBets(1, 1)).thenReturn(PagingDto(listOf(AvailableBetDto(1, BigDecimal("1.5"), 1, false, 1)), 1, 0, 1))
+        val result = adminBetService.getAvailableBets(1, 1)
+
+        Assertions.assertEquals(PagingDto(listOf(AvailableBetDto(1, BigDecimal("1.5"), 1, false, 1)), 1, 0, 1), result)
+    }
+
+    @Test
+    fun getAvailableBet() {
+        `when`(availableBetsService.getAvailableBet(1)).thenReturn(AvailableBetDto(1, BigDecimal("1.5"), 1, false, 1))
+        val result = adminBetService.getAvailableBet(1)
+
+        Assertions.assertEquals(AvailableBetDto(1, BigDecimal("1.5"), 1, false, 1), result)
+    }
+
+    @Test
+    fun getBetGroup() {
+        `when`(betsService.getBetGroup(1)).thenReturn(BetGroupDto(1, "test"))
+        val result = adminBetService.getBetGroup(1)
+
+        Assertions.assertEquals(BetGroupDto(1, "test"), result)
+    }
+
+    @Test
+    fun closeBetsForMatch() {
+        `when`(availableBetsService.getAvailableBetWithGroup(1)).thenReturn(AvailableBetWithBetGroupDto(1, BigDecimal("1.5"), BetGroupDto(1, "test"), false, 1))
+        adminBetService.closeBetsForMatch(1)
+
+        verify(availableBetsService).update(AvailableBetWithBetGroupDto(1, BigDecimal("1.5"), BetGroupDto(1, "test"), true, 1))
+    }
 }

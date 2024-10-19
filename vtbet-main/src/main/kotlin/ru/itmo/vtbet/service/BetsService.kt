@@ -4,6 +4,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.*
 import ru.itmo.vtbet.model.entity.BetsEntity
 import ru.itmo.vtbet.model.entity.BetsGroupsEntity
@@ -11,6 +12,7 @@ import ru.itmo.vtbet.model.request.CreateBetsGroupsRequestDto
 import ru.itmo.vtbet.repository.BetsGroupsRepository
 import ru.itmo.vtbet.repository.BetsRepository
 import java.math.BigDecimal
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class BetsService(
@@ -57,6 +59,8 @@ class BetsService(
     }
 
     fun delete(betGroupId: Long) {
+        betsGroupsRepository.findById(betGroupId).getOrNull()
+            ?: throw ResourceNotFoundException("Bet group with id $betGroupId not found")
         betsGroupsRepository.deleteById(betGroupId)
     }
 

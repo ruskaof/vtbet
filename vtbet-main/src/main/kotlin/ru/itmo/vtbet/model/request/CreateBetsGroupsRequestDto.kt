@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.Size
+import java.math.BigDecimal
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class CreateBetsGroupsRequestDto(
@@ -19,5 +20,5 @@ data class CreateGroupRequestDto(
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class UpdateAvailableBetRequestDto(
     @Min(value = 0)
-    val ratio: Double,
+    val ratio: BigDecimal,
 )

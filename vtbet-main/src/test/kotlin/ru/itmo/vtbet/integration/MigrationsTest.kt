@@ -15,12 +15,11 @@ class MigrationsTest : BaseIntegrationTest() {
     fun `migrations create tables successfully`() {
         assertAll(
             { assertTrue(tableExists("users")) },
-            { assertTrue(tableExists("user_account")) },
-            { assertTrue(tableExists("sport")) },
+            { assertTrue(tableExists("users_accounts")) },
+            { assertTrue(tableExists("sports")) },
             { assertTrue(tableExists("matches")) },
-            { assertTrue(tableExists("bet_group")) },
-            { assertTrue(tableExists("type_of_bet")) },
-            { assertTrue(tableExists("type_of_bet_match")) },
+            { assertTrue(tableExists("bets_groups")) },
+            { assertTrue(tableExists("available_bets")) },
             { assertTrue(tableExists("bets")) },
         )
     }

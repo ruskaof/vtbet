@@ -7,7 +7,6 @@ import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.*
 import ru.itmo.vtbet.model.request.CreateAvailableBetRequestDto
 import ru.itmo.vtbet.model.request.UpdateAvailableBetRequestDto
-import java.math.RoundingMode
 
 /**
  * Тут логика работы с созданием ставок
@@ -19,14 +18,14 @@ class AdminBetService(
     private val matchesService: MatchesService,
     private val betsService: BetsService,
     private val availableBetsService: AvailableBetsService,
-    private val usersAccountsService: UsersAccountsService,
+    private val complexUsersService: ComplexUsersService,
 ) {
     @Transactional
     fun updateAvailableBet(betId: Long, updateAvailableBetRequestDto: UpdateAvailableBetRequestDto): AvailableBetDto {
         val bet = availableBetsService.getAvailableBetWithGroup(betId)
             ?: throw ResourceNotFoundException("Bet not found")
         return availableBetsService.update(
-            bet.copy(ratio = updateAvailableBetRequestDto.ratio.toBigDecimal())
+            bet.copy(ratio = updateAvailableBetRequestDto.ratio.scaled())
         )
     }
 
@@ -76,12 +75,7 @@ class AdminBetService(
         allBetsForMatch.asSequence()
             .filter { it.availableBetId in successfulBets }
             .forEach {
-                val userAccount = usersAccountsService.getComplexUserAccount(it.userId) ?: return@forEach
-                usersAccountsService.update(
-                    userAccount.copy(
-                        balanceAmount = (userAccount.balanceAmount + (it.amount * it.ratio)).scaled()
-                    )
-                )
+                complexUsersService.addMoneyToUser(it.userId, it.amount * it.ratio)
             }
 
         matchesService.endMatch(matchId)

@@ -11,6 +11,7 @@ import ru.itmo.vtbet.service.ComplexUsersService
 import ru.itmo.vtbet.service.UsersAccountsService
 import ru.itmo.vtbet.service.UsersService
 import java.math.BigDecimal
+import java.util.*
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -27,9 +28,10 @@ class UsersServiceIntegrationTest : BaseIntegrationTest() {
 
     @Test
     fun `create and get user`() {
+        val username = UUID.randomUUID().toString()
         val result = complexUsersService.createUser(
             CreateUserRequestDto(
-                username = "username",
+                username = username,
                 email = "email@email.com",
                 phoneNumber = null,
             )
@@ -37,7 +39,7 @@ class UsersServiceIntegrationTest : BaseIntegrationTest() {
 
         val userInDb = usersService.getUser(result.userId)
         assertEquals(result.userId, userInDb!!.userId)
-        assertEquals("username", userInDb.username)
+        assertEquals(username, userInDb.username)
         assertEquals("email@email.com", userInDb.email)
         assertNull(userInDb.phoneNumber)
     }

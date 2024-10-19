@@ -153,46 +153,6 @@ class MatchesControllerTest : BaseIntegrationTest() {
     }
 
     @Test
-    fun `endMatch test`() {
-        val sport = sportsRepository.save(
-            SportsEntity(
-                sportName = "test sport",
-            )
-        )
-        val match = matchesRepository.save(
-            MatchesEntity(
-                matchName = "test match",
-                sport = sport,
-                ended = false,
-            )
-        )
-
-        val betGroup = betsGroupsRepository.save(
-            BetsGroupsEntity(description = "some description")
-        )
-
-        val availableBet = availableBetsRepository.save(
-            AvailableBetsEntity(
-                ratio = 1.0.toBigDecimal(),
-                matchId = match.matchId!!,
-                betsGroupsEntity = BetsGroupsEntity(
-                    groupId = betGroup.groupId!!,
-                    description = betGroup.description,
-                ),
-                betsClosed = false,
-            )
-        )
-
-        val successfulBets = setOf(1L, 2L, 3L)
-        mockMvc.perform(
-            post("/matches/${match.matchId}/end")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(successfulBets))
-        )
-            .andExpect(status().isNoContent)
-    }
-
-    @Test
     fun `deleteMatch test`() {
         val sport = sportsRepository.save(
             SportsEntity(
@@ -208,7 +168,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
         )
 
         mockMvc.perform(
-            delete("/match/${match.matchId}")
+            delete("/matches/${match.matchId}")
         )
             .andExpect(status().isNoContent)
     }

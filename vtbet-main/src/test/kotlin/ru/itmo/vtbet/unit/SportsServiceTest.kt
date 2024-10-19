@@ -1,8 +1,8 @@
 package ru.itmo.vtbet.unit
 
 
-import org.junit.Test
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 import ru.itmo.vtbet.repository.SportsRepository
 import org.mockito.Mockito.*
 import org.springframework.data.domain.PageImpl
@@ -11,6 +11,7 @@ import ru.itmo.vtbet.model.dto.PagingDto
 import ru.itmo.vtbet.model.dto.SportDto
 import ru.itmo.vtbet.model.entity.SportsEntity
 import ru.itmo.vtbet.model.request.CreateSportRequestDto
+import ru.itmo.vtbet.model.request.UpdateSportRequestDto
 import ru.itmo.vtbet.service.SportsService
 import java.util.*
 
@@ -84,4 +85,32 @@ class SportsServiceTest {
         )
     }
 
+    @Test
+    fun `delete sport`() {
+        val sportId = 1L
+
+        `when`(sportsRepository.existsById(sportId)).thenReturn(true)
+
+        sportService.deleteSport(sportId)
+
+        verify(sportsRepository).deleteById(sportId)
+    }
+
+    @Test
+    fun `update sport`() {
+        val sportId = 1L
+        val sportName = "football"
+        val request = UpdateSportRequestDto(
+            name = "football",
+        )
+
+        `when`(sportsRepository.findById(sportId)).thenReturn(Optional.of(SportsEntity(sportId, sportName)))
+        `when`(sportsRepository.save(any())).thenReturn(SportsEntity(sportId, sportName))
+
+        sportService.updateSport(sportId, request)
+
+        verify(sportsRepository).save(
+            SportsEntity(sportId, "football")
+        )
+    }
 }

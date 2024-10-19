@@ -61,7 +61,7 @@ class MatchesServiceTest {
                 true
             )
         )
-        Assertions.assertEquals(expectedResult, result)
+        Assertions.assertEquals(expectedResult, result.content)
     }
 
     @Test
@@ -89,7 +89,7 @@ class MatchesServiceTest {
                 true
             )
         )
-        Assertions.assertEquals(expectedResult, result)
+        Assertions.assertEquals(expectedResult, result.content)
     }
 
     @Test
