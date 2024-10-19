@@ -2,6 +2,7 @@ package ru.itmo.vtbet.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.itmo.vtbet.exception.DuplicateException
 import ru.itmo.vtbet.exception.IllegalBetActionException
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.BetDto
@@ -44,8 +45,7 @@ class ComplexUsersService(
         request: CreateUserRequestDto,
     ): ComplexUserDto {
         if (usersService.getByUserName(request.username) != null) {
-            // TODO: throw custom our own exception
-            throw IllegalArgumentException("Username already exists")
+            throw DuplicateException("Username already exists")
         }
         val user = usersService.save(
             UserDto(
@@ -93,13 +93,15 @@ class ComplexUsersService(
     }
 
     @Transactional
-    fun updateUser(userId: Long, request: UpdateUserRequestDto): UserDto {
+    fun updateUser(userId: Long, request: UpdateUserRequestDto): ComplexUserDto {
         var userToUpdate = usersService.getUser(userId)
             ?: throw ResourceNotFoundException("User with userId $userId not found")
+        val userAccount = usersAccountsService.getUserAccount(userId)
+            ?: throw ResourceNotFoundException("User account with userId $userId not found")
 
         request.username?.let {
-            if (usersService.getByUserName(it) != null) {
-                throw IllegalArgumentException("Username already exists")
+            if (usersService.getByUserName(it) != null && userToUpdate.username != it) {
+                throw DuplicateException("Username already exists")
             }
             userToUpdate = userToUpdate.copy(username = it)
         }
@@ -108,19 +110,19 @@ class ComplexUsersService(
         request.isVerified?.let { userToUpdate = userToUpdate.copy(accountVerified = it) }
 
         usersService.update(userToUpdate)
-        return userToUpdate
+
+        return ComplexUserDto(userToUpdate, userAccount)
     }
 
     @Transactional
-    fun addMoneyToUser(userId: Long, amount: BigDecimal) {
+    fun addMoneyToUser(userId: Long, amount: BigDecimal): ComplexUserDto {
         val userAccount = getUser(userId)
-            ?: throw ResourceNotFoundException("User with userId $userId not found")
+            ?: throw ResourceNotFoundException("User account with userId $userId not found")
+        val updatedAccount = userAccount.copy(balanceAmount = userAccount.balanceAmount.add(amount).setScale(2))
 
-        usersAccountsService.update(
-            userAccount.copy(
-                balanceAmount = userAccount.balanceAmount.add(amount)
-            )
-        )
+        usersAccountsService.update(updatedAccount)
+
+        return updatedAccount
     }
 
     @Transactional

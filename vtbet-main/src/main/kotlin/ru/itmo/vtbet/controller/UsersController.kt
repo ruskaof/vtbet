@@ -52,5 +52,5 @@ class UsersController(
         @RequestBody
         @Valid
         request: AddMoneyRequestDto,
-    ): Unit = complexUsersService.addMoneyToUser(userId, request.amount)
+    ): UserResponse = complexUsersService.addMoneyToUser(userId, request.amount).toResponse()
 }

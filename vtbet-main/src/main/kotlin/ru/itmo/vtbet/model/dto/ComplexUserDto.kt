@@ -12,4 +12,16 @@ data class ComplexUserDto(
     val email: String?,
     val phoneNumber: String?,
     val accountVerified: Boolean,
-)
+) {
+
+    constructor(userDto: UserDto, userAccountDto: UserAccountDto) : this(
+        userId = userDto.userId,
+        accountId = userAccountDto.accountId,
+        registrationDate = userDto.registrationDate,
+        balanceAmount = userAccountDto.balanceAmount,
+        username = userDto.username,
+        email = userDto.email,
+        phoneNumber = userDto.phoneNumber,
+        accountVerified = userDto.accountVerified,
+    )
+}

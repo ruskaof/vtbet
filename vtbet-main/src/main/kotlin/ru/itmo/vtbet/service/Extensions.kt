@@ -80,8 +80,7 @@ fun ComplexUserDto.toResponse() =
     UserResponse(
         id = userId,
         registrationDate = registrationDate,
-        // FIXME: проверить конвертацию
-        balanceAmount = balanceAmount.toPlainString(),
+        balanceAmount = balanceAmount,
         username = username,
         email = email,
         phoneNumber = phoneNumber,
@@ -107,17 +106,6 @@ fun UserDto.toEntity() =
         phoneNumber = phoneNumber,
         accountVerified = accountVerified,
         registrationDate = registrationDate,
-    )
-
-fun UserDto.toResponse() =
-    UserResponse(
-        id = userId,
-        username = username,
-        email = email,
-        phoneNumber = phoneNumber,
-        accountVerified = accountVerified,
-        registrationDate = registrationDate,
-        balanceAmount = null,
     )
 
 fun ComplexUserDto.toEntity() =

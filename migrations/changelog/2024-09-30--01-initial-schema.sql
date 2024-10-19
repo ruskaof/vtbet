@@ -4,7 +4,7 @@
 CREATE TABLE IF NOT EXISTS users
 (
     user_id BIGSERIAL PRIMARY KEY,
-    username VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255),
     phone_number VARCHAR(255),
     account_verified BOOLEAN NOT NULL DEFAULT FALSE,
@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS users
 CREATE TABLE IF NOT EXISTS users_accounts
 (
     account_id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users (id) ON DELETE CASCADE NOT NULL,
-    balance_amount DECIMAL(100,2) NOT NULL DEFAULT 0,
+    user_id BIGINT REFERENCES users (user_id) ON DELETE CASCADE NOT NULL UNIQUE,
+    balance_amount DECIMAL(100,2) NOT NULL DEFAULT 0
 );
 
 --changeset svytoq:create_sport_table
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS matches
 (
     match_id  BIGSERIAL PRIMARY KEY,
     match_name VARCHAR(255) NOT NULL,
-    sport_id BIGINT NOT NULL REFERENCES sport (sport_id) ON DELETE CASCADE,
+    sport_id BIGINT NOT NULL REFERENCES sports (sport_id) ON DELETE CASCADE,
     ended BOOLEAN NOT NULL DEFAULT FALSE
 );
 
@@ -62,6 +62,6 @@ CREATE TABLE IF NOT EXISTS bets
     bet_id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users (user_id) ON DELETE CASCADE,
     amount DECIMAL(100,2) NOT NULL,
-    ratio DECIMAL(100,2) NOT NULL
-    available_bet_id BIGINT NOT NULL REFERENCES available_bets (available_bet_id) ON DELETE CASCADE,
+    ratio DECIMAL(100,2) NOT NULL,
+    available_bet_id BIGINT NOT NULL REFERENCES available_bets (available_bet_id) ON DELETE CASCADE
 );

@@ -26,7 +26,6 @@ class SportsController(
 ) {
     @GetMapping("/sports")
     fun getSports(
-        // TODO: а он вроде говорил, если не указаны параметры, то мы должны все отдавать, нет?
         @PositiveOrZero
         @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
