@@ -8,12 +8,12 @@ spring:
       hibernate:
         show_sql: true
 
-  datasource:
-    username: vtbet
-    password: vtbet
-    url: jdbc:postgresql://localhost:5432/vtbet
+datasource:
+  username: ${DB_USERNAME}
+  password: ${DB_PASSWORD}
+  url: ${DB_URL}
 
 server:
-  port: 8083
+  port: 8080
   error:
     include-message: always
