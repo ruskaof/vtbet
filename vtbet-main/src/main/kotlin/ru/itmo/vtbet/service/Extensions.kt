@@ -4,7 +4,6 @@ import ru.itmo.vtbet.model.dto.*
 import ru.itmo.vtbet.model.entity.*
 import ru.itmo.vtbet.model.response.*
 
-//FIXME: нужно бы разнести эти расширения по классам
 fun UsersAccountsEntity.toDto() =
     UserAccountDto(
         accountId = accountId!!,
@@ -48,8 +47,7 @@ fun AvailableBetDto.toResponse() =
         id = availableBetId,
         matchId = matchId,
         groupId = groupId,
-        //FIXME
-        ratio = ratio.toPlainString(),
+        ratio = ratio,
         betsClosed = betsClosed,
     )
 
@@ -160,8 +158,7 @@ fun FullAvailableBetWithBetGroupDto.toResponse() =
         id = availableBetId,
         match = match.toResponse(),
         group = betGroupDto.toResponse(),
-        //FIXME: проверить
-        ratio = ratio.toPlainString(),
+        ratio = ratio,
     )
 
 fun BetDto.toResponse() =
@@ -183,4 +180,13 @@ fun BetGroupDto.toResponse() =
     BetGroupResponse(
         id = groupId,
         description = description,
+    )
+
+fun AvailableBetWithBetGroupDto.toAvailableBetDto() =
+    AvailableBetDto(
+        availableBetId = availableBetId,
+        ratio = ratio,
+        groupId = betGroupDto.groupId,
+        betsClosed = betsClosed,
+        matchId = matchId
     )

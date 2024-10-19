@@ -11,6 +11,8 @@ import ru.itmo.vtbet.model.dto.MatchDto
 import ru.itmo.vtbet.model.dto.SportDto
 import ru.itmo.vtbet.model.request.CreateMatchRequestDto
 import ru.itmo.vtbet.model.request.CreateSportRequestDto
+import ru.itmo.vtbet.model.request.UpdateMatchRequestDto
+import ru.itmo.vtbet.model.request.UpdateSportRequestDto
 import ru.itmo.vtbet.model.response.MatchResponse
 import ru.itmo.vtbet.model.response.SportResponse
 import ru.itmo.vtbet.service.ComplexMatchesService
@@ -46,6 +48,11 @@ class SportsController(
     ): SportResponse =
         sportsService.createSport(createSportRequestDto).toResponse()
 
+    @DeleteMapping("/sports/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteSport(@PathVariable("id") sportId: Long): Unit =
+        sportsService.deleteSport(sportId)
+
     @GetMapping("/sports/{id}/matches")
     fun getMatches(
         @PathVariable("id") sportId: Long,
@@ -61,12 +68,9 @@ class SportsController(
         )
     }
 
-    @PostMapping("/sports/{id}/matches")
-    @ResponseStatus(HttpStatus.CREATED)
-    fun createMatch(
-        // TODO: path variable другой, чтобы в Swagger не светить реальные названия
+    @PutMapping("/sports/{id}")
+    fun updateSport(
         @PathVariable("id") sportId: Long,
-        @RequestBody @Valid createMatchRequestDto: CreateMatchRequestDto,
-    ): MatchResponse =
-        complexMatchesService.createMatch(createMatchRequestDto, sportId = sportId).toResponse()
+        @RequestBody @Valid updateMatchRequestDto: UpdateSportRequestDto,
+    ): SportResponse = sportsService.updateSport(sportId, updateMatchRequestDto).toResponse()
 }

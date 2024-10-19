@@ -22,13 +22,13 @@ class AvailableBetsService(
     fun update(bet: AvailableBetWithBetGroupDto) =
         availableBetsRepository.saveAndFlush(bet.toEntity()).toDto()
 
-    fun getAllByMatchId(matchId: Long) =
+    fun getAllByMatchId(matchId: Long): List<AvailableBetDto> =
         availableBetsRepository.findAllByMatchId(matchId).map { it.toDto() }
 
-    fun getAvailableBet(availableBetId: Long) =
+    fun getAvailableBet(availableBetId: Long): AvailableBetDto? =
         availableBetsRepository.findByIdOrNull(availableBetId)?.toDto()
 
-    fun getAvailableBetWithGroup(availableBetId: Long) =
+    fun getAvailableBetWithGroup(availableBetId: Long): AvailableBetWithBetGroupDto? =
         availableBetsRepository.findByIdOrNull(availableBetId)?.toDtoWithBetGroup()
 
     @Transactional
@@ -40,5 +40,19 @@ class AvailableBetsService(
             pageSize = pageSize,
             page = pageNumber,
         )
+    }
+
+    fun getAvailableBets(pageNumber: Int, pageSize: Int): PagingDto<AvailableBetDto> {
+        val result = availableBetsRepository.findAll(PageRequest.of(pageNumber, pageSize))
+        return PagingDto(
+            items = result.content.map { it.toDto() },
+            total = result.totalElements,
+            pageSize = pageSize,
+            page = pageNumber,
+        )
+    }
+
+    fun delete(availableBetId: Long) {
+        availableBetsRepository.deleteById(availableBetId)
     }
 }

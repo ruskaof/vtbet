@@ -7,11 +7,13 @@ import ru.itmo.vtbet.exception.IllegalBetActionException
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.BetDto
 import ru.itmo.vtbet.model.dto.ComplexUserDto
+import ru.itmo.vtbet.model.dto.PagingDto
 import ru.itmo.vtbet.model.dto.UserDto
 import ru.itmo.vtbet.model.request.CreateUserRequestDto
 import ru.itmo.vtbet.model.request.MakeBetRequestDto
 import ru.itmo.vtbet.model.request.UpdateUserRequestDto
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.Instant
 import java.time.ZoneOffset
 
@@ -118,7 +120,9 @@ class ComplexUsersService(
     fun addMoneyToUser(userId: Long, amount: BigDecimal): ComplexUserDto {
         val userAccount = getUser(userId)
             ?: throw ResourceNotFoundException("User account with userId $userId not found")
-        val updatedAccount = userAccount.copy(balanceAmount = userAccount.balanceAmount.add(amount).setScale(2))
+        val updatedAccount = userAccount.copy(
+            balanceAmount = userAccount.balanceAmount.add(amount).scaled(),
+        )
 
         usersAccountsService.update(updatedAccount)
 
@@ -148,7 +152,7 @@ class ComplexUsersService(
             throw IllegalBetActionException("User $userId doesn't have enough money to make bet")
         }
 
-        val availableBet = availableBetsService.getAvailableBet(makeBetRequestDto.availableBetId)
+        val availableBet = availableBetsService.getAvailableBetWithGroup(makeBetRequestDto.availableBetId)
             ?: throw ResourceNotFoundException("No available bet found with ID: ${makeBetRequestDto.availableBetId}")
         if (availableBet.betsClosed) {
             throw IllegalBetActionException(
@@ -162,11 +166,21 @@ class ComplexUsersService(
             throw IllegalBetActionException("Match has been already finished")
         }
 
-        if (makeBetRequestDto.ratio != availableBet.ratio) {
+        if (makeBetRequestDto.ratio.scaled() != availableBet.ratio.scaled()) {
             throw IllegalBetActionException("Wrong ratio: ratio now is ${availableBet.ratio}")
         }
-        val bet = betsService.createBet(user, availableBet, makeBetRequestDto.ratio, makeBetRequestDto.amount)
+        val bet = betsService.createBet(user, availableBet.toAvailableBetDto(), makeBetRequestDto.ratio.scaled(), makeBetRequestDto.amount)
         subtractMoneyFromUser(userId, makeBetRequestDto.amount)
+
+        availableBetsService.update(availableBet.copy(ratio = updateRatio(availableBet.ratio)))
+
         return bet
+    }
+
+    private fun updateRatio(oldRatio: BigDecimal) =
+        maxOf(BigDecimal.ONE, oldRatio - BigDecimal(0.01)).scaled()
+
+    fun getUserBets(userId: Long, pageNumber: Int, pageSize: Int): PagingDto<BetDto> {
+        return betsService.getUserBets(userId, pageNumber, pageSize)
     }
 }

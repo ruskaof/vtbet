@@ -13,9 +13,6 @@ import ru.itmo.vtbet.model.request.UpdateMatchRequestDto
 class ComplexMatchesService(
     private val matchesService: MatchesService,
     private val sportsService: SportsService,
-    private val betsService: BetsService,
-    private val availableBetsService: AvailableBetsService,
-    private val usersAccountsService: UsersAccountsService,
 ) {
     fun getMatches(pageNumber: Int, pageSize: Int): PagingDto<MatchDto> {
         val result = matchesService.getMatches(PageRequest.of(pageNumber, pageSize))
@@ -28,6 +25,9 @@ class ComplexMatchesService(
     }
 
     fun getMatches(sportId: Long, pageNumber: Int, pageSize: Int): PagingDto<MatchDto> {
+        sportsService.getSport(sportId)
+            ?: throw ResourceNotFoundException("Sport with id $sportId not found")
+
         val result = matchesService.getMatches(sportId, PageRequest.of(pageNumber, pageSize))
         return PagingDto(
             items = result,
@@ -52,9 +52,10 @@ class ComplexMatchesService(
     @Transactional
     fun delete(matchId: Long) = matchesService.delete(matchId)
 
-    fun createMatch(createMatchRequestDto: CreateMatchRequestDto, sportId: Long): MatchDto {
-        val sport = sportsService.getSport(sportId)
-            ?: throw ResourceNotFoundException("Sport with id $sportId not found")
+    @Transactional
+    fun createMatch(createMatchRequestDto: CreateMatchRequestDto): MatchDto {
+        val sport = sportsService.getSport(createMatchRequestDto.sportId)
+            ?: throw ResourceNotFoundException("Sport with id ${createMatchRequestDto.sportId} not found")
         val match = matchesService.save(
             MatchDto(
                 matchId = 0,
@@ -68,32 +69,9 @@ class ComplexMatchesService(
     }
 
     @Transactional
-    fun endMatch(matchId: Long, successfulBets: Set<Long>) {
-        val match = matchesService.getMatch(matchId)
+    fun endMatch(matchId: Long) {
+        matchesService.getMatch(matchId)
             ?: throw ResourceNotFoundException("Match with id $matchId not found")
-
-        if (match.ended) {
-            throw IllegalArgumentException("Match with ID: $matchId has already ended")
-        }
-
-        val allAvailableBetsForMatch = availableBetsService.getAllByMatchId(match.matchId)
-        val allAvailableBetIds = allAvailableBetsForMatch.map { it.availableBetId }
-        val allBetsForMatch = betsService.getBetsByAvailableBetIds(allAvailableBetIds)
-
-        for (bet in allBetsForMatch) {
-            if (successfulBets.contains(bet.availableBetId)) {
-                val winnings = bet.amount * bet.ratio
-
-                val userAccount = usersAccountsService.getComplexUserAccount(bet.userId)
-                userAccount?.let {
-                    usersAccountsService.save(
-                        it.copy(balanceAmount = it.balanceAmount + winnings)
-                    )
-                }
-            }
-        }
-
-        val matchToSave = match.copy(ended = true)
-        matchesService.save(matchToSave)
+        matchesService.endMatch(matchId)
     }
 }

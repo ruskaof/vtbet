@@ -3,52 +3,53 @@ package ru.itmo.vtbet.controller
 import jakarta.persistence.PersistenceException
 import jakarta.validation.ConstraintViolationException
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import ru.itmo.vtbet.exception.DuplicateException
-import ru.itmo.vtbet.exception.IllegalBetActionException
-import ru.itmo.vtbet.exception.ResourceNotFoundException
+import ru.itmo.vtbet.exception.*
 
 @RestControllerAdvice
 class MethodArgumentNotValidExceptionAdvice {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): String {
+    fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<VtbetExceptionResponse> {
         val message = e.bindingResult.fieldErrors.map { it.defaultMessage }.joinToString(", ")
-        return "Invalid request: $message"
+        return ResponseEntity(VtbetExceptionResponse(HttpStatus.BAD_REQUEST.value(), message), HttpStatus.BAD_REQUEST)
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException::class)
-    fun handleMethodArgumentNotValidException(e: ConstraintViolationException): String {
+    fun handleMethodArgumentNotValidException(e: ConstraintViolationException): ResponseEntity<VtbetExceptionResponse> {
         val message = e.constraintViolations.joinToString(", ") { it.message }
-        return "Invalid data: $message, ${e.message}"
+        return ResponseEntity(VtbetExceptionResponse(HttpStatus.BAD_REQUEST.value(), message), HttpStatus.BAD_REQUEST)
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException::class)
-    fun handleResourceNotFoundException(e: ResourceNotFoundException): String {
-        return e.message ?: "Could not find requested resource"
+    fun handleResourceNotFoundException(e: ResourceNotFoundException): ResponseEntity<VtbetExceptionResponse> {
+        val message = e.message ?: "Could not find requested resource"
+        val status = HttpStatus.NOT_FOUND
+        return ResponseEntity(VtbetExceptionResponse(status.value(), message), status)
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalBetActionException::class)
-    fun handleResourceNotFoundException(e: IllegalBetActionException): String {
-        return e.message ?: "Illegal bet"
+    fun handleResourceNotFoundException(e: IllegalBetActionException): ResponseEntity<VtbetExceptionResponse> {
+        val message = e.message ?: "Illegal bet"
+        val status = HttpStatus.BAD_REQUEST
+        return ResponseEntity(VtbetExceptionResponse(status.value(), message), status)
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(DuplicateException::class)
-    fun handleDuplicateException(e: DuplicateException): String {
-        return e.message ?: "Duplicate entry"
+    fun handleDuplicateException(e: DuplicateException): ResponseEntity<VtbetExceptionResponse> {
+        val message = e.message ?: "Duplicate entry"
+        val status = HttpStatus.BAD_REQUEST
+        return ResponseEntity(VtbetExceptionResponse(status.value(), message), status)
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(PersistenceException::class)
-    fun handleDbException(e: PersistenceException): String {
-        return "Could not process request because of database error: ${e.message}"
+    fun handleDbException(e: PersistenceException): ResponseEntity<VtbetExceptionResponse> {
+        val message = "Could not process request because of database error: ${e.message}"
+        val status = HttpStatus.INTERNAL_SERVER_ERROR
+        return ResponseEntity(VtbetExceptionResponse(status.value(), message), status)
     }
 }

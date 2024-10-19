@@ -1,5 +1,6 @@
 package ru.itmo.vtbet.controller
 
+import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.PositiveOrZero
 import org.springframework.http.HttpStatus
@@ -8,6 +9,7 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import ru.itmo.vtbet.model.dto.AvailableBetDto
 import ru.itmo.vtbet.model.dto.MatchDto
+import ru.itmo.vtbet.model.request.CreateMatchRequestDto
 import ru.itmo.vtbet.model.request.UpdateMatchRequestDto
 import ru.itmo.vtbet.model.response.AvailableBetsResponse
 import ru.itmo.vtbet.model.response.MatchResponse
@@ -67,10 +69,16 @@ class MatchesController(
         @PathVariable id: Long,
     ): Unit = complexMatchesService.delete(id)
 
-    @PostMapping("matches/{id}/end")
+    @PutMapping("matches/{id}/end")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun endMatch(
-        @PathVariable id: Long,
-        @RequestBody successfulBets: Set<Long>,
-    ): Unit = complexMatchesService.endMatch(id, successfulBets)
+        @PathVariable id: Long
+    ): Unit = complexMatchesService.endMatch(id)
+
+    @PostMapping("/matches")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createMatch(
+        @RequestBody @Valid createMatchRequestDto: CreateMatchRequestDto,
+    ): MatchResponse =
+        complexMatchesService.createMatch(createMatchRequestDto).toResponse()
 }

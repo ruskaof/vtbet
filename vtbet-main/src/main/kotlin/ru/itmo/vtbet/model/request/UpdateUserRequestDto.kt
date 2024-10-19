@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class UpdateUserRequestDto(
-    val id: Long,
     @field:Size(max = 255, min = 1, message = "String length must be between 1 and 255")
     val username: String? = null,
     @field:Size(max = 255, min = 1, message = "String length must be between 1 and 255")

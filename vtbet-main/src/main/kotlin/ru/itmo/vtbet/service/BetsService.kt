@@ -1,11 +1,10 @@
 package ru.itmo.vtbet.service
 
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.itmo.vtbet.model.dto.AvailableBetDto
-import ru.itmo.vtbet.model.dto.BetDto
-import ru.itmo.vtbet.model.dto.UserDto
+import ru.itmo.vtbet.model.dto.*
 import ru.itmo.vtbet.model.entity.BetsEntity
 import ru.itmo.vtbet.model.entity.BetsGroupsEntity
 import ru.itmo.vtbet.model.request.CreateBetsGroupsRequestDto
@@ -45,5 +44,29 @@ class BetsService(
                 availableBetId = availableBetDto.availableBetId,
             )
         ).toDto()
+    }
+
+    fun getBetGroups(pageNumber: Int, pageSize: Int): PagingDto<BetGroupDto> {
+        val result = betsGroupsRepository.findAll(PageRequest.of(pageNumber, pageSize))
+        return PagingDto(
+            items = result.content.map { it.toDto() },
+            total = result.totalElements,
+            pageSize = pageSize,
+            page = pageNumber,
+        )
+    }
+
+    fun delete(betGroupId: Long) {
+        betsGroupsRepository.deleteById(betGroupId)
+    }
+
+    fun getUserBets(userId: Long, pageNumber: Int, pageSize: Int): PagingDto<BetDto> {
+        val result = betsRepository.findAllByUsersEntityUserId(userId, PageRequest.of(pageNumber, pageSize))
+        return PagingDto(
+            items = result.content.map { it.toDto() },
+            total = result.totalElements,
+            pageSize = pageSize,
+            page = pageNumber,
+        )
     }
 }
