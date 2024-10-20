@@ -1,6 +1,7 @@
 package ru.itmo.vtbet.integration
 
 import org.junit.jupiter.api.Test
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -14,7 +15,6 @@ import ru.itmo.vtbet.service.ComplexUsersService
 import java.math.BigDecimal
 import java.util.*
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertNull
 
 @SpringBootTest
@@ -121,5 +121,52 @@ class UsersControllerTest : BaseIntegrationTest() {
 
         val newUser = complexUsersService.getUser(user.userId)
         assertEquals(BigDecimal("100.00"), newUser?.balanceAmount)
+    }
+
+    @Test
+    fun addMoneyWhenUserNotExist() {
+        mockMvc.perform(
+            post("/users/123/balance/add").contentType("application/json")
+                .content("""{"amount":100}""")
+        )
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun addMoneyWhenAmountIsNegative() {
+        val username = UUID.randomUUID().toString()
+        val user = complexUsersService.createUser(
+            CreateUserRequestDto(
+                username,
+                "email@email.com",
+            )
+        )
+
+        mockMvc.perform(
+            post("/users/${user.userId}/balance/add").contentType("application/json")
+                .content("""{"amount":-100}""")
+        )
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun deleteUserWhenUserNotExist() {
+        mockMvc.perform(delete("/users/123"))
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun updateUserWhenUserNotExist() {
+        mockMvc.perform(
+            put("/users/123").contentType("application/json")
+                .content("""{"username":"newUsername","email":"newEmail@email.com"}""")
+        )
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun getUserWhenUserNotExist() {
+        mockMvc.perform(get("/users/123"))
+            .andExpect(status().isNotFound)
     }
 }

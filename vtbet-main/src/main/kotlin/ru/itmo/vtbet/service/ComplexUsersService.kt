@@ -55,7 +55,6 @@ class ComplexUsersService(
                 username = request.username,
                 email = request.email,
                 phoneNumber = request.phoneNumber,
-                // TODO: нужно написать ручку верификации (простое проставление true)
                 accountVerified = false,
                 registrationDate = Instant.now(),
             )

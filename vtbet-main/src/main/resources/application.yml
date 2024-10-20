@@ -8,10 +8,10 @@ spring:
       hibernate:
         show_sql: true
 
-datasource:
-  username: ${DB_USERNAME}
-  password: ${DB_PASSWORD}
-  url: ${DB_URL}
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}
 
 server:
   port: 8080
