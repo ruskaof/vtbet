@@ -58,7 +58,7 @@ class MatchesController(
         )
     }
 
-    @PatchMapping("matches/{id}")
+    @PutMapping("matches/{id}")
     fun updateMatch(
         @PathVariable id: Long,
         @RequestBody updateMatchRequestDto: UpdateMatchRequestDto,
