@@ -55,7 +55,7 @@ class ComplexUsersService(
                 username = request.username,
                 email = request.email,
                 phoneNumber = request.phoneNumber,
-                accountVerified = false,
+                accountVerified = true,
                 registrationDate = Instant.now(),
             )
         )
@@ -67,7 +67,7 @@ class ComplexUsersService(
             username = request.username,
             email = request.email,
             phoneNumber = request.phoneNumber,
-            accountVerified = false,
+            accountVerified = true,
             registrationDate = user.registrationDate,
         )
 
@@ -79,7 +79,7 @@ class ComplexUsersService(
                 username = request.username,
                 email = request.email,
                 phoneNumber = request.phoneNumber,
-                accountVerified = false,
+                accountVerified = true,
                 registrationDate = user.registrationDate,
             )
         )

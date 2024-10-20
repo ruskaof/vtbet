@@ -21,7 +21,7 @@ class MethodArgumentNotValidExceptionAdvice {
 
     @ExceptionHandler(ConstraintViolationException::class)
     fun handleMethodArgumentNotValidException(e: ConstraintViolationException): ResponseEntity<VtbetExceptionResponse> {
-        val message = e.constraintViolations.joinToString(", ") { it.message }
+        val message = e.message.orEmpty() + " " + e.constraintViolations.joinToString(", ") { it.message }
         return ResponseEntity(VtbetExceptionResponse(HttpStatus.BAD_REQUEST.value(), message), HttpStatus.BAD_REQUEST)
     }
 
