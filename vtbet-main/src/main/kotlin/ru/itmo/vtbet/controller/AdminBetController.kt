@@ -94,7 +94,7 @@ class AdminBetController(
         @PositiveOrZero
         @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
-        @PositiveOrZero
+        @Positive
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<BetGroupResponse>> {
         val result = adminBetService.getBetGroups(pageNumber, pageSize)
