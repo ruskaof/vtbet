@@ -2,6 +2,7 @@ package ru.itmo.vtbet.controller
 
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.PositiveOrZero
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -9,9 +10,7 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import ru.itmo.vtbet.model.dto.MatchDto
 import ru.itmo.vtbet.model.dto.SportDto
-import ru.itmo.vtbet.model.request.CreateMatchRequestDto
 import ru.itmo.vtbet.model.request.CreateSportRequestDto
-import ru.itmo.vtbet.model.request.UpdateMatchRequestDto
 import ru.itmo.vtbet.model.request.UpdateSportRequestDto
 import ru.itmo.vtbet.model.response.MatchResponse
 import ru.itmo.vtbet.model.response.SportResponse
@@ -31,6 +30,7 @@ class SportsController(
         @PositiveOrZero
         @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
+        @Positive
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<SportResponse>> {
         val result = sportsService.getSports(pageNumber, pageSize)
@@ -58,6 +58,7 @@ class SportsController(
         @PathVariable("id") sportId: Long,
         @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
+        @Positive
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<MatchResponse>> {
         val result = complexMatchesService.getMatches(sportId, pageNumber, pageSize)

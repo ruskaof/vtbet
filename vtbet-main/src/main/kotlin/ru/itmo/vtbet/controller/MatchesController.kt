@@ -2,6 +2,7 @@ package ru.itmo.vtbet.controller
 
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.PositiveOrZero
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -29,7 +30,7 @@ class MatchesController(
         @PositiveOrZero
         @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
-        @PositiveOrZero
+        @Positive
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<MatchResponse>> {
         val result = complexMatchesService.getMatches(pageNumber, pageSize)
@@ -46,6 +47,7 @@ class MatchesController(
         @PositiveOrZero
         @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
+        @Positive
         @RequestParam(defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<AvailableBetsResponse>> {
         val result = availableBetsService.getAllByMatchId(matchId, pageNumber, pageSize)
