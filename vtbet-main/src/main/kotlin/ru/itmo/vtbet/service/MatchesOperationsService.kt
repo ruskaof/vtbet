@@ -7,11 +7,10 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.MatchDto
-import ru.itmo.vtbet.model.entity.MatchesEntity
 import ru.itmo.vtbet.repository.MatchesRepository
 
 @Service
-class MatchesService(
+class MatchesOperationsService(
     private val matchesRepository: MatchesRepository,
 ) {
     fun getMatches(pageable: Pageable): Page<MatchDto> {

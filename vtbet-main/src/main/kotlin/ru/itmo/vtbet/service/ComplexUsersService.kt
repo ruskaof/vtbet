@@ -20,17 +20,17 @@ import java.time.ZoneOffset
 
 @Service
 class ComplexUsersService(
-    private val usersService: UsersService,
+    private val usersOperationsService: UsersOperationsService,
     private val usersAccountsService: UsersAccountsService,
     private val availableBetsService: AvailableBetsService,
-    private val matchesService: MatchesService,
+    private val matchesOperationsService: MatchesOperationsService,
     private val betsService: BetsService,
     @Value("\${vtbet.ratio-decrease-value}")
     private val ratioDecreaseValue: BigDecimal,
 ) {
     @Transactional
     fun getUser(userId: Long): ComplexUserDto? {
-        val user = usersService.getUser(userId) ?: return null
+        val user = usersOperationsService.getUser(userId) ?: return null
         val userAccount = usersAccountsService.getUserAccount(userId) ?: return null
 
         return ComplexUserDto(
@@ -49,10 +49,10 @@ class ComplexUsersService(
     fun createUser(
         request: CreateUserRequestDto,
     ): ComplexUserDto {
-        if (usersService.getByUserName(request.username) != null) {
+        if (usersOperationsService.getByUserName(request.username) != null) {
             throw DuplicateException("Username already exists")
         }
-        val user = usersService.save(
+        val user = usersOperationsService.save(
             UserDto(
                 userId = 0,
                 username = request.username,
@@ -92,19 +92,19 @@ class ComplexUsersService(
 
     @Transactional
     fun deleteUser(userId: Long) {
-        usersService.getUser(userId) ?: throw ResourceNotFoundException("User with userId $userId not found")
-        usersService.deleteById(userId)
+        usersOperationsService.getUser(userId) ?: throw ResourceNotFoundException("User with userId $userId not found")
+        usersOperationsService.deleteById(userId)
     }
 
     @Transactional
     fun updateUser(userId: Long, request: UpdateUserRequestDto): ComplexUserDto {
-        var userToUpdate = usersService.getUser(userId)
+        var userToUpdate = usersOperationsService.getUser(userId)
             ?: throw ResourceNotFoundException("User with userId $userId not found")
         val userAccount = usersAccountsService.getUserAccount(userId)
             ?: throw ResourceNotFoundException("User account with userId $userId not found")
 
         request.username?.let {
-            if (usersService.getByUserName(it) != null && userToUpdate.username != it) {
+            if (usersOperationsService.getByUserName(it) != null && userToUpdate.username != it) {
                 throw DuplicateException("Username already exists")
             }
             userToUpdate = userToUpdate.copy(username = it)
@@ -113,7 +113,7 @@ class ComplexUsersService(
         request.phoneNumber?.let { userToUpdate = userToUpdate.copy(phoneNumber = it) }
         request.isVerified?.let { userToUpdate = userToUpdate.copy(accountVerified = it) }
 
-        usersService.update(userToUpdate)
+        usersOperationsService.update(userToUpdate)
 
         return ComplexUserDto(userToUpdate, userAccount)
     }
@@ -151,7 +151,7 @@ class ComplexUsersService(
 
     @Transactional
     fun makeBet(userId: Long, makeBetRequestDto: MakeBetRequestDto): BetDto {
-        val user = usersService.getUser(userId)
+        val user = usersOperationsService.getUser(userId)
             ?: throw ResourceNotFoundException("No user found with ID: $userId")
         val userAccount = usersAccountsService.getUserAccount(userId)
             ?: throw ResourceNotFoundException("No user found with ID: $userId")
@@ -168,7 +168,7 @@ class ComplexUsersService(
             )
         }
 
-        val match = matchesService.getMatch(availableBet.matchId)
+        val match = matchesOperationsService.getMatch(availableBet.matchId)
             ?: throw ResourceNotFoundException("No match found with ID: ${availableBet.matchId}")
         if (match.ended) {
             throw IllegalBetActionException("Match has been already finished")
@@ -189,7 +189,7 @@ class ComplexUsersService(
         maxOf(BigDecimal.ONE, oldRatio - ratioDecreaseValue).scaled()
 
     fun getUserBets(userId: Long, pageNumber: Int, pageSize: Int): PagingDto<BetDto> {
-        usersService.getUser(userId)
+        usersOperationsService.getUser(userId)
             ?: throw ResourceNotFoundException("No user found with ID: $userId")
         return betsService.getUserBets(userId, pageNumber, pageSize)
     }

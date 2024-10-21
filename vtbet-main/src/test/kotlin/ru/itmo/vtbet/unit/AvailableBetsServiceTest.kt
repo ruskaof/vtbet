@@ -9,22 +9,18 @@ import org.springframework.data.domain.Sort
 import ru.itmo.vtbet.model.dto.*
 import ru.itmo.vtbet.model.entity.AvailableBetsEntity
 import ru.itmo.vtbet.model.entity.BetsGroupsEntity
-import ru.itmo.vtbet.model.entity.UsersEntity
 import ru.itmo.vtbet.repository.AvailableBetsRepository
-import ru.itmo.vtbet.repository.BetsGroupsRepository
-import ru.itmo.vtbet.repository.BetsRepository
 import ru.itmo.vtbet.service.*
 import java.math.BigDecimal
-import java.time.Instant
 import java.util.*
 
 class AvailableBetsServiceTest {
 
 
     private val availableBetsRepository = Mockito.mock(AvailableBetsRepository::class.java)
-    private val matchesService = Mockito.mock(MatchesService::class.java)
+    private val matchesOperationsService = Mockito.mock(MatchesOperationsService::class.java)
 
-    private val availableBetsService = AvailableBetsService(availableBetsRepository, matchesService)
+    private val availableBetsService = AvailableBetsService(availableBetsRepository, matchesOperationsService)
 
     @Test
     fun `save`() {
@@ -192,7 +188,7 @@ class AvailableBetsServiceTest {
         )
 
         val listAvailableBetDto = PagingDto<AvailableBetDto>(listOf( availableBetsEntity.toDto()), total, pageNumber, pageSize)
-        Mockito.`when`(matchesService.getMatch(matchId)).thenReturn(MatchDto(1, "test", SportDto(1, "test"), false))
+        Mockito.`when`(matchesOperationsService.getMatch(matchId)).thenReturn(MatchDto(1, "test", SportDto(1, "test"), false))
         Mockito.`when`(availableBetsRepository.findAllByMatchId(matchId, PageRequest.of(pageNumber, pageSize, Sort.by("availableBetId")))).thenReturn(PageImpl(listOf( availableBetsEntity)))
 
         val result = availableBetsService.getAllByMatchId(matchId, pageNumber, pageSize)

@@ -9,14 +9,9 @@ import ru.itmo.vtbet.model.request.BalanceActionType
 import ru.itmo.vtbet.model.request.CreateAvailableBetRequestDto
 import ru.itmo.vtbet.model.request.UpdateAvailableBetRequestDto
 
-/**
- * Тут логика работы с созданием ставок
- * Например, bet group - это может быть (победа 1 команды, победа 2 команды, ничья)
- * или (больше 3 голов, меньше или равно 3 голов) и тд.
- */
 @Service
 class AdminBetService(
-    private val matchesService: MatchesService,
+    private val matchesOperationsService: MatchesOperationsService,
     private val betsService: BetsService,
     private val availableBetsService: AvailableBetsService,
     private val complexUsersService: ComplexUsersService,
@@ -34,7 +29,7 @@ class AdminBetService(
     fun createAvailableBet(matchId: Long, request: CreateAvailableBetRequestDto): FullAvailableBetWithBetGroupDto {
         val group = betsService.getBetGroup(request.groupId)
             ?: throw ResourceNotFoundException("Bet group not found")
-        val match = matchesService.getMatch(matchId)
+        val match = matchesOperationsService.getMatch(matchId)
             ?: throw ResourceNotFoundException("Match not found")
 
         val scaledRatio = request.ratio.scaled()
@@ -62,7 +57,7 @@ class AdminBetService(
 
     @Transactional
     fun countResultsForMatch(matchId: Long, successfulBets: Set<Long>) {
-        val match = matchesService.getMatch(matchId)
+        val match = matchesOperationsService.getMatch(matchId)
             ?: throw ResourceNotFoundException("Match with id $matchId not found")
 
         if (match.ended) {
@@ -79,7 +74,7 @@ class AdminBetService(
                 complexUsersService.handleBalanceAction(it.userId, it.amount * it.ratio, BalanceActionType.DEPOSIT)
             }
 
-        matchesService.endMatch(matchId)
+        matchesOperationsService.endMatch(matchId)
     }
 
     @Transactional

@@ -6,13 +6,10 @@ import org.mockito.Mockito
 import ru.itmo.vtbet.model.dto.ComplexUserDto
 import ru.itmo.vtbet.model.dto.UserAccountDto
 import org.mockito.ArgumentMatchers.any
-import ru.itmo.vtbet.model.dto.UserDto
 import ru.itmo.vtbet.model.entity.UsersAccountsEntity
 import ru.itmo.vtbet.model.entity.UsersEntity
 import ru.itmo.vtbet.repository.UsersAccountsRepository
-import ru.itmo.vtbet.repository.UsersRepository
 import ru.itmo.vtbet.service.UsersAccountsService
-import ru.itmo.vtbet.service.UsersService
 import ru.itmo.vtbet.service.toComplexDto
 import ru.itmo.vtbet.service.toDto
 import java.math.BigDecimal

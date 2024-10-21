@@ -1,31 +1,22 @@
 package ru.itmo.vtbet.unit
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.any
-import org.mockito.Mockito.argThat
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.UserDto
-import ru.itmo.vtbet.model.entity.UsersAccountsEntity
 import ru.itmo.vtbet.model.entity.UsersEntity
-import ru.itmo.vtbet.model.request.CreateUserRequestDto
-import ru.itmo.vtbet.repository.UsersAccountsRepository
 import ru.itmo.vtbet.repository.UsersRepository
-import ru.itmo.vtbet.service.UsersService
-import java.math.BigDecimal
+import ru.itmo.vtbet.service.UsersOperationsService
 import java.time.Instant
-import java.time.OffsetDateTime
 import java.util.Optional
 
-class UsersServiceTest {
+class UsersOperationsServiceTest {
 
     private val usersRepository = mock(UsersRepository::class.java)
-    private val usersService = UsersService(usersRepository)
+    private val usersOperationsService = UsersOperationsService(usersRepository)
 
 
     @Test
@@ -47,7 +38,7 @@ class UsersServiceTest {
         `when`(usersRepository.findById(userId)).thenReturn(Optional.of(usersEntity))
 
 
-        val result = usersService.getUser(userId)
+        val result = usersOperationsService.getUser(userId)
 
         val expectedResult = UserDto(
             userId = userId,
@@ -80,7 +71,7 @@ class UsersServiceTest {
         `when`(usersRepository.findByUsername(username)).thenReturn(Optional.of(usersEntity))
 
 
-        val result = usersService.getByUserName(username)
+        val result = usersOperationsService.getByUserName(username)
 
         val expectedResult = UserDto(
             userId = userId,
@@ -121,7 +112,7 @@ class UsersServiceTest {
 
         `when`(usersRepository.saveAndFlush(any())).thenReturn(usersEntity)
 
-        val result = usersService.save(userDto)
+        val result = usersOperationsService.save(userDto)
 
         assertEquals(userDto, result)
     }
@@ -153,7 +144,7 @@ class UsersServiceTest {
 
         `when`(usersRepository.saveAndFlush(any())).thenReturn(usersEntity)
 
-        val result = usersService.update(userDto)
+        val result = usersOperationsService.update(userDto)
 
         assertEquals(userDto, result)
     }
@@ -162,7 +153,7 @@ class UsersServiceTest {
     fun `delete by id`() {
         val userId = 1L
 
-        usersService.deleteById(userId)
+        usersOperationsService.deleteById(userId)
 
         verify(usersRepository).deleteById(userId)
     }

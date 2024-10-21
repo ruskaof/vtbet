@@ -12,12 +12,12 @@ import ru.itmo.vtbet.service.*
 import java.math.BigDecimal
 
 class AdminBetsServiceTest {
-    private val matchesService: MatchesService = mock()
+    private val matchesOperationsService: MatchesOperationsService = mock()
     private val betsService: BetsService = mock()
     private val availableBetsService: AvailableBetsService = mock()
     private val complexUsersService: ComplexUsersService = mock()
     private val adminBetService = AdminBetService(
-        matchesService = matchesService,
+        matchesOperationsService = matchesOperationsService,
         betsService = betsService,
         availableBetsService = availableBetsService,
         complexUsersService = complexUsersService
@@ -28,7 +28,7 @@ class AdminBetsServiceTest {
     @Test
     fun createAvailableBet() {
         `when`(betsService.getBetGroup(1)).thenReturn(BetGroupDto(1, "test"))
-        `when`(matchesService.getMatch(1)).thenReturn(MatchDto(1, "test", SportDto(1, "test"), false))
+        `when`(matchesOperationsService.getMatch(1)).thenReturn(MatchDto(1, "test", SportDto(1, "test"), false))
         `when`(availableBetsService.save(this.any(AvailableBetWithBetGroupDto::class.java))).thenReturn(
             AvailableBetWithBetGroupDto(1, BigDecimal("3.33"), BetGroupDto(1, "test"), false, 1)
         )
@@ -81,7 +81,7 @@ class AdminBetsServiceTest {
 
     @Test
     fun countResultsForMatch() {
-        `when`(matchesService.getMatch(1)).thenReturn(MatchDto(1, "test", SportDto(1, "test"), false))
+        `when`(matchesOperationsService.getMatch(1)).thenReturn(MatchDto(1, "test", SportDto(1, "test"), false))
 
         `when`(availableBetsService.getAllByMatchId(1)).thenReturn(
             listOf(
@@ -109,7 +109,7 @@ class AdminBetsServiceTest {
         adminBetService.countResultsForMatch(1, setOf(1))
 
         verify(complexUsersService).handleBalanceAction(1, BigDecimal("450.0"), BalanceActionType.DEPOSIT)
-        verify(matchesService).endMatch(1)
+        verify(matchesOperationsService).endMatch(1)
     }
 
     @Test

@@ -14,7 +14,7 @@ import ru.itmo.vtbet.repository.AvailableBetsRepository
 @Service
 class AvailableBetsService(
     private val availableBetsRepository: AvailableBetsRepository,
-    private val matchesService: MatchesService,
+    private val matchesOperationsService: MatchesOperationsService,
 ) {
     fun save(bet: AvailableBetWithBetGroupDto) =
         availableBetsRepository.saveAndFlush(
@@ -36,7 +36,7 @@ class AvailableBetsService(
 
     @Transactional
     fun getAllByMatchId(matchId: Long, pageNumber: Int, pageSize: Int): PagingDto<AvailableBetDto> {
-        matchesService.getMatch(matchId)
+        matchesOperationsService.getMatch(matchId)
             ?: throw ResourceNotFoundException("Match with id $matchId not found")
 
         val result = availableBetsRepository.findAllByMatchId(matchId, PageRequest.of(pageNumber, pageSize, Sort.by("availableBetId")))

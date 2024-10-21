@@ -7,7 +7,7 @@ import ru.itmo.vtbet.repository.UsersRepository
 import kotlin.jvm.optionals.getOrNull
 
 @Service
-class UsersService(
+class UsersOperationsService(
     private val usersRepository: UsersRepository,
 ) {
     fun getUser(userId: Long) =

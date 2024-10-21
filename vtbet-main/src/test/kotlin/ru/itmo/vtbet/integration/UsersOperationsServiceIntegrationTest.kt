@@ -10,13 +10,13 @@ import ru.itmo.vtbet.model.request.BalanceActionType
 import ru.itmo.vtbet.model.request.CreateUserRequestDto
 import ru.itmo.vtbet.service.ComplexUsersService
 import ru.itmo.vtbet.service.UsersAccountsService
-import ru.itmo.vtbet.service.UsersService
+import ru.itmo.vtbet.service.UsersOperationsService
 import java.math.BigDecimal
 import java.util.*
 
 @SpringBootTest
 @ActiveProfiles("test")
-class UsersServiceIntegrationTest : BaseIntegrationTest() {
+class UsersOperationsServiceIntegrationTest : BaseIntegrationTest() {
 
     @Autowired
     private lateinit var usersAccountsService: UsersAccountsService
@@ -25,7 +25,7 @@ class UsersServiceIntegrationTest : BaseIntegrationTest() {
     private lateinit var complexUsersService: ComplexUsersService
 
     @Autowired
-    private lateinit var usersService: UsersService
+    private lateinit var usersOperationsService: UsersOperationsService
 
     @Test
     fun `create and get user`() {
@@ -38,7 +38,7 @@ class UsersServiceIntegrationTest : BaseIntegrationTest() {
             )
         )
 
-        val userInDb = usersService.getUser(result.userId)
+        val userInDb = usersOperationsService.getUser(result.userId)
         assertEquals(result.userId, userInDb!!.userId)
         assertEquals(username, userInDb.username)
         assertEquals("email@email.com", userInDb.email)
