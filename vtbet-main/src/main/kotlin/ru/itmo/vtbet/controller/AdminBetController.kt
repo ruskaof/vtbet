@@ -52,7 +52,7 @@ class AdminBetController(
         @RequestBody successfullAvailableBetsIds: Set<Long>,
     ) = adminBetService.countResultsForMatch(matchId, successfullAvailableBetsIds)
 
-    @PutMapping("admin/bets/{id}/close")
+    @PutMapping("admin/bets/{id}/closed")
     fun closeBetsForMatch(
         @PathVariable(name = "id") availableBetId: Long,
     ) = adminBetService.closeBetsForMatch(availableBetId)

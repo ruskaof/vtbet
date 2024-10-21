@@ -189,6 +189,8 @@ class ComplexUsersService(
         maxOf(BigDecimal.ONE, oldRatio - ratioDecreaseValue).scaled()
 
     fun getUserBets(userId: Long, pageNumber: Int, pageSize: Int): PagingDto<BetDto> {
+        usersService.getUser(userId)
+            ?: throw ResourceNotFoundException("No user found with ID: $userId")
         return betsService.getUserBets(userId, pageNumber, pageSize)
     }
 }
