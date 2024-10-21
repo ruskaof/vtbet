@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.AvailableBetDto
 import ru.itmo.vtbet.model.dto.AvailableBetWithBetGroupDto
 import ru.itmo.vtbet.model.dto.PagingDto
@@ -12,7 +13,8 @@ import ru.itmo.vtbet.repository.AvailableBetsRepository
 
 @Service
 class AvailableBetsService(
-    private val availableBetsRepository: AvailableBetsRepository
+    private val availableBetsRepository: AvailableBetsRepository,
+    private val matchesService: MatchesService,
 ) {
     fun save(bet: AvailableBetWithBetGroupDto) =
         availableBetsRepository.saveAndFlush(
@@ -34,6 +36,9 @@ class AvailableBetsService(
 
     @Transactional
     fun getAllByMatchId(matchId: Long, pageNumber: Int, pageSize: Int): PagingDto<AvailableBetDto> {
+        matchesService.getMatch(matchId)
+            ?: throw ResourceNotFoundException("Match with id $matchId not found")
+
         val result = availableBetsRepository.findAllByMatchId(matchId, PageRequest.of(pageNumber, pageSize, Sort.by("availableBetId")))
         return PagingDto(
             items = result.content.map { it.toDto() },

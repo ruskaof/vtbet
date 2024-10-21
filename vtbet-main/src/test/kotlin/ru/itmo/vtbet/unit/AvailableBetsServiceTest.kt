@@ -5,20 +5,15 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
-import ru.itmo.vtbet.model.dto.AvailableBetDto
-import ru.itmo.vtbet.model.dto.AvailableBetWithBetGroupDto
-import ru.itmo.vtbet.model.dto.PagingDto
-import ru.itmo.vtbet.model.dto.UserDto
+import org.springframework.data.domain.Sort
+import ru.itmo.vtbet.model.dto.*
 import ru.itmo.vtbet.model.entity.AvailableBetsEntity
 import ru.itmo.vtbet.model.entity.BetsGroupsEntity
 import ru.itmo.vtbet.model.entity.UsersEntity
 import ru.itmo.vtbet.repository.AvailableBetsRepository
 import ru.itmo.vtbet.repository.BetsGroupsRepository
 import ru.itmo.vtbet.repository.BetsRepository
-import ru.itmo.vtbet.service.AvailableBetsService
-import ru.itmo.vtbet.service.BetsService
-import ru.itmo.vtbet.service.toDto
-import ru.itmo.vtbet.service.toDtoWithBetGroup
+import ru.itmo.vtbet.service.*
 import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
@@ -27,8 +22,9 @@ class AvailableBetsServiceTest {
 
 
     private val availableBetsRepository = Mockito.mock(AvailableBetsRepository::class.java)
+    private val matchesService = Mockito.mock(MatchesService::class.java)
 
-    private val availableBetsService = AvailableBetsService(availableBetsRepository)
+    private val availableBetsService = AvailableBetsService(availableBetsRepository, matchesService)
 
     @Test
     fun `save`() {
@@ -196,7 +192,8 @@ class AvailableBetsServiceTest {
         )
 
         val listAvailableBetDto = PagingDto<AvailableBetDto>(listOf( availableBetsEntity.toDto()), total, pageNumber, pageSize)
-        Mockito.`when`(availableBetsRepository.findAllByMatchId(matchId, PageRequest.of(pageNumber, pageSize))).thenReturn(PageImpl(listOf( availableBetsEntity)))
+        Mockito.`when`(matchesService.getMatch(matchId)).thenReturn(MatchDto(1, "test", SportDto(1, "test"), false))
+        Mockito.`when`(availableBetsRepository.findAllByMatchId(matchId, PageRequest.of(pageNumber, pageSize, Sort.by("availableBetId")))).thenReturn(PageImpl(listOf( availableBetsEntity)))
 
         val result = availableBetsService.getAllByMatchId(matchId, pageNumber, pageSize)
 

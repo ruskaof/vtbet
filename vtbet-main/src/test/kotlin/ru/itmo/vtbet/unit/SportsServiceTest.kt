@@ -7,6 +7,7 @@ import ru.itmo.vtbet.repository.SportsRepository
 import org.mockito.Mockito.*
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import ru.itmo.vtbet.model.dto.PagingDto
 import ru.itmo.vtbet.model.dto.SportDto
 import ru.itmo.vtbet.model.entity.SportsEntity
@@ -21,7 +22,7 @@ class SportsServiceTest {
     private val sportService = SportsService(sportsRepository)
 
     @Test
-    fun `get sports`() {
+    fun `get sport by id`() {
         val sportId = 1L
         val sportName = "football"
         val sportEntity = SportsEntity(sportId, sportName)
@@ -38,7 +39,7 @@ class SportsServiceTest {
     }
 
     @Test
-    fun `get sport by id`() {
+    fun `get sports`() {
         val sportId = 1L
         val sportName = "football"
         val sport2Id = 1L
@@ -47,7 +48,7 @@ class SportsServiceTest {
         val pageNumber = 1
         val pageSports = PageImpl(listOf(SportsEntity(sportId, sportName), SportsEntity(sport2Id, sport2Name)))
 
-        `when`(sportsRepository.findAll(PageRequest.of(pageNumber, pageSize))).thenReturn(pageSports)
+        `when`(sportsRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("sportId")))).thenReturn(pageSports)
 
         val result = sportService.getSports(pageNumber, pageSize)
         val expectedResult = PagingDto(
