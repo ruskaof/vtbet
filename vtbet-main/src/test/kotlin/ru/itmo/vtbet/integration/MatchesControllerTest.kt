@@ -144,7 +144,7 @@ class MatchesControllerTest : BaseIntegrationTest() {
         val updateMatchRequestDto = UpdateMatchRequestDto(name = "new name")
 
         mockMvc.perform(
-            patch("/matches/${match.matchId}")
+            put("/matches/${match.matchId}")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateMatchRequestDto))
         ).andExpect(status().isOk)

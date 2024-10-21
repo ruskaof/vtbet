@@ -6,7 +6,13 @@ import jakarta.validation.constraints.Positive
 import java.math.BigDecimal
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-data class AddMoneyRequestDto(
+data class BalanceActionRequestDto(
+    val action: BalanceActionType,
     @field:Positive(message = "Amount must be positive")
     val amount: BigDecimal,
 )
+
+enum class BalanceActionType {
+    DEPOSIT,
+    WITHDRAW,
+}

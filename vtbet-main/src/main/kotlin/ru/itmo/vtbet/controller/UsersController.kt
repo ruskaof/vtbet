@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import ru.itmo.vtbet.exception.ResourceNotFoundException
-import ru.itmo.vtbet.model.request.AddMoneyRequestDto
+import ru.itmo.vtbet.model.request.BalanceActionRequestDto
 import ru.itmo.vtbet.model.request.CreateUserRequestDto
 import ru.itmo.vtbet.model.request.UpdateUserRequestDto
 import ru.itmo.vtbet.model.response.UserResponse
@@ -46,11 +46,11 @@ class UsersController(
         request: UpdateUserRequestDto,
     ): UserResponse = complexUsersService.updateUser(userId, request).toResponse()
 
-    @PostMapping("users/{id}/balance/add")
+    @PostMapping("users/{id}/balance")
     fun addMoney(
         @PathVariable("id") userId: Long,
         @RequestBody
         @Valid
-        request: AddMoneyRequestDto,
-    ): UserResponse = complexUsersService.addMoneyToUser(userId, request.amount).toResponse()
+        request: BalanceActionRequestDto,
+    ): UserResponse = complexUsersService.handleBalanceAction(userId, request.amount, request.action).toResponse()
 }

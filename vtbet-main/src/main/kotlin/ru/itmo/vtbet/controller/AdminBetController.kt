@@ -70,10 +70,10 @@ class AdminBetController(
     @GetMapping("admin/bets")
     fun getAvailableBets(
         @PositiveOrZero
-        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
+        @RequestParam("page", defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @Positive
-        @RequestParam(defaultValue = "50", required = false) pageSize: Int,
+        @RequestParam("size", defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<AvailableBetsResponse>> {
         val result = adminBetService.getAvailableBets(pageNumber, pageSize)
         return ResponseEntity(
@@ -92,10 +92,10 @@ class AdminBetController(
     @GetMapping("admin/bets/groups")
     fun getBetGroups(
         @PositiveOrZero
-        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
+        @RequestParam("page", defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @Positive
-        @RequestParam(defaultValue = "50", required = false) pageSize: Int,
+        @RequestParam("size", defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<BetGroupResponse>> {
         val result = adminBetService.getBetGroups(pageNumber, pageSize)
         return ResponseEntity(

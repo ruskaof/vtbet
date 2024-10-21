@@ -1,6 +1,7 @@
 package ru.itmo.vtbet.service
 
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.itmo.vtbet.exception.ResourceNotFoundException
@@ -15,7 +16,7 @@ class ComplexMatchesService(
     private val sportsService: SportsService,
 ) {
     fun getMatches(pageNumber: Int, pageSize: Int): PagingDto<MatchDto> {
-        val result = matchesService.getMatches(PageRequest.of(pageNumber, pageSize))
+        val result = matchesService.getMatches(PageRequest.of(pageNumber, pageSize, Sort.by("matchId")))
         return PagingDto(
             items = result.content,
             total = result.totalElements,
@@ -28,7 +29,7 @@ class ComplexMatchesService(
         sportsService.getSport(sportId)
             ?: throw ResourceNotFoundException("Sport with id $sportId not found")
 
-        val result = matchesService.getMatches(sportId, PageRequest.of(pageNumber, pageSize))
+        val result = matchesService.getMatches(sportId, PageRequest.of(pageNumber, pageSize, Sort.by("matchId")))
         return PagingDto(
             items = result.content,
             total = result.totalElements,

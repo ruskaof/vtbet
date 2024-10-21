@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import ru.itmo.vtbet.exception.IllegalBetActionException
 import ru.itmo.vtbet.exception.ResourceNotFoundException
 import ru.itmo.vtbet.model.dto.*
+import ru.itmo.vtbet.model.request.BalanceActionType
 import ru.itmo.vtbet.model.request.CreateAvailableBetRequestDto
 import ru.itmo.vtbet.model.request.UpdateAvailableBetRequestDto
 
@@ -75,7 +76,7 @@ class AdminBetService(
         allBetsForMatch.asSequence()
             .filter { it.availableBetId in successfulBets }
             .forEach {
-                complexUsersService.addMoneyToUser(it.userId, it.amount * it.ratio)
+                complexUsersService.handleBalanceAction(it.userId, it.amount * it.ratio, BalanceActionType.DEPOSIT)
             }
 
         matchesService.endMatch(matchId)

@@ -31,10 +31,10 @@ class UserBetController(
     fun getBets(
         @PathVariable("id") userId: Long,
         @PositiveOrZero
-        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
+        @RequestParam("page", defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @Positive
-        @RequestParam(defaultValue = "50", required = false) pageSize: Int,
+        @RequestParam("size", defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<BetResponse>> {
         val result = complexUsersService.getUserBets(userId, pageNumber, pageSize)
         return ResponseEntity(

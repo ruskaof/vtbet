@@ -112,8 +112,8 @@ class UsersControllerTest : BaseIntegrationTest() {
         )
 
         mockMvc.perform(
-            post("/users/${user.userId}/balance/add").contentType("application/json")
-                .content("""{"amount":100}""")
+            post("/users/${user.userId}/balance").contentType("application/json")
+                .content("""{"amount":100, "action": "DEPOSIT"}""")
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.id").value(user.userId))
@@ -126,8 +126,8 @@ class UsersControllerTest : BaseIntegrationTest() {
     @Test
     fun addMoneyWhenUserNotExist() {
         mockMvc.perform(
-            post("/users/123/balance/add").contentType("application/json")
-                .content("""{"amount":100}""")
+            post("/users/123/balance").contentType("application/json")
+                .content("""{"amount":100, "action": "DEPOSIT"}""")
         )
             .andExpect(status().isNotFound)
     }
@@ -143,8 +143,8 @@ class UsersControllerTest : BaseIntegrationTest() {
         )
 
         mockMvc.perform(
-            post("/users/${user.userId}/balance/add").contentType("application/json")
-                .content("""{"amount":-100}""")
+            post("/users/${user.userId}/balance").contentType("application/json")
+                .content("""{"amount":-100, "action": "DEPOSIT"}""")
         )
             .andExpect(status().isBadRequest)
     }

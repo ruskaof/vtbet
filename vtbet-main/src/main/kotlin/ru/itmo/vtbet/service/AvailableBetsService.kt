@@ -2,6 +2,7 @@ package ru.itmo.vtbet.service
 
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import ru.itmo.vtbet.model.dto.AvailableBetDto
@@ -33,7 +34,7 @@ class AvailableBetsService(
 
     @Transactional
     fun getAllByMatchId(matchId: Long, pageNumber: Int, pageSize: Int): PagingDto<AvailableBetDto> {
-        val result = availableBetsRepository.findAllByMatchId(matchId, PageRequest.of(pageNumber, pageSize))
+        val result = availableBetsRepository.findAllByMatchId(matchId, PageRequest.of(pageNumber, pageSize, Sort.by("availableBetId")))
         return PagingDto(
             items = result.content.map { it.toDto() },
             total = result.totalElements,
@@ -43,7 +44,7 @@ class AvailableBetsService(
     }
 
     fun getAvailableBets(pageNumber: Int, pageSize: Int): PagingDto<AvailableBetDto> {
-        val result = availableBetsRepository.findAll(PageRequest.of(pageNumber, pageSize))
+        val result = availableBetsRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("availableBetId")))
         return PagingDto(
             items = result.content.map { it.toDto() },
             total = result.totalElements,

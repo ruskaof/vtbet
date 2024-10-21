@@ -1,6 +1,7 @@
 package ru.itmo.vtbet.service
 
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,7 +19,7 @@ class SportsService(
 ) {
     @Transactional
     fun getSports(pageNumber: Int, pageSize: Int): PagingDto<SportDto> {
-        val result = sportsRepository.findAll(PageRequest.of(pageNumber, pageSize))
+        val result = sportsRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("sportId")))
         return PagingDto(
             items = result.content.map(SportsEntity::toDto),
             total = result.totalElements,

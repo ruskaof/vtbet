@@ -28,10 +28,10 @@ class MatchesController(
     @GetMapping("/matches")
     fun getMatches(
         @PositiveOrZero
-        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
+        @RequestParam("page", defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @Positive
-        @RequestParam(defaultValue = "50", required = false) pageSize: Int,
+        @RequestParam("size", defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<MatchResponse>> {
         val result = complexMatchesService.getMatches(pageNumber, pageSize)
         return ResponseEntity(
@@ -45,10 +45,10 @@ class MatchesController(
     fun getMatchBets(
         @PathVariable("id") matchId: Long,
         @PositiveOrZero
-        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
+        @RequestParam("page", defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @Positive
-        @RequestParam(defaultValue = "50", required = false) pageSize: Int,
+        @RequestParam("size", defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<AvailableBetsResponse>> {
         val result = availableBetsService.getAllByMatchId(matchId, pageNumber, pageSize)
         return ResponseEntity(

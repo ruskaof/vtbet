@@ -28,10 +28,10 @@ class SportsController(
     @GetMapping("/sports")
     fun getSports(
         @PositiveOrZero
-        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
+        @RequestParam("page", defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @Positive
-        @RequestParam(defaultValue = "50", required = false) pageSize: Int,
+        @RequestParam("size", defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<SportResponse>> {
         val result = sportsService.getSports(pageNumber, pageSize)
         return ResponseEntity(
@@ -56,10 +56,10 @@ class SportsController(
     @GetMapping("/sports/{id}/matches")
     fun getMatches(
         @PathVariable("id") sportId: Long,
-        @RequestParam(defaultValue = "0", required = false) pageNumber: Int,
+        @RequestParam("page", defaultValue = "0", required = false) pageNumber: Int,
         @Max(MAX_PAGE_SIZE)
         @Positive
-        @RequestParam(defaultValue = "50", required = false) pageSize: Int,
+        @RequestParam("size", defaultValue = "50", required = false) pageSize: Int,
     ): ResponseEntity<List<MatchResponse>> {
         val result = complexMatchesService.getMatches(sportId, pageNumber, pageSize)
         return ResponseEntity(

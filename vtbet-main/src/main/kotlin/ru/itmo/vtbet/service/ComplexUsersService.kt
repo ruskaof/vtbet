@@ -1,5 +1,6 @@
 package ru.itmo.vtbet.service
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.itmo.vtbet.exception.DuplicateException
@@ -9,11 +10,11 @@ import ru.itmo.vtbet.model.dto.BetDto
 import ru.itmo.vtbet.model.dto.ComplexUserDto
 import ru.itmo.vtbet.model.dto.PagingDto
 import ru.itmo.vtbet.model.dto.UserDto
+import ru.itmo.vtbet.model.request.BalanceActionType
 import ru.itmo.vtbet.model.request.CreateUserRequestDto
 import ru.itmo.vtbet.model.request.MakeBetRequestDto
 import ru.itmo.vtbet.model.request.UpdateUserRequestDto
 import java.math.BigDecimal
-import java.math.RoundingMode
 import java.time.Instant
 import java.time.ZoneOffset
 
@@ -24,6 +25,8 @@ class ComplexUsersService(
     private val availableBetsService: AvailableBetsService,
     private val matchesService: MatchesService,
     private val betsService: BetsService,
+    @Value("\${vtbet.ratio-decrease-value}")
+    private val ratioDecreaseValue: BigDecimal,
 ) {
     @Transactional
     fun getUser(userId: Long): ComplexUserDto? {
@@ -116,12 +119,18 @@ class ComplexUsersService(
     }
 
     @Transactional
-    fun addMoneyToUser(userId: Long, amount: BigDecimal): ComplexUserDto {
+    fun handleBalanceAction(userId: Long, amount: BigDecimal, action: BalanceActionType): ComplexUserDto {
         val userAccount = getUser(userId)
             ?: throw ResourceNotFoundException("User account with userId $userId not found")
-        val updatedAccount = userAccount.copy(
-            balanceAmount = userAccount.balanceAmount.add(amount).scaled(),
-        )
+
+        val updatedAccount = when (action) {
+            BalanceActionType.DEPOSIT -> userAccount.copy(
+                balanceAmount = userAccount.balanceAmount.add(amount).scaled(),
+            )
+            BalanceActionType.WITHDRAW -> userAccount.copy(
+                balanceAmount = userAccount.balanceAmount.subtract(amount).scaled(),
+            )
+        }
 
         usersAccountsService.update(updatedAccount)
 
@@ -177,7 +186,7 @@ class ComplexUsersService(
     }
 
     private fun updateRatio(oldRatio: BigDecimal) =
-        maxOf(BigDecimal.ONE, oldRatio - BigDecimal(0.01)).scaled()
+        maxOf(BigDecimal.ONE, oldRatio - ratioDecreaseValue).scaled()
 
     fun getUserBets(userId: Long, pageNumber: Int, pageSize: Int): PagingDto<BetDto> {
         return betsService.getUserBets(userId, pageNumber, pageSize)

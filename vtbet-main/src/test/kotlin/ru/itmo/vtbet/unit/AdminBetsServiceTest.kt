@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.*
 import ru.itmo.vtbet.model.dto.*
+import ru.itmo.vtbet.model.request.BalanceActionType
 import ru.itmo.vtbet.model.request.CreateAvailableBetRequestDto
 import ru.itmo.vtbet.model.request.UpdateAvailableBetRequestDto
 import ru.itmo.vtbet.service.*
 import java.math.BigDecimal
-import java.time.Instant
 
 class AdminBetsServiceTest {
     private val matchesService: MatchesService = mock()
@@ -108,7 +108,7 @@ class AdminBetsServiceTest {
 
         adminBetService.countResultsForMatch(1, setOf(1))
 
-        verify(complexUsersService).addMoneyToUser(1, BigDecimal("450.0"))
+        verify(complexUsersService).handleBalanceAction(1, BigDecimal("450.0"), BalanceActionType.DEPOSIT)
         verify(matchesService).endMatch(1)
     }
 

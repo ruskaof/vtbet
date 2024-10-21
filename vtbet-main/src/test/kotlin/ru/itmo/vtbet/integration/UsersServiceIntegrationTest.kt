@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import ru.itmo.vtbet.model.request.BalanceActionType
 import ru.itmo.vtbet.model.request.CreateUserRequestDto
 import ru.itmo.vtbet.service.ComplexUsersService
 import ru.itmo.vtbet.service.UsersAccountsService
@@ -54,7 +55,7 @@ class UsersServiceIntegrationTest : BaseIntegrationTest() {
             )
         )
 
-        complexUsersService.addMoneyToUser(user.userId, BigDecimal(100))
+        complexUsersService.handleBalanceAction(user.userId, BigDecimal(100), BalanceActionType.DEPOSIT)
 
         val userAccountInDb1 = usersAccountsService.getUserAccount(user.userId)
         assertEquals(BigDecimal(100).toInt(), userAccountInDb1!!.balanceAmount.toInt())

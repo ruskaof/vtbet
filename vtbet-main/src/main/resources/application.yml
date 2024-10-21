@@ -17,3 +17,6 @@ server:
   port: 8080
   error:
     include-message: always
+
+vtbet:
+  ratio-decrease-value: 0.01
