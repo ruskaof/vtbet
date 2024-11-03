@@ -1,17 +1,17 @@
 package ru.itmo.user.accounter.model.entity
 
-import jakarta.persistence.*
+import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.Table
 import java.math.BigDecimal
 
-@Entity(name = "users_accounts")
+@Table(name = "users_accounts")
 data class UsersAccountsEntity(
     @Id
-    @Column(name = "account_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column("account_id")
     val accountId: Long? = null,
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    val usersEntity: UsersEntity,
-    @Column(name = "balance_amount", nullable = false)
+    @Column("balance_amount")
     var balanceAmount: BigDecimal,
+    @Column("user_id")
+    val userId: Long,
 )

@@ -1,26 +1,27 @@
 package ru.itmo.user.accounter.model.entity
 
-import jakarta.persistence.*
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Pattern
+import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.Table
 import java.time.Instant
 
-@Entity(name = "users")
+@Table(name = "users")
 data class UsersEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", nullable = false)
+    @Column("user_id")
     val userId: Long? = null,
-    @Column(name = "username", nullable = false)
+    @Column("username")
     var username: String,
-    @Column(name = "email", nullable = true)
+    @Column("email")
     @field:Email(message = "must be valid email")
     var email: String? = null,
-    @Column(name = "phone_number", nullable = true)
+    @Column("phone_number")
     @field:Pattern(regexp = "[0-9]{10}", message = "Invalid phone number")
     var phoneNumber: String? = null,
-    @Column(name = "account_verified", nullable = false)
+    @Column("account_verified")
     var accountVerified: Boolean,
-    @Column(name = "registration_date", nullable = false)
+    @Column("registration_date")
     val registrationDate: Instant,
 )

@@ -4,6 +4,7 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Mono
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.BalanceActionRequestDto
 import ru.itmo.user.accounter.service.ComplexUsersService
@@ -20,8 +21,8 @@ class UsersController(
     @GetMapping("/users/{id}")
     fun getUser(
         @PathVariable("id") userId: Long,
-    ): UserResponse? = complexUsersService.getUser(userId)?.toResponse()
-        ?: throw ResourceNotFoundException("User with ID $userId not found")
+    ) = complexUsersService.getUser(userId).map { it.toResponse() }
+
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
@@ -29,14 +30,15 @@ class UsersController(
         @RequestBody
         @Valid
         request: CreateUserRequestDto,
-    ): UserResponse? =
-        complexUsersService.createUser(request).toResponse()
+    ) =
+        complexUsersService.createUser(request)
 
     @DeleteMapping("/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteUser(
         @PathVariable("id") userId: Long,
-    ): Unit = complexUsersService.deleteUser(userId)
+    ) = complexUsersService.deleteUser(userId)
+        .switchIfEmpty(Mono.error(ResourceNotFoundException("User with ID $userId not found")))
 
     @PutMapping("users/{id}")
     fun updateUser(
@@ -44,7 +46,8 @@ class UsersController(
         @RequestBody
         @Valid
         request: UpdateUserRequestDto,
-    ): UserResponse = complexUsersService.updateUser(userId, request).toResponse()
+    ) = complexUsersService.updateUser(userId, request).map { it.toResponse() }
+        .switchIfEmpty(Mono.error(ResourceNotFoundException("User with ID $userId not found")))
 
     @PostMapping("users/{id}/balance")
     fun addMoney(
@@ -52,5 +55,6 @@ class UsersController(
         @RequestBody
         @Valid
         request: BalanceActionRequestDto,
-    ): UserResponse = complexUsersService.handleBalanceAction(userId, request.amount, request.action).toResponse()
+    ) = complexUsersService.handleBalanceAction(userId, request.amount, request.action).map { it.toResponse() }
+        .switchIfEmpty(Mono.error(ResourceNotFoundException("User with ID $userId not found")))
 }

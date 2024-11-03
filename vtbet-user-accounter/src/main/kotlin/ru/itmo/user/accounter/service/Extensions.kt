@@ -10,20 +10,7 @@ import ru.itmo.user.accounter.model.entity.UsersEntity
 fun UsersAccountsEntity.toDto() =
     UserAccountDto(
         accountId = accountId!!,
-        userId = usersEntity.userId!!,
         balanceAmount = balanceAmount,
-    )
-
-fun UsersAccountsEntity.toComplexDto() =
-    ComplexUserDto(
-        userId = usersEntity.userId!!,
-        accountId = accountId!!,
-        registrationDate = usersEntity.registrationDate,
-        balanceAmount = balanceAmount,
-        username = usersEntity.username,
-        email = usersEntity.email,
-        phoneNumber = usersEntity.phoneNumber,
-        accountVerified = usersEntity.accountVerified,
     )
 
 fun UsersEntity.toDto() =
@@ -62,13 +49,6 @@ fun UserDto.toEntity() =
 fun ComplexUserDto.toEntity() =
     UsersAccountsEntity(
         accountId = accountId,
-        usersEntity = UsersEntity(
-            userId = userId,
-            username = username,
-            email = email,
-            phoneNumber = phoneNumber,
-            accountVerified = accountVerified,
-            registrationDate = registrationDate,
-        ),
         balanceAmount = balanceAmount,
+        userId = userId
     )

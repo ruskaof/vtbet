@@ -11,22 +11,22 @@ class UsersOperationsService(
     private val usersRepository: UsersRepository,
 ) {
     fun getUser(userId: Long) =
-        usersRepository.findByIdOrNull(userId)?.toDto()
+        usersRepository.findById(userId).map { it.toDto() }
 
     fun getByUserName(username: String) =
-        usersRepository.findByUsername(username).getOrNull()?.toDto()
+        usersRepository.findByUsername(username).map { it.toDto() }
 
     fun save(userDto: UserDto) =
-        usersRepository.saveAndFlush(
+        usersRepository.save(
             userDto
                 .toEntity()
                 .copy(userId = null)
-        ).toDto()
+        ).map { it.toDto() }
 
     fun update(userDto: UserDto) =
-        usersRepository.saveAndFlush(
+        usersRepository.save(
             userDto.toEntity()
-        ).toDto()
+        ).map { it.toDto() }
 
     fun deleteById(userId: Long) = usersRepository.deleteById(userId)
 }

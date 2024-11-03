@@ -8,10 +8,10 @@ spring:
       hibernate:
         show_sql: true
 
-  datasource:
+  r2dbc:
     username: ${DB_USERNAME:vtbet}
     password: ${DB_PASSWORD:vtbet}
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/vtbet}
+    url: ${DB_URL:r2dbc:postgresql://localhost:5432/vtbet}
 
 vtbet:
   ratio-decrease-value: 0.01

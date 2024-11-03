@@ -2,28 +2,27 @@ package ru.itmo.user.accounter.service
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 import ru.itmo.user.accounter.model.dto.ComplexUserDto
+import ru.itmo.user.accounter.model.dto.UserAccountDto
 import ru.itmo.user.accounter.repository.UsersAccountsRepository
 
 @Service
 class UsersAccountsService(
     private val usersAccountsRepository: UsersAccountsRepository,
 ) {
-    fun getUserAccount(userId: Long) =
-        usersAccountsRepository.findByIdOrNull(userId)?.toDto()
-
-    fun getComplexUserAccount(userId: Long) =
-        usersAccountsRepository.findByIdOrNull(userId)?.toComplexDto()
+    fun getUserAccount(userId: Long): Mono<UserAccountDto> =
+        usersAccountsRepository.findById(userId).map { it.toDto() }
 
     fun save(userAccountDto: ComplexUserDto) =
-        usersAccountsRepository.saveAndFlush(
+        usersAccountsRepository.save(
             userAccountDto
                 .toEntity()
                 .copy(accountId = null)
-        ).toDto()
+        ).map { it.toDto() }
 
     fun update(userAccountDto: ComplexUserDto) =
-        usersAccountsRepository.saveAndFlush(
+        usersAccountsRepository.save(
             userAccountDto.toEntity()
-        ).toDto()
+        ).map { it.toDto() }
 }
