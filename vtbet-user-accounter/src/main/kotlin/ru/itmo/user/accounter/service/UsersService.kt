@@ -47,37 +47,42 @@ class ComplexUsersService(
     @Transactional
     fun createUser(
         request: CreateUserRequestDto,
-    ): Mono<ComplexUserDto> =// fixme check that username is unique
-        usersOperationsService.save(
-            UserDto(
-                userId = 0,
-                username = request.username,
-                email = request.email,
-                phoneNumber = request.phoneNumber,
-                accountVerified = true,
-                registrationDate = Instant.now(),
-            )
-        )
-            .flatMap { user ->
-                Mono.zip(
-                    usersAccountsService.save(
-                        ComplexUserDto(
-                            accountId = 0,
-                            userId = user.userId,
-                            balanceAmount = BigDecimal.ZERO,
-                            username = request.username,
-                            email = request.email,
-                            phoneNumber = request.phoneNumber,
-                            accountVerified = true,
-                            registrationDate = user.registrationDate,
-                        )
-                    ),
-                    Mono.just(user)
+    ): Mono<ComplexUserDto> =
+        usersOperationsService.getByUserName(request.username)
+            .flatMap { Mono.error<ComplexUserDto>(DuplicateException("User with username ${request.username} already exists")) }
+            .switchIfEmpty(
+                usersOperationsService.save(
+                    UserDto(
+                        userId = 0,
+                        username = request.username,
+                        email = request.email,
+                        phoneNumber = request.phoneNumber,
+                        accountVerified = true,
+                        registrationDate = Instant.now(),
+                    )
                 )
-            }
-            .map {
-                ComplexUserDto(it.t2, it.t1)
-            }
+                    .flatMap { user ->
+                        Mono.zip(
+                            usersAccountsService.save(
+                                ComplexUserDto(
+                                    accountId = 0,
+                                    userId = user.userId,
+                                    balanceAmount = BigDecimal.ZERO,
+                                    username = request.username,
+                                    email = request.email,
+                                    phoneNumber = request.phoneNumber,
+                                    accountVerified = true,
+                                    registrationDate = user.registrationDate,
+                                )
+                            ),
+                            Mono.just(user)
+                        )
+                    }
+                    .map {
+                        ComplexUserDto(it.t2, it.t1)
+                    }
+            )
+
 
     @Transactional
     fun deleteUser(userId: Long) =
@@ -94,7 +99,7 @@ class ComplexUsersService(
             .flatMap {
                 usersOperationsService.update(UserDto(
                     userId = it.t1.userId,
-                    username = request.username ?: it.t1.username,
+                    username = it.t1.username,
                     email = request.email ?: it.t1.email,
                     phoneNumber = request.phoneNumber ?: it.t1.phoneNumber,
                     accountVerified = it.t1.accountVerified,

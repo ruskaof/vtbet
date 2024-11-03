@@ -2,6 +2,7 @@ package ru.itmo.user.accounter.service
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 import ru.itmo.user.accounter.model.dto.UserDto
 import ru.itmo.user.accounter.repository.UsersRepository
 import kotlin.jvm.optionals.getOrNull
@@ -13,7 +14,7 @@ class UsersOperationsService(
     fun getUser(userId: Long) =
         usersRepository.findById(userId).map { it.toDto() }
 
-    fun getByUserName(username: String) =
+    fun getByUserName(username: String): Mono<UserDto> =
         usersRepository.findByUsername(username).map { it.toDto() }
 
     fun save(userDto: UserDto) =
