@@ -1,4 +1,4 @@
-package ru.itmo.sports.model.dto
+package ru.itmo.sports.ru.itmo.sports.model.dto
 
 data class MatchDto(
     val matchId: Long,

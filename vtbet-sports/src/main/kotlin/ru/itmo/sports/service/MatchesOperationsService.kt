@@ -1,4 +1,4 @@
-package ru.itmo.sports.service
+package ru.itmo.sports.ru.itmo.sports.service
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -6,8 +6,8 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.itmo.common.exception.ResourceNotFoundException
-import ru.itmo.sports.model.dto.MatchDto
-import ru.itmo.sports.repository.MatchesRepository
+import ru.itmo.sports.ru.itmo.sports.model.dto.MatchDto
+import ru.itmo.sports.ru.itmo.sports.repository.MatchesRepository
 
 
 @Service

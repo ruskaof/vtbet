@@ -1,4 +1,4 @@
-package ru.itmo.sports.model.entity
+package ru.itmo.sports.ru.itmo.sports.model.entity
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
