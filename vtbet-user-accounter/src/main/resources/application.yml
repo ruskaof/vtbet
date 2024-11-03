@@ -13,6 +13,9 @@ spring:
     password: ${DB_PASSWORD:vtbet}
     url: ${DB_URL:jdbc:postgresql://localhost:5432/vtbet}
 
+vtbet:
+  ratio-decrease-value: 0.01
+
 server:
   port: 8080
   error:
