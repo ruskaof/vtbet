@@ -19,7 +19,8 @@ import ru.itmo.common.response.BetGroupResponse
 import ru.itmo.common.utils.MAX_PAGE_SIZE
 
 @Validated
-@RestController("bets")
+@RestController
+@RequestMapping("/bets")
 class BetsController(
     private val complexBetsService: ComplexBetsService,
     private val betsService: BetsService,
@@ -40,30 +41,30 @@ class BetsController(
         )
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     fun getAvailableBet(
         @PathVariable(name = "id") availableBetId: Long,
     ) = complexBetsService.getAvailableBet(availableBetId).toResponse()
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     fun modifyBetGroup(
         @PathVariable("id") betId: Long,
         @Valid
         @RequestBody updateAvailableBetRequestDto: UpdateAvailableBetRequestDto,
     ): AvailableBetsResponse = complexBetsService.updateAvailableBet(betId, updateAvailableBetRequestDto).toResponse()
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     fun deleteAvailableBet(
         @PathVariable(name = "id") availableBetId: Long,
     ) = complexBetsService.deleteAvailableBet(availableBetId)
 
-    @PutMapping("{id}/closed")
+    @PutMapping("/{id}/closed")
     fun closeBetsForMatch(
         @PathVariable(name = "id") availableBetId: Long,
     ) = complexBetsService.closeBetsForMatch(availableBetId)
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @GetMapping("groups")
+    @GetMapping("/groups")
     fun getBetGroups(
         @PositiveOrZero
         @RequestParam("page", defaultValue = "0", required = false) pageNumber: Int,
@@ -79,13 +80,13 @@ class BetsController(
         )
     }
 
-    @GetMapping("groups/{id}")
+    @GetMapping("/groups/{id}")
     fun getBetGroup(
         @PathVariable(name = "id") betGroupId: Long,
     ) = betsService.getBetGroup(betGroupId)?.toResponse()
         ?: throw ResourceNotFoundException("Group with id: $betGroupId was not found")
 
-    @PostMapping("groups")
+    @PostMapping("/groups")
     @ResponseStatus(HttpStatus.CREATED)
     fun createBetGroup(
         @Valid
@@ -93,7 +94,7 @@ class BetsController(
     ) = betsService.createBetGroup(createBetsGroupsRequestDto).map { it.toResponse() }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("groups/{id}")
+    @DeleteMapping("/groups/{id}")
     fun deleteBetGroup(
         @PathVariable(name = "id") betGroupId: Long,
     ) = betsService.deleteBetGroup(betGroupId)
