@@ -1,11 +1,11 @@
 package ru.itmo.user.accounter.service
 
+import ru.itmo.common.response.UserResponse
 import ru.itmo.user.accounter.model.dto.ComplexUserDto
 import ru.itmo.user.accounter.model.dto.UserAccountDto
 import ru.itmo.user.accounter.model.dto.UserDto
 import ru.itmo.user.accounter.model.entity.UsersAccountsEntity
 import ru.itmo.user.accounter.model.entity.UsersEntity
-import ru.itmo.vtbet.model.response.*
 
 fun UsersAccountsEntity.toDto() =
     UserAccountDto(

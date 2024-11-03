@@ -10,7 +10,7 @@ import ru.itmo.user.accounter.service.ComplexUsersService
 import ru.itmo.common.request.CreateUserRequestDto
 import ru.itmo.common.request.UpdateUserRequestDto
 import ru.itmo.user.accounter.service.toResponse
-import ru.itmo.vtbet.model.response.UserResponse
+import ru.itmo.common.response.UserResponse
 
 @RestController
 @Validated
