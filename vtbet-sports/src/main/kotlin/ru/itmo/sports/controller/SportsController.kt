@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Mono
 import ru.itmo.common.utils.MAX_PAGE_SIZE
 import ru.itmo.sports.ru.itmo.sports.model.dto.MatchDto
 import ru.itmo.sports.ru.itmo.sports.model.dto.SportDto
@@ -33,26 +34,26 @@ class SportsController(
         @Max(MAX_PAGE_SIZE)
         @Positive
         @RequestParam("size", defaultValue = "50", required = false) pageSize: Int,
-    ): ResponseEntity<List<SportResponse>> {
+    ): Mono<ResponseEntity<List<SportResponse>>> {
         val result = sportsService.getSports(pageNumber, pageSize)
-        return ResponseEntity(
+        return Mono.just(ResponseEntity(
             result.items.map(SportDto::toResponse),
             preparePagingHeaders(result.total, result.page, result.pageSize),
             HttpStatus.OK
-        )
+        ))
     }
 
     @PostMapping("/sports")
     @ResponseStatus(HttpStatus.CREATED)
     fun createSport(
         @RequestBody @Valid createSportRequestDto: CreateSportRequestDto,
-    ): SportResponse =
-        sportsService.createSport(createSportRequestDto).toResponse()
+    ): Mono<SportResponse> =
+        Mono.just(sportsService.createSport(createSportRequestDto).toResponse())
 
     @DeleteMapping("/sports/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteSport(@PathVariable("id") sportId: Long): Unit =
-        sportsService.deleteSport(sportId)
+    fun deleteSport(@PathVariable("id") sportId: Long): Mono<Unit> =
+        Mono.just(sportsService.deleteSport(sportId))
 
     @GetMapping("/sports/{id}/matches")
     fun getMatches(
@@ -61,18 +62,18 @@ class SportsController(
         @Max(MAX_PAGE_SIZE)
         @Positive
         @RequestParam("size", defaultValue = "50", required = false) pageSize: Int,
-    ): ResponseEntity<List<MatchResponse>> {
+    ): Mono<ResponseEntity<List<MatchResponse>>> {
         val result = complexMatchesService.getMatches(sportId, pageNumber, pageSize)
-        return ResponseEntity(
+        return Mono.just(ResponseEntity(
             result.items.map(MatchDto::toResponse),
             preparePagingHeaders(result.total, result.page, result.pageSize),
             HttpStatus.OK
-        )
+        ))
     }
 
     @PutMapping("/sports/{id}")
     fun updateSport(
         @PathVariable("id") sportId: Long,
         @RequestBody @Valid updateMatchRequestDto: UpdateSportRequestDto,
-    ): SportResponse = sportsService.updateSport(sportId, updateMatchRequestDto).toResponse()
+    ): Mono<SportResponse> = Mono.just(sportsService.updateSport(sportId, updateMatchRequestDto).toResponse())
 }
