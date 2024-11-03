@@ -39,19 +39,19 @@ services:
     networks:
       - backend
 
-  application:
-    build: .
-    ports:
-      - "8080:8080"
-    networks:
-      - backend
-    depends_on:
-      - postgresql
-      - liquibase-migrations
-    environment:
-      DB_USERNAME: vtbet
-      DB_PASSWORD: vtbet
-      DB_URL: jdbc:postgresql://postgresql:5432/vtbet
+#  application:
+#    build: .
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - backend
+#    depends_on:
+#      - postgresql
+#      - liquibase-migrations
+#    environment:
+#      DB_USERNAME: vtbet
+#      DB_PASSWORD: vtbet
+#      DB_URL: jdbc:postgresql://postgresql:5432/vtbet
 
 volumes:
   postgres:
