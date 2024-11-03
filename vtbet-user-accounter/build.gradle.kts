@@ -6,7 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.jpa") version "1.9.25"
 }
 
-group = "ru.itmo"
+group = "ru.itmo.user.accounter"
 
 java {
     toolchain {
