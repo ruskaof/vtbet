@@ -1,4 +1,4 @@
-package ru.itmo.vtbet.model.entity
+package ru.itmo.user.accounter.model.entity
 
 import jakarta.persistence.*
 import java.math.BigDecimal

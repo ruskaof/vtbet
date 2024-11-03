@@ -1,4 +1,4 @@
-package ru.itmo.vtbet.model.dto
+package ru.itmo.user.accounter.model.dto
 
 import java.math.BigDecimal
 

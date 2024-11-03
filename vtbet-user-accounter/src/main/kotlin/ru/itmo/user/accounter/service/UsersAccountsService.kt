@@ -3,7 +3,7 @@ package ru.itmo.user.accounter.service
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import ru.itmo.user.accounter.model.dto.ComplexUserDto
-import ru.itmo.vtbet.repository.UsersAccountsRepository
+import ru.itmo.user.accounter.repository.UsersAccountsRepository
 
 @Service
 class UsersAccountsService(

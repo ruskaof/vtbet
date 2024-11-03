@@ -3,6 +3,14 @@ package ru.itmo.user.accounter.service
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.itmo.common.exception.DuplicateException
+import ru.itmo.common.exception.ResourceNotFoundException
+import ru.itmo.common.utils.scaled
+import ru.itmo.user.accounter.model.dto.ComplexUserDto
+import ru.itmo.user.accounter.model.dto.UserDto
+import ru.itmo.user.accounter.model.request.BalanceActionType
+import ru.itmo.user.accounter.model.request.CreateUserRequestDto
+import ru.itmo.user.accounter.model.request.UpdateUserRequestDto
 import java.math.BigDecimal
 
 import java.time.Instant

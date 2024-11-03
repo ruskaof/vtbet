@@ -4,13 +4,13 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import ru.itmo.common.exception.ResourceNotFoundException
+import ru.itmo.user.accounter.model.request.BalanceActionRequestDto
 import ru.itmo.user.accounter.service.ComplexUsersService
-import ru.itmo.vtbet.exception.ResourceNotFoundException
-import ru.itmo.vtbet.model.request.BalanceActionRequestDto
-import ru.itmo.vtbet.model.request.CreateUserRequestDto
-import ru.itmo.vtbet.model.request.UpdateUserRequestDto
+import ru.itmo.user.accounter.model.request.CreateUserRequestDto
+import ru.itmo.user.accounter.model.request.UpdateUserRequestDto
+import ru.itmo.user.accounter.service.toResponse
 import ru.itmo.vtbet.model.response.UserResponse
-import ru.itmo.vtbet.service.toResponse
 
 @RestController
 @Validated

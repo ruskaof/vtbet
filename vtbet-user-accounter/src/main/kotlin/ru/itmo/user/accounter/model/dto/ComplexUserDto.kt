@@ -1,7 +1,5 @@
 package ru.itmo.user.accounter.model.dto
 
-import ru.itmo.vtbet.model.dto.UserAccountDto
-import ru.itmo.vtbet.model.dto.UserDto
 import java.math.BigDecimal
 import java.time.Instant
 

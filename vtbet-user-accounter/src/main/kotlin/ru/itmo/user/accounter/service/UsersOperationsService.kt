@@ -2,8 +2,8 @@ package ru.itmo.user.accounter.service
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import ru.itmo.vtbet.model.dto.UserDto
-import ru.itmo.vtbet.repository.UsersRepository
+import ru.itmo.user.accounter.model.dto.UserDto
+import ru.itmo.user.accounter.repository.UsersRepository
 import kotlin.jvm.optionals.getOrNull
 
 @Service
