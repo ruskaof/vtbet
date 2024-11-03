@@ -8,9 +8,9 @@ import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.utils.scaled
 import ru.itmo.user.accounter.model.dto.ComplexUserDto
 import ru.itmo.user.accounter.model.dto.UserDto
-import ru.itmo.user.accounter.model.request.BalanceActionType
-import ru.itmo.user.accounter.model.request.CreateUserRequestDto
-import ru.itmo.user.accounter.model.request.UpdateUserRequestDto
+import ru.itmo.common.request.BalanceActionType
+import ru.itmo.common.request.CreateUserRequestDto
+import ru.itmo.common.request.UpdateUserRequestDto
 import java.math.BigDecimal
 
 import java.time.Instant

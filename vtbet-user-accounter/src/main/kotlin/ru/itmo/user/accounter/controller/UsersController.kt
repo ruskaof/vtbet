@@ -5,10 +5,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import ru.itmo.common.exception.ResourceNotFoundException
-import ru.itmo.user.accounter.model.request.BalanceActionRequestDto
+import ru.itmo.common.request.BalanceActionRequestDto
 import ru.itmo.user.accounter.service.ComplexUsersService
-import ru.itmo.user.accounter.model.request.CreateUserRequestDto
-import ru.itmo.user.accounter.model.request.UpdateUserRequestDto
+import ru.itmo.common.request.CreateUserRequestDto
+import ru.itmo.common.request.UpdateUserRequestDto
 import ru.itmo.user.accounter.service.toResponse
 import ru.itmo.vtbet.model.response.UserResponse
 
