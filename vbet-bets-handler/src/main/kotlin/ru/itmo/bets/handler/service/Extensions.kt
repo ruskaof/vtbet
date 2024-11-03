@@ -1,8 +1,11 @@
 package ru.itmo.bets.handler.service
 
-import ru.itmo.vtbet.model.dto.*
-import ru.itmo.vtbet.model.entity.*
-import ru.itmo.vtbet.model.response.*
+import ru.itmo.bets.handler.entity.AvailableBetsEntity
+import ru.itmo.bets.handler.entity.BetsEntity
+import ru.itmo.bets.handler.entity.BetsGroupsEntity
+import ru.itmo.bets.handler.entity.UsersEntity
+import ru.itmo.common.dto.*
+import ru.itmo.common.response.*
 
 fun BetsEntity.toDto() =
     BetDto(
@@ -11,6 +14,35 @@ fun BetsEntity.toDto() =
         amount = this.amount,
         userId = this.usersEntity.userId!!,
         availableBetId = this.availableBetId,
+    )
+
+fun UserDto.toEntity() =
+    UsersEntity(
+        userId = userId,
+        username = username,
+        email = email,
+        phoneNumber = phoneNumber,
+        accountVerified = accountVerified,
+        registrationDate = registrationDate,
+    )
+
+//fun BetDto.toResponse() =
+//    BetResponse(
+//        id = betId,
+//        ratio = ratio,
+//        amount = amount,
+//        userId = userId,
+//        availableBetId = availableBetId,
+//    )
+
+fun UserResponse.toDto() =
+    UserDto(
+        userId = this.id,
+        username = this.username,
+        email = this.email,
+        phoneNumber = this.phoneNumber,
+        accountVerified = this.accountVerified,
+        registrationDate = this.registrationDate,
     )
 
 fun AvailableBetDto.toResponse() =
@@ -29,7 +61,7 @@ fun AvailableBetsEntity.toDto() =
         groupId = betsGroupsEntity.groupId!!,
         betsClosed = betsClosed,
         matchId = matchId,
-        )
+    )
 
 fun AvailableBetWithBetGroupDto.toEntity() =
     AvailableBetsEntity(
@@ -61,6 +93,20 @@ fun FullAvailableBetWithBetGroupDto.toResponse() =
         match = match.toResponse(),
         group = betGroupDto.toResponse(),
         ratio = ratio,
+    )
+
+
+fun MatchDto.toResponse() = MatchResponse(
+    id = matchId,
+    name = name,
+    sport = sport.toResponse(),
+    ended = ended,
+)
+
+fun SportDto.toResponse(): SportResponse =
+    SportResponse(
+        id = sportId,
+        name = name,
     )
 
 fun BetDto.toResponse() =

@@ -5,15 +5,13 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.itmo.common.exception.ResourceNotFoundException
-import ru.itmo.vtbet.model.dto.*
-import ru.itmo.vtbet.model.entity.BetsEntity
-import ru.itmo.vtbet.model.entity.BetsGroupsEntity
-import ru.itmo.bets.handler.model.request.CreateBetsGroupsRequestDto
+import ru.itmo.bets.handler.entity.BetsEntity
+import ru.itmo.bets.handler.entity.BetsGroupsEntity
+import ru.itmo.bets.handler.exception.ResourceNotFoundException
 import ru.itmo.bets.handler.repository.BetsGroupsRepository
 import ru.itmo.bets.handler.repository.BetsRepository
-import ru.itmo.vtbet.repository.BetsGroupsRepository
-import ru.itmo.vtbet.repository.BetsRepository
+import ru.itmo.bets.handler.request.CreateBetsGroupsRequestDto
+import ru.itmo.common.dto.*
 import java.math.BigDecimal
 import kotlin.jvm.optionals.getOrNull
 
@@ -23,14 +21,31 @@ class BetsService(
     private val betsGroupsRepository: BetsGroupsRepository,
 ) {
     @Transactional
-    fun getBetGroup(groupId: Long) =
-        betsGroupsRepository.findByIdOrNull(groupId)?.toDto()
+    fun getBetGroup(groupId: Long) = betsGroupsRepository.findByIdOrNull(groupId)?.toDto()
 
     @Transactional
     fun createBetGroup(createBetsGroupsRequestDto: CreateBetsGroupsRequestDto) =
         createBetsGroupsRequestDto.groups.map { group ->
             betsGroupsRepository.save(BetsGroupsEntity(description = group.description)).toDto()
         }
+
+    @Transactional
+    fun deleteBetGroup(betGroupId: Long) {
+        getBetGroup(betGroupId)
+            ?: throw ResourceNotFoundException("Bet group with id $betGroupId not found")
+        delete(betGroupId)
+    }
+
+    @Transactional
+    fun getBetGroups(pageNumber: Int, pageSize: Int): PagingDto<BetGroupDto> {
+        val result = betsGroupsRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("groupId")))
+        return PagingDto(
+            items = result.content.map { it.toDto() },
+            total = result.totalElements,
+            pageSize = pageSize,
+            page = pageNumber,
+        )
+    }
 
     fun getBetsByAvailableBetIds(availableBetIds: List<Long>) =
         betsRepository.findAllByAvailableBetIdIn(availableBetIds).map(BetsEntity::toDto)
@@ -51,17 +66,7 @@ class BetsService(
         ).toDto()
     }
 
-    fun getBetGroups(pageNumber: Int, pageSize: Int): PagingDto<BetGroupDto> {
-        val result = betsGroupsRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("groupId")))
-        return PagingDto(
-            items = result.content.map { it.toDto() },
-            total = result.totalElements,
-            pageSize = pageSize,
-            page = pageNumber,
-        )
-    }
-
-    fun delete(betGroupId: Long) {
+    private fun delete(betGroupId: Long) {
         betsGroupsRepository.findById(betGroupId).getOrNull()
             ?: throw ResourceNotFoundException("Bet group with id $betGroupId not found")
         betsGroupsRepository.deleteById(betGroupId)

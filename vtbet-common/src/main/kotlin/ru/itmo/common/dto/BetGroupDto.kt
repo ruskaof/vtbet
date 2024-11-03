@@ -1,4 +1,4 @@
-package ru.itmo.vtbet.model.dto
+package ru.itmo.common.dto
 
 data class BetGroupDto(
     val groupId: Long,

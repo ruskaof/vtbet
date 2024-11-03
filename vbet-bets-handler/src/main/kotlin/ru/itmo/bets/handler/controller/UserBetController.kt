@@ -8,18 +8,18 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import ru.itmo.vtbet.model.request.MakeBetRequestDto
-import ru.itmo.vtbet.model.response.BetResponse
-import ru.itmo.vtbet.service.ComplexUsersService
-import ru.itmo.vtbet.service.MAX_PAGE_SIZE
-import ru.itmo.vtbet.service.toResponse
+import ru.itmo.bets.handler.request.MakeBetRequestDto
+import ru.itmo.bets.handler.service.ComplexUsersService
+import ru.itmo.bets.handler.service.toResponse
+import ru.itmo.common.response.BetResponse
+import ru.itmo.common.utils.MAX_PAGE_SIZE
 
-@RestController
 @Validated
+@RestController("users")
 class UserBetController(
     private val complexUsersService: ComplexUsersService
 ) {
-    @PostMapping("/users/{id}/bets")
+    @PostMapping("{id}/bets")
     @ResponseStatus(HttpStatus.CREATED)
     fun makeBet(
         @PathVariable("id") userId: Long,
@@ -27,7 +27,7 @@ class UserBetController(
     ): BetResponse =
         complexUsersService.makeBet(userId, makeBetRequestDto).toResponse()
 
-    @GetMapping("/users/{id}/bets")
+    @GetMapping("{id}/bets")
     fun getBets(
         @PathVariable("id") userId: Long,
         @PositiveOrZero
