@@ -19,13 +19,15 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation(project(":vtbet-common"))
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.springframework.cloud:spring-cloud-starter-gateway:4.1.5")
+
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.1.3")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
-    implementation("org.postgresql:postgresql")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 

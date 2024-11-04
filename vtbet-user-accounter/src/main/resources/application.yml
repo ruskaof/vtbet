@@ -1,22 +1,5 @@
 spring:
-  transaction:
-    default-timeout: 5s
-  jpa:
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        show_sql: true
-
-  r2dbc:
-    username: ${DB_USERNAME:vtbet}
-    password: ${DB_PASSWORD:vtbet}
-    url: ${DB_URL:r2dbc:postgresql://localhost:5432/vtbet}
-
-vtbet:
-  ratio-decrease-value: 0.01
-
-server:
-  port: 8080
-  error:
-    include-message: always
+  application:
+    name: "user-accounter"
+  config:
+    import: configserver:http://localhost:8489/

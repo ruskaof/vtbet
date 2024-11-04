@@ -2,12 +2,16 @@ package ru.itmo.sports.unit
 
 
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+
 import org.mockito.Mockito.*
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import ru.itmo.common.dto.PagingDto
+import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.CreateSportRequestDto
 import ru.itmo.common.request.UpdateSportRequestDto
 import ru.itmo.sports.ru.itmo.sports.model.dto.SportDto
@@ -15,6 +19,7 @@ import ru.itmo.sports.ru.itmo.sports.model.entity.SportsEntity
 import ru.itmo.sports.ru.itmo.sports.repository.SportsRepository
 import ru.itmo.sports.ru.itmo.sports.service.SportsService
 import java.util.*
+import kotlin.test.assertEquals
 
 class SportsServiceTest {
     private val sportsRepository = mock(SportsRepository::class.java)
@@ -98,6 +103,16 @@ class SportsServiceTest {
     }
 
     @Test
+    fun `delete sport with exception`() {
+        val sportId = 1L
+
+        `when`(sportsRepository.existsById(sportId)).thenReturn(false)
+
+        val exception = assertThrows<ResourceNotFoundException> {sportService.deleteSport(sportId)}
+
+        assertEquals(exception.message, "Sport with id 1 not found")
+    }
+    @Test
     fun `update sport`() {
         val sportId = 1L
         val sportName = "football"
@@ -113,5 +128,20 @@ class SportsServiceTest {
         verify(sportsRepository).save(
             SportsEntity(sportId, "football")
         )
+    }
+
+    @Test
+    fun `update sport with exception`() {
+        val sportId = 1L
+        val request = UpdateSportRequestDto(
+            name = "football",
+        )
+
+        `when`(sportsRepository.findById(sportId)).thenReturn(Optional.empty())
+
+        val exception = assertThrows<ResourceNotFoundException> { sportService.updateSport(sportId, request)}
+
+
+        assertEquals(exception.message, "Sport with id 1 not found")
     }
 }
