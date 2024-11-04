@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import ru.itmo.bets.handler.exception.VtbetExceptionResponse
+import ru.itmo.common.response.VtbetExceptionResponse
 
 @ControllerAdvice
 class ExceptionHandler : ResponseEntityExceptionHandler() {

@@ -7,10 +7,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import ru.itmo.bets.handler.exception.DuplicateException
-import ru.itmo.bets.handler.exception.IllegalBetActionException
-import ru.itmo.bets.handler.exception.ResourceNotFoundException
-import ru.itmo.bets.handler.exception.VtbetExceptionResponse
+import ru.itmo.common.exception.DuplicateException
+import ru.itmo.common.exception.IllegalBetActionException
+import ru.itmo.common.exception.ResourceNotFoundException
+import ru.itmo.common.response.VtbetExceptionResponse
 
 @RestControllerAdvice
 class MethodArgumentNotValidExceptionAdvice {

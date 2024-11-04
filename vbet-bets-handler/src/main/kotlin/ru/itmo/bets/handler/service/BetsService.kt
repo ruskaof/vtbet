@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.itmo.bets.handler.entity.BetsEntity
 import ru.itmo.bets.handler.entity.BetsGroupsEntity
-import ru.itmo.bets.handler.exception.ResourceNotFoundException
+import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.bets.handler.repository.BetsGroupsRepository
 import ru.itmo.bets.handler.repository.BetsRepository
 import ru.itmo.bets.handler.request.CreateBetsGroupsRequestDto

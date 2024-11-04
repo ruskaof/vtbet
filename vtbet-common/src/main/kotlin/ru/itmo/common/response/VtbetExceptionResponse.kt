@@ -1,4 +1,4 @@
-package ru.itmo.bets.handler.exception
+package ru.itmo.common.response
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming

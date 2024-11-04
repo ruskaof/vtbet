@@ -7,8 +7,8 @@ import ru.itmo.bets.handler.client.UserAccountClient
 import ru.itmo.bets.handler.request.CreateAvailableBetRequestDto
 import ru.itmo.bets.handler.request.UpdateAvailableBetRequestDto
 import ru.itmo.common.dto.*
-import ru.itmo.bets.handler.exception.IllegalBetActionException
-import ru.itmo.bets.handler.exception.ResourceNotFoundException
+import ru.itmo.common.exception.IllegalBetActionException
+import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.BalanceActionRequestDto
 import ru.itmo.common.request.BalanceActionType
 import ru.itmo.common.response.MatchResponse

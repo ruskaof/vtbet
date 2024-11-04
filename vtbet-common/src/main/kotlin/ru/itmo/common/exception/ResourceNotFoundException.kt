@@ -1,3 +1,3 @@
-package ru.itmo.bets.handler.exception
+package ru.itmo.common.exception
 
 class ResourceNotFoundException(message: String) : Exception(message)

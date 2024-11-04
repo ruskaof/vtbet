@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import ru.itmo.common.response.MatchResponse
 
-@FeignClient(name = "user-sports-client", url = "http://localhost:8080/api/users")
+@FeignClient(name = "user-sports-client", url = "http://localhost:8081/api/users")
 interface SportsClient {
     @GetMapping("/matches/{id}")
     fun getMatch(@PathVariable id: Long): MatchResponse

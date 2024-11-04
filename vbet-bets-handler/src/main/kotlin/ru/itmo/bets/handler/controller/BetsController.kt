@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import ru.itmo.bets.handler.exception.ResourceNotFoundException
+import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.bets.handler.request.CreateBetsGroupsRequestDto
 import ru.itmo.bets.handler.request.UpdateAvailableBetRequestDto
 import ru.itmo.bets.handler.service.BetsService

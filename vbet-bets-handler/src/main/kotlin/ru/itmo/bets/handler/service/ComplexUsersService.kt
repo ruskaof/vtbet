@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.itmo.bets.handler.client.SportsClient
 import ru.itmo.bets.handler.client.UsersClient
-import ru.itmo.bets.handler.exception.IllegalBetActionException
-import ru.itmo.bets.handler.exception.ResourceNotFoundException
+import ru.itmo.common.exception.IllegalBetActionException
+import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.bets.handler.request.MakeBetRequestDto
 import ru.itmo.common.dto.BetDto
 import ru.itmo.common.dto.ComplexUserDto

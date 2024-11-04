@@ -7,8 +7,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients
 
 @SpringBootApplication
 @EnableFeignClients
-class SportsApplication
+class BetsApplication
 
 fun main(args: Array<String>) {
-    runApplication<SportsApplication>(*args)
+    runApplication<BetsApplication>(*args)
 }

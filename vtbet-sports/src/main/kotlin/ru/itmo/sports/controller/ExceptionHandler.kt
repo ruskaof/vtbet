@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.reactive.result.method.annotation.ResponseEntityExceptionHandler
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
-import ru.itmo.common.exception.VtbetExceptionResponse
+import ru.itmo.common.response.VtbetExceptionResponse
 
 @ControllerAdvice
 class ExceptionHandler: ResponseEntityExceptionHandler() {
