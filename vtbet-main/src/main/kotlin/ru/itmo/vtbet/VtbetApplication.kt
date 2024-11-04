@@ -14,7 +14,19 @@ class VtbetApplication {
             .route("sports") { r ->
                 r.path("/sports/**")
                     .uri("http://localhost:8081")
-            } // fixme add other routes
+            }
+            .route("bets") { r ->
+                r.path("/bets/**")
+                    .uri("http://localhost:8492")
+            }
+            .route("matches") { r ->
+                r.path("/matches/**")
+                    .uri("http://localhost:8081")
+            }
+            .route("users") { r ->
+                r.path("/users/**")
+                    .uri("http://localhost:8601")
+            }
             .build()
     }
 }

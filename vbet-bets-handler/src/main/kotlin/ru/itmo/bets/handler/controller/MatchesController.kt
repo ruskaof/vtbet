@@ -18,12 +18,12 @@ import ru.itmo.common.utils.MAX_PAGE_SIZE
 
 @Validated
 @RestController
-@RequestMapping("/matches")
+@RequestMapping("/bets/matches")
 class MatchesController(
     private val complexBetsService: ComplexBetsService,
     private val availableBetsService: AvailableBetsService,
 ) {
-    @GetMapping("/{id}/bets")
+    @GetMapping("/{id}")
     fun getMatchBets(
         @PathVariable("id") matchId: Long,
         @PositiveOrZero
@@ -40,14 +40,14 @@ class MatchesController(
         )
     }
 
-    @PostMapping("/{id}/bets")
+    @PostMapping("/{id}")
     fun createTypeOfBetMatch(
         @PathVariable("id") matchId: Long,
         @RequestBody createAvailableBetRequestDto: CreateAvailableBetRequestDto,
     ): FullTypeOfBetMatchResponse =
         complexBetsService.createAvailableBet(matchId, createAvailableBetRequestDto).toResponse()
 
-    @PostMapping("/{id}/bets/results")
+    @PostMapping("/{id}/results")
     fun countResultsForMatch(
         @PathVariable(name = "id") matchId: Long,
         @RequestBody successfulAvailableBetsIds: Set<Long>,

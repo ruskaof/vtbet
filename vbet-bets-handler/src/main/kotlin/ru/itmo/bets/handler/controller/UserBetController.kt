@@ -16,11 +16,11 @@ import ru.itmo.common.utils.MAX_PAGE_SIZE
 
 @Validated
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/bets/users")
 class UserBetController(
     private val complexUsersService: ComplexUsersService
 ) {
-    @PostMapping("/{id}/bets")
+    @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     fun makeBet(
         @PathVariable("id") userId: Long,
@@ -28,7 +28,7 @@ class UserBetController(
     ): BetResponse =
         complexUsersService.makeBet(userId, makeBetRequestDto).toResponse()
 
-    @GetMapping("/{id}/bets")
+    @GetMapping("/{id}")
     fun getBets(
         @PathVariable("id") userId: Long,
         @PositiveOrZero
