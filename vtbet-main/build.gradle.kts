@@ -25,6 +25,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.springframework.cloud:spring-cloud-starter-gateway:4.1.5")
 
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.1.3")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 

@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: "main"
+  transaction:
+    default-timeout: 5s
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        show_sql: true
+
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}
+
+server:
+  port: 8080
+  error:
+    include-message: always
+
+vtbet:
+  ratio-decrease-value: 0.01

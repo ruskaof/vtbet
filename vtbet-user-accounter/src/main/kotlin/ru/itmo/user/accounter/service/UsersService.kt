@@ -91,7 +91,7 @@ class ComplexUsersService(
             .switchIfEmpty(Mono.error(ResourceNotFoundException("User with userId $userId not found")))
 
     @Transactional
-    fun updateUser(userId: Long, request: UpdateUserRequestDto) =
+    fun updateUser(userId: Long, request: UpdateUserRequestDto): Mono<ComplexUserDto> =
         Mono.zip(
             usersOperationsService.getUser(userId),
             usersAccountsService.getUserAccount(userId),

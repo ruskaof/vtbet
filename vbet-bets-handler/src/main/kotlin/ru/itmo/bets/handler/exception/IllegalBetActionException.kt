@@ -1,4 +1,4 @@
-package ru.itmo.vtbet.exception
+package ru.itmo.bets.handler.exception
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
