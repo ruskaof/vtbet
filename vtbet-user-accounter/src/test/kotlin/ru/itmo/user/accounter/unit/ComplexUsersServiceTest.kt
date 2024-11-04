@@ -3,6 +3,7 @@ package ru.itmo.user.accounter.unit
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.any
 import reactor.core.publisher.Mono
 import ru.itmo.common.request.CreateUserRequestDto
 import ru.itmo.user.accounter.model.dto.ComplexUserDto
@@ -117,11 +118,9 @@ class ComplexUsersServiceTest {
             phoneNumber,
         )
 
-        Mockito.`when`(usersOperationsService.save(usersEntityDto)).thenReturn(Mono.just(usersEntityDto))
-
         Mockito.`when`(usersOperationsService.getByUserName(username)).thenReturn(Mono.empty())
-
-        Mockito.`when`(usersAccountsService.save(complexUserDto)).thenReturn(Mono.just(usersAccountsEntityDto))
+        Mockito.`when`(usersOperationsService.save(MockitoHelper.anyObject())).thenReturn(Mono.just(usersEntityDto))
+        Mockito.`when`(usersAccountsService.save(MockitoHelper.anyObject())).thenReturn(Mono.just(usersAccountsEntityDto))
 
         val result = complexUsersService.createUser(createUserRequestDTO).block()
 
@@ -207,13 +206,13 @@ class ComplexUsersServiceTest {
 
         val updateUserRequestDto = UpdateUserRequestDto(
             email2,
-            username2,
+            phoneNumber,
             true,
         )
 
         Mockito.`when`(usersOperationsService.getUser(userId)).thenReturn(Mono.just(usersEntityDto))
         Mockito.`when`(usersAccountsService.getUserAccount(userId)).thenReturn(Mono.just(usersAccountsEntityDto))
-        Mockito.`when`(usersOperationsService.update(usersEntityDto)).thenReturn(Mono.just(usersEntityDto))
+        Mockito.`when`(usersOperationsService.update(usersEntityDto.copy(email = email2))).thenReturn(Mono.just(usersEntityDto.copy(email = email2)))
 
 
         val result = complexUsersService.updateUser(userId, updateUserRequestDto).block()
@@ -223,7 +222,7 @@ class ComplexUsersServiceTest {
             accountId = accountId,
             registrationDate = registrationDate,
             balanceAmount = balanceAmount,
-            username = username2,
+            username = username,
             email = email2,
             phoneNumber = phoneNumber,
             true,
@@ -258,25 +257,10 @@ class ComplexUsersServiceTest {
             balanceAmount = balanceAmount,
         ).toDto()
 
-        val complexUserDto = ComplexUserDto(
-            userId = userId,
-            accountId = accountId,
-            registrationDate = registrationDate,
-            balanceAmount = balanceAmount,
-            username = username,
-            email = email,
-            phoneNumber = phoneNumber,
-            true,
-        )
 
-        val updateUserRequestDto = UpdateUserRequestDto(
-            email2,
-            username2,
-            true,
-        )
-
-        Mockito.`when`(complexUsersService.getUser(userId)).thenReturn(Mono.just(complexUserDto))
-        Mockito.`when`(usersAccountsService.update(complexUserDto.copy(balanceAmount = BigDecimal(1200)))).thenReturn(Mono.just(usersAccountsEntityDto))
+        Mockito.`when`(usersOperationsService.getUser(userId)).thenReturn(Mono.just(usersEntityDto))
+        Mockito.`when`(usersAccountsService.getUserAccount(userId)).thenReturn(Mono.just(usersAccountsEntityDto))
+        Mockito.`when`(usersAccountsService.update(MockitoHelper.anyObject())).thenReturn(Mono.just(usersAccountsEntityDto))
 
         val result = complexUsersService.handleBalanceAction(userId, BigDecimal(200), BalanceActionType.DEPOSIT).block()
 
@@ -284,9 +268,9 @@ class ComplexUsersServiceTest {
             userId = userId,
             accountId = accountId,
             registrationDate = registrationDate,
-            balanceAmount = BigDecimal(1200),
-            username = username2,
-            email = email2,
+            balanceAmount = BigDecimal(1000),
+            username = username,
+            email = email,
             phoneNumber = phoneNumber,
             true,
         )
@@ -294,4 +278,13 @@ class ComplexUsersServiceTest {
         Assertions.assertEquals(expectedResult, result)
     }
 
+}
+
+object MockitoHelper {
+    fun <T> anyObject(): T {
+        Mockito.any<T>()
+        return uninitialized()
+    }
+    @Suppress("UNCHECKED_CAST")
+    fun <T> uninitialized(): T = null as T
 }

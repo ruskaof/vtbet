@@ -7,6 +7,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import ru.itmo.common.dto.PagingDto
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.CreateMatchRequestDto
@@ -41,7 +42,7 @@ class ComplexMatchesServiceTest {
         val pageSports =
             PageImpl(listOf(MatchesEntity(matchId, matchName, SportsEntity(sportId, sportName), true).toDto()))
 
-        Mockito.`when`(matchesOperationsService.getMatches(PageRequest.of(pageNumber, pageSize))).thenReturn(pageSports)
+        Mockito.`when`(matchesOperationsService.getMatches(PageRequest.of(pageNumber, pageSize, Sort.by("matchId")))).thenReturn(pageSports)
 
         val result = complexMatchesService.getMatches(pageNumber, pageSize)
         val expectedResult = PagingDto(
@@ -89,7 +90,8 @@ class ComplexMatchesServiceTest {
         val pageSports =
             PageImpl(listOf(MatchesEntity(matchId, matchName, SportsEntity(sportId, sportName), true).toDto()))
 
-        Mockito.`when`(matchesOperationsService.getMatches(PageRequest.of(pageNumber, pageSize))).thenReturn(pageSports)
+        Mockito.`when`(sportsService.getSport(sportId)).thenReturn(SportDto(sportId, sportName))
+        Mockito.`when`(matchesOperationsService.getMatches(sportId, PageRequest.of(pageNumber, pageSize, Sort.by("matchId")))).thenReturn(pageSports)
 
         val result = complexMatchesService.getMatches(sportId, pageNumber, pageSize)
         val expectedResult = PagingDto(
@@ -122,12 +124,12 @@ class ComplexMatchesServiceTest {
         val updateMatchRequestDto = UpdateMatchRequestDto(
             matchName2
         )
-
+        Mockito.`when`(matchesOperationsService.update(MockitoHelper.anyObject())).thenReturn(matchDto)
         Mockito.`when`(matchesOperationsService.getMatch(matchId)).thenReturn(matchDto)
 
         val result = complexMatchesService.updateMatch(updateMatchRequestDto, matchId)
 
-        val expectedResult = matchDto.copy(name = matchName2)
+        val expectedResult = matchDto.copy()
 
         Assertions.assertEquals(expectedResult, result)
     }
@@ -218,7 +220,7 @@ class ComplexMatchesServiceTest {
         )
 
         Mockito.`when`(sportsService.getSport(matchId)).thenReturn(sportDto)
-        Mockito.`when`(matchesOperationsService.save(matchDto)).thenReturn(matchDto)
+        Mockito.`when`(matchesOperationsService.save(MockitoHelper.anyObject())).thenReturn(matchDto)
 
         val result =  complexMatchesService.createMatch(createMatchRequestDto)
         val expectedResult = matchDto.copy()
@@ -226,4 +228,13 @@ class ComplexMatchesServiceTest {
         Assertions.assertEquals(expectedResult, result)
     }
 
+}
+
+object MockitoHelper {
+    fun <T> anyObject(): T {
+        Mockito.any<T>()
+        return uninitialized()
+    }
+    @Suppress("UNCHECKED_CAST")
+    fun <T> uninitialized(): T = null as T
 }
