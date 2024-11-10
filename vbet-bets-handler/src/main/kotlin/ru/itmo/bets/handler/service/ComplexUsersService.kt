@@ -29,6 +29,7 @@ class ComplexUsersService(
 ) {
     @Transactional
     fun makeBet(userId: Long, makeBetRequestDto: MakeBetRequestDto): BetDto {
+
         val user = usersClient.getUser(userId).toDto()
 
         val availableBet = availableBetsService.getAvailableBetWithGroup(makeBetRequestDto.availableBetId)

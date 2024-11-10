@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import ru.itmo.common.request.BalanceActionRequestDto
 import ru.itmo.common.response.UserResponse
 
-@FeignClient(name = "users-client", url = "http://localhost:8601/api/users")
+@FeignClient(name = "users-client", url = "http://localhost:8601/users")
 interface UsersClient {
     @GetMapping("/users/{id}")
     fun getUser(@PathVariable id: Long): UserResponse

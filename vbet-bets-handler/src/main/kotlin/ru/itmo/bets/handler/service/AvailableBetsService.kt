@@ -1,5 +1,6 @@
 package ru.itmo.bets.handler.service
 
+import feign.FeignException
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -10,6 +11,7 @@ import ru.itmo.bets.handler.repository.AvailableBetsRepository
 import ru.itmo.common.dto.AvailableBetDto
 import ru.itmo.common.dto.AvailableBetWithBetGroupDto
 import ru.itmo.common.dto.PagingDto
+import ru.itmo.common.exception.ResourceNotFoundException
 
 @Service
 class AvailableBetsService(
@@ -55,9 +57,15 @@ class AvailableBetsService(
 
     @Transactional
     fun getAllByMatchId(matchId: Long, pageNumber: Int, pageSize: Int): PagingDto<AvailableBetDto> {
-        //FIXME: sasaovch handle error not found
-        sportsClient.getMatch(matchId)
-//            ?: throw ResourceNotFoundException("Match with id $matchId not found")
+        try {
+            sportsClient.getMatch(matchId)
+        } catch (e: FeignException) {
+            if (e.status() == 404) {
+                throw ResourceNotFoundException("Sport not found")
+            } else {
+                throw e
+            }
+        }
 
         val result = availableBetsRepository.findAllByMatchId(matchId, PageRequest.of(pageNumber, pageSize, Sort.by("availableBetId")))
         return PagingDto(
