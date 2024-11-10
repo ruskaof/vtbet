@@ -5,18 +5,33 @@ CREATE TABLE IF NOT EXISTS users
 (
     user_id BIGSERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
-    email VARCHAR(255),
-    phone_number VARCHAR(255),
-    account_verified BOOLEAN NOT NULL DEFAULT FALSE,
-    registration_date TIMESTAMP WITH TIME ZONE NOT NULL
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS roles
+(
+    role_id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
+INSERT INTO roles (name) values ('USER');
+
+CREATE TABLE IF NOT EXISTS users_roles
+(
+    user_id BIGINT REFERENCES users(user_id),
+    role_id BIGINT REFERENCES roles(role_id),
+    PRIMARY KEY (user_id, role_id)
 );
 
 --changeset svytoq:create_user_account_table
 CREATE TABLE IF NOT EXISTS users_accounts
 (
-    account_id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users (user_id) ON DELETE CASCADE NOT NULL UNIQUE,
-    balance_amount DECIMAL(100,2) NOT NULL DEFAULT 0
+    user_id BIGINT REFERENCES users (user_id) ON DELETE CASCADE NOT NULL UNIQUE PRIMARY KEY,
+    balance_amount DECIMAL(100,2) NOT NULL DEFAULT 0,
+    email VARCHAR(255),
+    phone_number VARCHAR(255),
+    account_verified BOOLEAN NOT NULL DEFAULT FALSE,
+    registration_date TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
 --changeset svytoq:create_sport_table
