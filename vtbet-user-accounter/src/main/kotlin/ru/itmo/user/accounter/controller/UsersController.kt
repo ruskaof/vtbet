@@ -2,19 +2,20 @@ package ru.itmo.user.accounter.controller
 
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.BalanceActionRequestDto
-import ru.itmo.user.accounter.service.ComplexUsersService
 import ru.itmo.common.request.CreateUserRequestDto
 import ru.itmo.common.request.UpdateUserRequestDto
+import ru.itmo.user.accounter.service.ComplexUsersService
 import ru.itmo.user.accounter.service.toResponse
-import ru.itmo.common.response.UserResponse
 
 @RestController
 @Validated
+@PreAuthorize("hasAnyAuthority('ADMIN', 'SUPERUSER')")
 class UsersController(
     private val complexUsersService: ComplexUsersService,
 ) {

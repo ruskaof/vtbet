@@ -43,7 +43,16 @@ fun UserResponse.toDto() =
         phoneNumber = this.phoneNumber,
         accountVerified = this.accountVerified,
         registrationDate = this.registrationDate,
+        role = this.role.toDto(),
+        password = this.password,
     )
+
+fun RoleResponse.toDto() =
+    RoleDto(
+        id = this.id,
+        name = this.name,
+    )
+
 
 fun AvailableBetDto.toResponse() =
     AvailableBetsResponse(

@@ -9,4 +9,6 @@ data class UserDto(
     val phoneNumber: String?,
     val accountVerified: Boolean,
     val registrationDate: Instant,
+    val role: RoleDto,
+    val password: String,
 )

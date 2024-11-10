@@ -14,4 +14,6 @@ data class UserResponse(
     val accountVerified: Boolean,
     val registrationDate: Instant,
     val balanceAmount: BigDecimal,
+    val role: RoleResponse,
+    val password: String,
 )
