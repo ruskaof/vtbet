@@ -2,8 +2,10 @@ package ru.itmo.sports
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cloud.openfeign.EnableFeignClients
 
 @SpringBootApplication
+@EnableFeignClients
 class SportsApplication
 
 fun main(args: Array<String>) {

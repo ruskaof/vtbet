@@ -29,6 +29,25 @@ dependencies {
 
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0")
 
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-web:3.2.0")
+    implementation("org.springframework.security:spring-security-oauth2-jose:6.1.1")
+    implementation("org.springframework.security:spring-security-core:6.1.1")
+    implementation("org.springframework.security:spring-security-web:6.1.1")
+    implementation("org.springframework.security:spring-security-config:6.1.1")
+    implementation("org.springframework.security:spring-security-oauth2-resource-server:6.1.1")
+    implementation("org.springframework.security:spring-websocket:6.1.1")
+
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
+    implementation("io.jsonwebtoken:jjwt-api:0.12.5")
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl
+    implementation("io.jsonwebtoken:jjwt-impl:0.12.5")
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
+    implementation("io.jsonwebtoken:jjwt-jackson:0.12.5")
+
+    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-openfeign
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.3")
+
     implementation("org.postgresql:postgresql")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
