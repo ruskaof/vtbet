@@ -27,6 +27,11 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.1.3")
     implementation("org.springframework.cloud:spring-cloud-starter-config:4.1.3")
 
+    // security
+    implementation("org.springframework.security:spring-security-oauth2-resource-server")
+    implementation("org.springframework.security:spring-security-oauth2-jose")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0")
 
     implementation("org.postgresql:postgresql")

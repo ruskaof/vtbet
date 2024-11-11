@@ -17,7 +17,9 @@ class JwtService(private val jwtEncoder: JwtEncoder) {
         return jwtEncoder.encode(
             JwtClaimsSet.builder()
                 .issuedAt(now)
-                .expiresAt(now + Duration.ofHours(1))
+                .issuer("auth")
+                .expiresAt(now + Duration.ofHours(24))
+                .claim(Claim.SCOPE, userDto.roles.joinToString(" "))
                 .claim(Claim.ROLES, userDto.roles)
                 .claim(Claim.USERNAME, userDto.username)
                 .claim(Claim.USER_ID, userDto.userId)
@@ -26,4 +28,16 @@ class JwtService(private val jwtEncoder: JwtEncoder) {
         ).tokenValue
     }
 
+    fun generateServiceAccessToken(serviceName: String): String {
+        val now = Instant.now()
+        return jwtEncoder.encode(
+            JwtClaimsSet.builder()
+                .issuedAt(now)
+                .issuer("auth")
+                .expiresAt(now + Duration.ofDays(30))
+                .claim(Claim.SCOPE, "SERVICE_$serviceName")
+                .build()
+                .let(JwtEncoderParameters::from)
+        ).tokenValue
+    }
 }

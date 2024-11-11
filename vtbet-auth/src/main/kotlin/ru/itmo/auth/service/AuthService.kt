@@ -1,5 +1,6 @@
 package ru.itmo.auth.service
 
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -53,6 +54,11 @@ class AuthService(
                 roles = user.roles.map { it.name }.toSet()
             )
         )
+        return JwtResponseDto(token)
+    }
+
+    fun loginService(service: String): JwtResponseDto {
+        val token = jwtService.generateServiceAccessToken(service)
         return JwtResponseDto(token)
     }
 }

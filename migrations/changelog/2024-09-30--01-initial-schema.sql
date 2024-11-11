@@ -10,11 +10,14 @@ CREATE TABLE IF NOT EXISTS users
 
 CREATE TABLE IF NOT EXISTS roles
 (
-    role_id BIGSERIAL PRIMARY KEY,
+    role_id BIGINT PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE
 );
 
-INSERT INTO roles (name) values ('USER');
+INSERT INTO roles (role_id, name) values (1, 'USER');
+INSERT INTO roles (role_id, name) values (2, 'BET_ADMIN');
+INSERT INTO roles (role_id, name) values (3, 'USER_VERIFIER');
+INSERT INTO roles (role_id, name) values (4, 'SERVICES_ADMIN');
 
 CREATE TABLE IF NOT EXISTS users_roles
 (
