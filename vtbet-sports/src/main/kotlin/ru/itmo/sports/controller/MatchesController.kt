@@ -1,4 +1,4 @@
-package ru.itmo.sports.ru.itmo.sports.controller
+package ru.itmo.sports.controller
 
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
@@ -9,13 +9,13 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
-import ru.itmo.common.utils.MAX_PAGE_SIZE
-import ru.itmo.sports.ru.itmo.sports.model.dto.MatchDto
 import ru.itmo.common.request.CreateMatchRequestDto
 import ru.itmo.common.request.UpdateMatchRequestDto
 import ru.itmo.common.response.MatchResponse
-import ru.itmo.sports.ru.itmo.sports.service.ComplexMatchesService
-import ru.itmo.sports.ru.itmo.sports.service.toResponse
+import ru.itmo.common.utils.MAX_PAGE_SIZE
+import ru.itmo.common.dto.MatchDto
+import ru.itmo.sports.service.ComplexMatchesService
+import ru.itmo.sports.service.toResponse
 
 
 @RestController

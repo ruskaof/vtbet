@@ -12,15 +12,14 @@ import ru.itmo.common.dto.PagingDto
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.CreateMatchRequestDto
 import ru.itmo.common.request.UpdateMatchRequestDto
-import ru.itmo.sports.ru.itmo.sports.model.dto.MatchDto
-import ru.itmo.sports.ru.itmo.sports.model.dto.SportDto
-import ru.itmo.sports.ru.itmo.sports.model.entity.MatchesEntity
-import ru.itmo.sports.ru.itmo.sports.model.entity.SportsEntity
-import ru.itmo.sports.ru.itmo.sports.service.ComplexMatchesService
-import ru.itmo.sports.ru.itmo.sports.service.MatchesOperationsService
-import ru.itmo.sports.ru.itmo.sports.service.SportsService
-import ru.itmo.sports.ru.itmo.sports.service.toDto
-import java.util.Optional
+import ru.itmo.common.entity.MatchesEntity
+import ru.itmo.common.dto.MatchDto
+import ru.itmo.common.dto.SportDto
+import ru.itmo.common.entity.SportsEntity
+import ru.itmo.sports.service.ComplexMatchesService
+import ru.itmo.sports.service.MatchesOperationsService
+import ru.itmo.sports.service.SportsService
+import ru.itmo.sports.service.toDto
 
 class ComplexMatchesServiceTest {
 

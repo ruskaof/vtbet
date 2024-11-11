@@ -5,13 +5,16 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.itmo.bets.handler.entity.BetsEntity
-import ru.itmo.bets.handler.entity.BetsGroupsEntity
-import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.bets.handler.repository.BetsGroupsRepository
 import ru.itmo.bets.handler.repository.BetsRepository
 import ru.itmo.bets.handler.request.CreateBetsGroupsRequestDto
-import ru.itmo.common.dto.*
+import ru.itmo.common.dto.AvailableBetDto
+import ru.itmo.common.dto.BetDto
+import ru.itmo.common.dto.BetGroupDto
+import ru.itmo.common.dto.PagingDto
+import ru.itmo.common.entity.BetsEntity
+import ru.itmo.common.entity.BetsGroupsEntity
+import ru.itmo.common.exception.ResourceNotFoundException
 import java.math.BigDecimal
 import kotlin.jvm.optionals.getOrNull
 
@@ -51,7 +54,7 @@ class BetsService(
         betsRepository.findAllByAvailableBetIdIn(availableBetIds).map(BetsEntity::toDto)
 
     fun createBet(
-        userDto: UserDto,
+        userId: Long,
         availableBetDto: AvailableBetDto,
         ratio: BigDecimal,
         amount: BigDecimal,
@@ -60,7 +63,7 @@ class BetsService(
             BetsEntity(
                 amount = amount,
                 ratio = ratio,
-                usersEntity = userDto.toEntity(),
+                userId = userId,
                 availableBetId = availableBetDto.availableBetId,
             )
         ).toDto()
@@ -73,7 +76,7 @@ class BetsService(
     }
 
     fun getUserBets(userId: Long, pageNumber: Int, pageSize: Int): PagingDto<BetDto> {
-        val result = betsRepository.findAllByUsersEntityUserId(userId, PageRequest.of(pageNumber, pageSize))
+        val result = betsRepository.findAllByUserId(userId, PageRequest.of(pageNumber, pageSize))
         return PagingDto(
             items = result.content.map { it.toDto() },
             total = result.totalElements,

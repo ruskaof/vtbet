@@ -1,35 +1,38 @@
 package ru.itmo.user.accounter.service
 
+import ru.itmo.common.dto.ComplexUserDto
+import ru.itmo.common.dto.UserAccountDto
+import ru.itmo.common.dto.UserDto
+import ru.itmo.common.dto.UserWithPasswordDto
+import ru.itmo.common.entity.RolesEntity
+import ru.itmo.common.entity.UsersAccountsEntity
+import ru.itmo.common.entity.UsersEntity
 import ru.itmo.common.response.UserResponse
-import ru.itmo.user.accounter.model.dto.ComplexUserDto
-import ru.itmo.user.accounter.model.dto.UserAccountDto
-import ru.itmo.user.accounter.model.dto.UserDto
-import ru.itmo.user.accounter.model.entity.UsersAccountsEntity
-import ru.itmo.user.accounter.model.entity.UsersEntity
 
 fun UsersAccountsEntity.toDto() =
     UserAccountDto(
-        accountId = accountId!!,
-        balanceAmount = balanceAmount,
-    )
-
-fun UsersEntity.toDto() =
-    UserDto(
         userId = userId!!,
-        username = username,
+        balanceAmount = balanceAmount,
         email = email,
         phoneNumber = phoneNumber,
         accountVerified = accountVerified,
         registrationDate = registrationDate,
     )
 
+fun UsersEntity.toDto() =
+    UserDto(
+        userId = userId!!,
+        username = username,
+        roles = roles.map { it.name }.toSet(),
+    )
+
 
 fun ComplexUserDto.toResponse() =
     UserResponse(
         id = userId,
+        username = this.username,
         registrationDate = registrationDate,
         balanceAmount = balanceAmount,
-        username = username,
         email = email,
         phoneNumber = phoneNumber,
         accountVerified = accountVerified,
@@ -40,15 +43,24 @@ fun UserDto.toEntity() =
     UsersEntity(
         userId = userId,
         username = username,
-        email = email,
-        phoneNumber = phoneNumber,
-        accountVerified = accountVerified,
-        registrationDate = registrationDate,
+        roles = roles.map { RolesEntity(name = it) }.toSet(),
+        password = null,
+    )
+
+fun UserWithPasswordDto.toEntity() =
+    UsersEntity(
+        userId = userId,
+        username = username,
+        roles = roles.map { RolesEntity(name = it) }.toSet(),
+        password = password,
     )
 
 fun ComplexUserDto.toEntity() =
     UsersAccountsEntity(
-        accountId = accountId,
+        userId = userId,
+        registrationDate = registrationDate,
         balanceAmount = balanceAmount,
-        userId = userId
+        email = email,
+        phoneNumber = phoneNumber,
+        accountVerified = accountVerified,
     )

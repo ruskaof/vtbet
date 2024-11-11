@@ -1,10 +1,9 @@
 package ru.itmo.bets.handler.service
 
-import ru.itmo.bets.handler.entity.AvailableBetsEntity
-import ru.itmo.bets.handler.entity.BetsEntity
-import ru.itmo.bets.handler.entity.BetsGroupsEntity
-import ru.itmo.bets.handler.entity.UsersEntity
 import ru.itmo.common.dto.*
+import ru.itmo.common.entity.AvailableBetsEntity
+import ru.itmo.common.entity.BetsEntity
+import ru.itmo.common.entity.BetsGroupsEntity
 import ru.itmo.common.response.*
 
 fun BetsEntity.toDto() =
@@ -12,19 +11,19 @@ fun BetsEntity.toDto() =
         betId = this.betId!!,
         ratio = this.ratio,
         amount = this.amount,
-        userId = this.usersEntity.userId!!,
+        userId = this.userId,
         availableBetId = this.availableBetId,
     )
 
-fun UserDto.toEntity() =
-    UsersEntity(
-        userId = userId,
-        username = username,
-        email = email,
-        phoneNumber = phoneNumber,
-        accountVerified = accountVerified,
-        registrationDate = registrationDate,
-    )
+//fun UserWithPasswordDto.toEntity() =
+//    UsersEntity(
+//        userId = userId,
+//        username = username,
+//        email = email,
+//        phoneNumber = phoneNumber,
+//        accountVerified = accountVerified,
+//        registrationDate = registrationDate,
+//    )
 
 //fun BetDto.toResponse() =
 //    BetResponse(
@@ -36,9 +35,9 @@ fun UserDto.toEntity() =
 //    )
 
 fun UserResponse.toDto() =
-    UserDto(
+    UserAccountDto(
         userId = this.id,
-        username = this.username,
+        balanceAmount = this.balanceAmount,
         email = this.email,
         phoneNumber = this.phoneNumber,
         accountVerified = this.accountVerified,
@@ -109,14 +108,16 @@ fun SportDto.toResponse(): SportResponse =
         name = name,
     )
 
-fun BetDto.toResponse() =
-    BetResponse(
+fun BetDto.toResponse(): BetResponse {
+    val betResponse = BetResponse(
         id = betId,
         ratio = ratio,
         amount = amount,
         userId = userId,
         availableBetId = availableBetId,
     )
+    return betResponse
+}
 
 fun BetsGroupsEntity.toDto() =
     BetGroupDto(

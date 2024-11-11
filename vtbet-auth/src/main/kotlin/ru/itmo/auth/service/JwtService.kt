@@ -4,7 +4,7 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet
 import org.springframework.security.oauth2.jwt.JwtEncoder
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters
 import org.springframework.stereotype.Service
-import ru.itmo.auth.model.dto.UserDto
+import ru.itmo.common.dto.UserDto
 import ru.itmo.common.utils.Claim
 import java.time.Duration
 import java.time.Instant

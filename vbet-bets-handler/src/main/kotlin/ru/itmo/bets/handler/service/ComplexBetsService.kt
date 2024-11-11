@@ -2,7 +2,6 @@ package ru.itmo.bets.handler.service
 
 import feign.FeignException
 import jakarta.transaction.Transactional
-import org.apache.http.HttpStatus
 import org.springframework.stereotype.Service
 import ru.itmo.bets.handler.client.SportsClient
 import ru.itmo.bets.handler.client.UserAccountClient
@@ -87,7 +86,7 @@ class ComplexBetsService(
         val group = betsService.getBetGroup(request.groupId)
             ?: throw ResourceNotFoundException("Bet group not found")
         val match = try {
-             sportsClient.getMatch(matchId).toDto()
+            sportsClient.getMatch(matchId).toDto()
         } catch (e: FeignException) {
             if (e.status() == 404) {
                 throw ResourceNotFoundException("Sport not found")

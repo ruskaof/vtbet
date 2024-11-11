@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.BalanceActionRequestDto
-import ru.itmo.user.accounter.service.ComplexUsersService
 import ru.itmo.common.request.CreateUserRequestDto
 import ru.itmo.common.request.UpdateUserRequestDto
+import ru.itmo.user.accounter.service.ComplexUsersService
 import ru.itmo.user.accounter.service.toResponse
-import ru.itmo.common.response.UserResponse
 
 @RestController
 @Validated

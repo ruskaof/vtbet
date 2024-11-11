@@ -4,10 +4,10 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.itmo.auth.model.dto.UserDto
-import ru.itmo.auth.model.entity.UsersEntity
 import ru.itmo.auth.repository.RolesRepository
 import ru.itmo.auth.repository.UsersRepository
+import ru.itmo.common.dto.UserDto
+import ru.itmo.common.entity.UsersEntity
 import ru.itmo.common.request.UserPasswordRequestDto
 import ru.itmo.common.response.JwtResponseDto
 import ru.itmo.common.utils.Role

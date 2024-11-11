@@ -1,4 +1,4 @@
-package ru.itmo.auth.model.entity
+package ru.itmo.common.entity
 
 import jakarta.persistence.*
 

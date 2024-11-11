@@ -1,9 +1,13 @@
 package ru.itmo.common.dto
 
 import java.math.BigDecimal
+import java.time.Instant
 
 data class UserAccountDto(
-    val accountId: Long,
     val userId: Long,
-    val balanceAmount: BigDecimal,
+    var balanceAmount: BigDecimal,
+    var email: String?,
+    var phoneNumber: String?,
+    var accountVerified: Boolean,
+    val registrationDate: Instant
 )

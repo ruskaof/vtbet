@@ -1,9 +1,9 @@
-package ru.itmo.sports.ru.itmo.sports.repository
+package ru.itmo.sports.repository
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
-import ru.itmo.sports.ru.itmo.sports.model.entity.MatchesEntity
+import ru.itmo.common.entity.MatchesEntity
 
 
 interface MatchesRepository : JpaRepository<MatchesEntity, Long> {

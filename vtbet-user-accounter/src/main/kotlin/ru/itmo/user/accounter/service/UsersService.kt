@@ -4,17 +4,16 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono
+import ru.itmo.common.dto.ComplexUserDto
+import ru.itmo.common.dto.UserWithPasswordDto
 import ru.itmo.common.exception.DuplicateException
 import ru.itmo.common.exception.ResourceNotFoundException
-import ru.itmo.common.utils.scaled
-import ru.itmo.user.accounter.model.dto.ComplexUserDto
-import ru.itmo.user.accounter.model.dto.UserDto
 import ru.itmo.common.request.BalanceActionType
 import ru.itmo.common.request.CreateUserRequestDto
 import ru.itmo.common.request.UpdateUserRequestDto
-import ru.itmo.user.accounter.model.entity.UsersEntity
+import ru.itmo.common.utils.scaled
 import java.math.BigDecimal
-
+import java.sql.Timestamp
 import java.time.Instant
 import java.time.ZoneOffset
 
@@ -34,13 +33,12 @@ class ComplexUsersService(
         ).map {
             ComplexUserDto(
                 userId = it.t1.userId,
-                accountId = it.t2.accountId,
-                registrationDate = it.t1.registrationDate.atOffset(ZoneOffset.ofHours(3)).toInstant(),
+                registrationDate = it.t2.registrationDate.atOffset(ZoneOffset.ofHours(3)).toInstant(),
                 balanceAmount = it.t2.balanceAmount,
                 username = it.t1.username,
-                email = it.t1.email,
-                phoneNumber = it.t1.phoneNumber,
-                accountVerified = it.t1.accountVerified,
+                email = it.t2.email,
+                phoneNumber = it.t2.phoneNumber,
+                accountVerified = it.t2.accountVerified,
             )
         }
 
@@ -52,35 +50,30 @@ class ComplexUsersService(
             .flatMap { Mono.error<ComplexUserDto>(DuplicateException("User with username ${request.username} already exists")) }
             .switchIfEmpty(
                 usersOperationsService.save(
-                    UserDto(
+                    UserWithPasswordDto(
                         userId = 0,
                         username = request.username,
-                        email = request.email,
-                        phoneNumber = request.phoneNumber,
-                        accountVerified = true,
-                        registrationDate = Instant.now(),
+                        password = request.password,
+                        roles = setOf("USER")
                     )
-                )
-                    .flatMap { user ->
-                        Mono.zip(
-                            usersAccountsService.save(
-                                ComplexUserDto(
-                                    accountId = 0,
-                                    userId = user.userId,
-                                    balanceAmount = BigDecimal.ZERO,
-                                    username = request.username,
-                                    email = request.email,
-                                    phoneNumber = request.phoneNumber,
-                                    accountVerified = true,
-                                    registrationDate = user.registrationDate,
-                                )
-                            ),
-                            Mono.just(user)
-                        )
-                    }
-                    .map {
-                        ComplexUserDto(it.t2, it.t1)
-                    }
+                ).flatMap { user ->
+                    Mono.zip(
+                        Mono.just(user),
+                        usersAccountsService.save(
+                            ComplexUserDto(
+                                userId = user.userId,
+                                balanceAmount = BigDecimal.ZERO,
+                                username = request.username,
+                                email = request.email,
+                                phoneNumber = request.phoneNumber,
+                                accountVerified = true,
+                                registrationDate = Timestamp(Instant.now().toEpochMilli()).toInstant(),
+                            )
+                        ),
+                    )
+                }.map {
+                    ComplexUserDto(it.t1, it.t2)
+                }
             )
 
 
@@ -95,24 +88,24 @@ class ComplexUsersService(
         Mono.zip(
             usersOperationsService.getUser(userId),
             usersAccountsService.getUserAccount(userId),
-        )
-            .flatMap {
-                usersOperationsService.update(UserDto(
+        ).flatMap {
+            usersAccountsService.update(
+                ComplexUserDto(
                     userId = it.t1.userId,
+                    registrationDate = it.t2.registrationDate,
+                    balanceAmount = it.t2.balanceAmount,
                     username = it.t1.username,
-                    email = request.email ?: it.t1.email,
-                    phoneNumber = request.phoneNumber ?: it.t1.phoneNumber,
-                    accountVerified = it.t1.accountVerified,
-                    registrationDate = it.t1.registrationDate,
-                ))
-            }
-            .flatMap {
-                Mono.zip(
-                    usersAccountsService.getUserAccount(userId),
-                    Mono.just(it)
+                    email = request.email ?: it.t2.email,
+                    phoneNumber = request.phoneNumber ?: it.t2.phoneNumber,
+                    accountVerified = request.isVerified ?: it.t2.accountVerified,
                 )
-            }
-            .map { ComplexUserDto(it.t2, it.t1) }
+            )
+        }.flatMap {
+            Mono.zip(
+                usersOperationsService.getUser(userId),
+                usersAccountsService.getUserAccount(userId),
+            )
+        }.map { ComplexUserDto(it.t1, it.t2) }
 
     @Transactional
     fun handleBalanceAction(userId: Long, amount: BigDecimal, action: BalanceActionType) =
@@ -128,7 +121,7 @@ class ComplexUsersService(
                     )
                 }
                 usersAccountsService.update(
-                   updatedAccount
+                    updatedAccount
                 )
             }
             .flatMap { getUser(userId) }

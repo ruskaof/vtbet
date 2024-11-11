@@ -1,4 +1,4 @@
-package ru.itmo.sports.ru.itmo.sports.controller
+package ru.itmo.sports.controller
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatusCode
@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono
 import ru.itmo.common.response.VtbetExceptionResponse
 
 @ControllerAdvice
-class ExceptionHandler: ResponseEntityExceptionHandler() {
+class  ExceptionHandler: ResponseEntityExceptionHandler() {
 
     override fun handleExceptionInternal(
         ex: java.lang.Exception,

@@ -1,14 +1,14 @@
-package ru.itmo.sports.ru.itmo.sports.service
+package ru.itmo.sports.service
 
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.itmo.common.dto.MatchDto
 import ru.itmo.common.dto.PagingDto
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.CreateMatchRequestDto
 import ru.itmo.common.request.UpdateMatchRequestDto
-import ru.itmo.sports.ru.itmo.sports.model.dto.MatchDto
 
 
 @Service
