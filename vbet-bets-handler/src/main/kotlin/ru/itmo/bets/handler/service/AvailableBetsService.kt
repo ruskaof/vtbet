@@ -8,8 +8,8 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import ru.itmo.bets.handler.client.SportsClient
 import ru.itmo.bets.handler.repository.AvailableBetsRepository
-import ru.itmo.common.dto.AvailableBetDto
-import ru.itmo.common.dto.AvailableBetWithBetGroupDto
+import ru.itmo.bets.handler.model.dto.AvailableBetDto
+import ru.itmo.bets.handler.model.dto.AvailableBetWithBetGroupDto
 import ru.itmo.common.dto.PagingDto
 import ru.itmo.common.exception.ResourceNotFoundException
 

@@ -1,54 +1,36 @@
 package ru.itmo.user.accounter.service
 
 import ru.itmo.common.response.UserResponse
-import ru.itmo.user.accounter.model.dto.ComplexUserDto
 import ru.itmo.user.accounter.model.dto.UserAccountDto
-import ru.itmo.user.accounter.model.dto.UserDto
 import ru.itmo.user.accounter.model.entity.UsersAccountsEntity
-import ru.itmo.user.accounter.model.entity.UsersEntity
 
 fun UsersAccountsEntity.toDto() =
     UserAccountDto(
-        accountId = accountId!!,
+        userId = userId,
         balanceAmount = balanceAmount,
-    )
-
-fun UsersEntity.toDto() =
-    UserDto(
-        userId = userId!!,
-        username = username,
         email = email,
         phoneNumber = phoneNumber,
         accountVerified = accountVerified,
         registrationDate = registrationDate,
     )
 
+fun UserAccountDto.toEntity() =
+    UsersAccountsEntity(
+        userId = userId,
+        registrationDate = registrationDate,
+        balanceAmount = balanceAmount,
+        email = email,
+        phoneNumber = phoneNumber,
+        accountVerified = accountVerified,
+    )
 
-fun ComplexUserDto.toResponse() =
+fun UserAccountDto.toResponse() =
     UserResponse(
         id = userId,
-        registrationDate = registrationDate,
-        balanceAmount = balanceAmount,
-        username = username,
-        email = email,
-        phoneNumber = phoneNumber,
-        accountVerified = accountVerified,
-    )
-
-
-fun UserDto.toEntity() =
-    UsersEntity(
-        userId = userId,
-        username = username,
         email = email,
         phoneNumber = phoneNumber,
         accountVerified = accountVerified,
         registrationDate = registrationDate,
+        balanceAmount = balanceAmount
     )
 
-fun ComplexUserDto.toEntity() =
-    UsersAccountsEntity(
-        accountId = accountId,
-        balanceAmount = balanceAmount,
-        userId = userId
-    )

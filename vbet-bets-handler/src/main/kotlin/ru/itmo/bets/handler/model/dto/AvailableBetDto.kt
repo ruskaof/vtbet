@@ -1,5 +1,6 @@
-package ru.itmo.common.dto
+package ru.itmo.bets.handler.model.dto
 
+import ru.itmo.common.dto.BetGroupDto
 import java.math.BigDecimal
 
 data class AvailableBetDto(

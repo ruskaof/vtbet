@@ -11,7 +11,7 @@ import ru.itmo.bets.handler.request.CreateAvailableBetRequestDto
 import ru.itmo.bets.handler.service.AvailableBetsService
 import ru.itmo.bets.handler.service.ComplexBetsService
 import ru.itmo.bets.handler.service.toResponse
-import ru.itmo.common.dto.AvailableBetDto
+import ru.itmo.bets.handler.model.dto.AvailableBetDto
 import ru.itmo.common.response.AvailableBetsResponse
 import ru.itmo.common.response.FullTypeOfBetMatchResponse
 import ru.itmo.common.utils.MAX_PAGE_SIZE

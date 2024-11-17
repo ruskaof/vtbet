@@ -1,4 +1,4 @@
-package ru.itmo.common.dto
+package ru.itmo.bets.handler.model.dto
 
 data class SportDto(
     val sportId: Long,

@@ -2,19 +2,19 @@ package ru.itmo.user.accounter.unit
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
 import reactor.core.publisher.Mono
-import ru.itmo.user.accounter.model.dto.ComplexUserDto
-import ru.itmo.user.accounter.model.dto.UserAccountDto
-import ru.itmo.user.accounter.model.entity.UsersAccountsEntity
-import ru.itmo.user.accounter.model.entity.UsersEntity
+import ru.itmo.common.dto.ComplexUserDto
+import ru.itmo.common.dto.UserAccountDto
+import ru.itmo.common.entity.RolesEntity
+import ru.itmo.common.entity.UsersAccountsEntity
+import ru.itmo.common.entity.UsersEntity
 import ru.itmo.user.accounter.repository.UsersAccountsRepository
 import ru.itmo.user.accounter.service.UsersAccountsService
 import ru.itmo.user.accounter.service.toDto
 import java.math.BigDecimal
 import java.time.Instant
-import java.util.*
 
 class UsersAccountsServiceTest {
     private val usersAccountsRepository = Mockito.mock(UsersAccountsRepository::class.java)
@@ -31,28 +31,33 @@ class UsersAccountsServiceTest {
         val accountVerified = true
         val phoneNumber = "79991035532"
         val balanceAmount = BigDecimal(1000)
-        val usersEntity = UsersEntity(
+        val usersEntityDto = UsersEntity(
             userId = userId,
             username = username,
+            password = "1234",
+            roles = setOf(RolesEntity(1L, "USER")),
+        ).toDto()
+        val usersAccountsEntityDto = UsersAccountsEntity(
+            userId = userId,
+            balanceAmount = balanceAmount,
             email = email,
             phoneNumber = phoneNumber,
             accountVerified = accountVerified,
             registrationDate = registrationDate,
         )
-        val usersAccountsEntity = UsersAccountsEntity(
-            accountId = accountId,
-            userId = userId,
-            balanceAmount = balanceAmount,
-        )
 
-        Mockito.`when`(usersAccountsRepository.findById(userId)).thenReturn(Mono.just(usersAccountsEntity))
+        Mockito.`when`(usersAccountsRepository.findById(userId)).thenReturn(Mono.just(usersAccountsEntityDto))
 
 
         val result = usersAccountsService.getUserAccount(userId).block()
 
         val expectedResult = UserAccountDto(
-            accountId = accountId,
+            userId = userId,
             balanceAmount = balanceAmount,
+            email = email,
+            phoneNumber = phoneNumber,
+            accountVerified = accountVerified,
+            registrationDate = registrationDate,
         )
 
         Assertions.assertEquals(expectedResult, result)
@@ -102,7 +107,7 @@ class UsersAccountsServiceTest {
 //    }
 
     @Test
-    fun `save`() {
+    fun createUserAccount() {
         val userId = 1L
         val accountId = 1L
         val registrationDate = Instant.now()
@@ -111,23 +116,23 @@ class UsersAccountsServiceTest {
         val accountVerified = true
         val phoneNumber = "79991035532"
         val balanceAmount = BigDecimal(1000)
-        val usersEntity = UsersEntity(
+        val usersEntityDto = UsersEntity(
             userId = userId,
             username = username,
+            password = "1234",
+            roles = setOf(RolesEntity(1L, "USER")),
+        ).toDto()
+        val usersAccountsEntityDto = UsersAccountsEntity(
+            userId = userId,
+            balanceAmount = balanceAmount,
             email = email,
             phoneNumber = phoneNumber,
             accountVerified = accountVerified,
             registrationDate = registrationDate,
         )
-        val usersAccountsEntity = UsersAccountsEntity(
-            accountId = accountId,
-            userId = userId,
-            balanceAmount = balanceAmount,
-        )
 
         val complexUserDto = ComplexUserDto(
             userId = userId,
-            accountId = accountId,
             registrationDate = registrationDate,
             balanceAmount = balanceAmount,
             username = username,
@@ -136,20 +141,17 @@ class UsersAccountsServiceTest {
             true,
         )
 
-        Mockito.`when`(usersAccountsRepository.save(any())).thenReturn(Mono.just(usersAccountsEntity))
+        Mockito.`when`(usersAccountsRepository.save(any())).thenReturn(Mono.just(usersAccountsEntityDto))
 
+        val result = usersAccountsService.createUserAccount(complexUserDto, userId).block()
 
-
-
-        val result = usersAccountsService.save(complexUserDto).block()
-
-        val expectedResult = usersAccountsEntity.toDto()
+        val expectedResult = usersAccountsEntityDto.toDto()
 
         Assertions.assertEquals(expectedResult, result)
     }
 
     @Test
-    fun `update`() {
+    fun updateUserAccount() {
         val userId = 1L
         val accountId = 1L
         val registrationDate = Instant.now()
@@ -158,23 +160,23 @@ class UsersAccountsServiceTest {
         val accountVerified = true
         val phoneNumber = "79991035532"
         val balanceAmount = BigDecimal(1000)
-        val usersEntity = UsersEntity(
+        val usersEntityDto = UsersEntity(
             userId = userId,
             username = username,
+            password = "1234",
+            roles = setOf(RolesEntity(1L, "USER")),
+        ).toDto()
+        val usersAccountsEntityDto = UsersAccountsEntity(
+            userId = userId,
+            balanceAmount = balanceAmount,
             email = email,
             phoneNumber = phoneNumber,
             accountVerified = accountVerified,
             registrationDate = registrationDate,
         )
-        val usersAccountsEntity = UsersAccountsEntity(
-            accountId = accountId,
-            userId = userId,
-            balanceAmount = balanceAmount,
-        )
 
         val complexUserDto = ComplexUserDto(
             userId = userId,
-            accountId = accountId,
             registrationDate = registrationDate,
             balanceAmount = balanceAmount,
             username = username,
@@ -183,14 +185,13 @@ class UsersAccountsServiceTest {
             true,
         )
 
-        Mockito.`when`(usersAccountsRepository.save(any())).thenReturn(Mono.just(usersAccountsEntity))
+        Mockito.`when`(usersAccountsRepository.save(any())).thenReturn(Mono.just(usersAccountsEntityDto))
 
 
-        val result = usersAccountsService.update(complexUserDto).block()
+        val result = usersAccountsService.updateUserAccount(complexUserDto, userId).block()
 
-        val expectedResult = usersAccountsEntity.toDto()
+        val expectedResult = usersAccountsEntityDto.toDto()
 
         Assertions.assertEquals(expectedResult, result)
     }
-
 }

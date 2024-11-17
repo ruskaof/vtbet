@@ -1,4 +1,4 @@
-package ru.itmo.user.accounter.model.dto
+package ru.itmo.bets.handler.model.dto
 
 import java.math.BigDecimal
 import java.time.Instant

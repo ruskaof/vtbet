@@ -5,18 +5,15 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.itmo.bets.handler.client.SportsClient
 import ru.itmo.bets.handler.client.UsersClient
-import ru.itmo.common.exception.IllegalBetActionException
-import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.bets.handler.request.MakeBetRequestDto
 import ru.itmo.common.dto.BetDto
-import ru.itmo.common.dto.ComplexUserDto
 import ru.itmo.common.dto.PagingDto
+import ru.itmo.common.exception.IllegalBetActionException
+import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.BalanceActionRequestDto
 import ru.itmo.common.request.BalanceActionType
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.Instant
-import java.time.ZoneOffset
 
 @Service
 class ComplexUsersService(
@@ -51,7 +48,7 @@ class ComplexUsersService(
             throw IllegalBetActionException("Wrong ratio: ratio now is ${availableBet.ratio}")
         }
         val bet = betsService.createBet(
-            user,
+            user.userId,
             availableBet.toAvailableBetDto(),
             makeBetRequestDto.ratio.scaled(),
             makeBetRequestDto.amount

@@ -1,4 +1,4 @@
-package ru.itmo.bets.handler.entity
+package ru.itmo.bets.handler.model.entity
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.PositiveOrZero

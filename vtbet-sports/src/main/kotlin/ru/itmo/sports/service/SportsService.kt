@@ -1,4 +1,4 @@
-package ru.itmo.sports.ru.itmo.sports.service
+package ru.itmo.sports.service
 
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -9,9 +9,9 @@ import ru.itmo.common.dto.PagingDto
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.CreateSportRequestDto
 import ru.itmo.common.request.UpdateSportRequestDto
-import ru.itmo.sports.ru.itmo.sports.model.dto.SportDto
-import ru.itmo.sports.ru.itmo.sports.model.entity.SportsEntity
-import ru.itmo.sports.ru.itmo.sports.repository.SportsRepository
+import ru.itmo.sports.model.dto.SportDto
+import ru.itmo.sports.model.entity.SportsEntity
+import ru.itmo.sports.repository.SportsRepository
 
 
 @Service

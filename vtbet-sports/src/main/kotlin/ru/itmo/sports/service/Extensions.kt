@@ -1,11 +1,11 @@
-package ru.itmo.sports.ru.itmo.sports.service
+package ru.itmo.sports.service
 
 import ru.itmo.common.response.MatchResponse
 import ru.itmo.common.response.SportResponse
-import ru.itmo.sports.ru.itmo.sports.model.dto.MatchDto
-import ru.itmo.sports.ru.itmo.sports.model.dto.SportDto
-import ru.itmo.sports.ru.itmo.sports.model.entity.MatchesEntity
-import ru.itmo.sports.ru.itmo.sports.model.entity.SportsEntity
+import ru.itmo.sports.model.dto.MatchDto
+import ru.itmo.sports.model.dto.SportDto
+import ru.itmo.sports.model.entity.MatchesEntity
+import ru.itmo.sports.model.entity.SportsEntity
 
 
 fun MatchesEntity.toDto() = MatchDto(

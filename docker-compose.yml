@@ -38,72 +38,72 @@ services:
       - ./migrations:/liquibase/changelog
     networks:
       - backend
-#
-#  eureka:
-#    build: ./vtbet-eureka
-#    ports:
-#      - "8761:8761"
-#    networks:
-#      - backend
-#    depends_on:
-#      - postgresql
-#      - liquibase-migrations
-#
-#  configs:
-#    build: ./vtbet-configs
-#    ports:
-#      - "8489:8489"
-#    networks:
-#      - backend
-#    depends_on:
-#      - postgresql
-#      - liquibase-migrations
-#      - eureka
-#
-#  user-accounter:
-#    build: ./vtbet-user-accounter
-#    ports:
-#      - "8601:8601"
-#    networks:
-#      - backend
-#    depends_on:
-#      - postgresql
-#      - liquibase-migrations
-#      - configs
-#    environment:
-#      DB_USERNAME: vtbet
-#      DB_PASSWORD: vtbet
-#      DB_URL: jdbc:postgresql://postgresql:5432/vtbet
-#
-#  sports:
-#    build: ./vtbet-sports
-#    ports:
-#      - "8081:8081"
-#    networks:
-#      - backend
-#    depends_on:
-#      - postgresql
-#      - liquibase-migrations
-#      - configs
-#    environment:
-#      DB_USERNAME: vtbet
-#      DB_PASSWORD: vtbet
-#      DB_URL: jdbc:postgresql://postgresql:5432/vtbet
-#
-#  bets-handler:
-#    build: ./vtbet-sports
-#    ports:
-#      - "8492:8492"
-#    networks:
-#      - backend
-#    depends_on:
-#      - postgresql
-#      - liquibase-migrations
-#      - configs
-#    environment:
-#      DB_USERNAME: vtbet
-#      DB_PASSWORD: vtbet
-#      DB_URL: jdbc:postgresql://postgresql:5432/vtbet
+
+  eureka:
+    build: ./vtbet-eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - backend
+    depends_on:
+      - postgresql
+      - liquibase-migrations
+
+  configs:
+    build: ./vtbet-configs
+    ports:
+      - "8489:8489"
+    networks:
+      - backend
+    depends_on:
+      - postgresql
+      - liquibase-migrations
+      - eureka
+
+  user-accounter:
+    build: ./vtbet-user-accounter
+    ports:
+      - "8601:8601"
+    networks:
+      - backend
+    depends_on:
+      - postgresql
+      - liquibase-migrations
+      - configs
+    environment:
+      DB_USERNAME: vtbet
+      DB_PASSWORD: vtbet
+      DB_URL: jdbc:postgresql://postgresql:5432/vtbet
+
+  sports:
+    build: ./vtbet-sports
+    ports:
+      - "8081:8081"
+    networks:
+      - backend
+    depends_on:
+      - postgresql
+      - liquibase-migrations
+      - configs
+    environment:
+      DB_USERNAME: vtbet
+      DB_PASSWORD: vtbet
+      DB_URL: jdbc:postgresql://postgresql:5432/vtbet
+
+  bets-handler:
+    build: ./vtbet-sports
+    ports:
+      - "8492:8492"
+    networks:
+      - backend
+    depends_on:
+      - postgresql
+      - liquibase-migrations
+      - configs
+    environment:
+      DB_USERNAME: vtbet
+      DB_PASSWORD: vtbet
+      DB_URL: jdbc:postgresql://postgresql:5432/vtbet
 
 volumes:
   postgres:

@@ -2,10 +2,12 @@ package ru.itmo.bets.handler.service
 
 import feign.FeignException
 import jakarta.transaction.Transactional
-import org.apache.http.HttpStatus
 import org.springframework.stereotype.Service
 import ru.itmo.bets.handler.client.SportsClient
 import ru.itmo.bets.handler.client.UserAccountClient
+import ru.itmo.bets.handler.model.dto.AvailableBetDto
+import ru.itmo.bets.handler.model.dto.AvailableBetWithBetGroupDto
+import ru.itmo.bets.handler.model.dto.FullAvailableBetWithBetGroupDto
 import ru.itmo.bets.handler.request.CreateAvailableBetRequestDto
 import ru.itmo.bets.handler.request.UpdateAvailableBetRequestDto
 import ru.itmo.common.dto.*
@@ -13,8 +15,6 @@ import ru.itmo.common.exception.IllegalBetActionException
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.BalanceActionRequestDto
 import ru.itmo.common.request.BalanceActionType
-import ru.itmo.common.response.MatchResponse
-import ru.itmo.common.response.SportResponse
 import ru.itmo.common.utils.scaled
 
 @Service
@@ -66,28 +66,12 @@ class ComplexBetsService(
 //        )
 //    }
 
-    fun SportResponse.toDto(): SportDto {
-        return SportDto(
-            sportId = this.id,
-            name = this.name,
-        )
-    }
-
-    fun MatchResponse.toDto(): MatchDto {
-        return MatchDto(
-            matchId = this.id,
-            ended = this.ended,
-            name = this.name,
-            sport = this.sport.toDto(),
-        )
-    }
-
     @Transactional
     fun createAvailableBet(matchId: Long, request: CreateAvailableBetRequestDto): FullAvailableBetWithBetGroupDto {
         val group = betsService.getBetGroup(request.groupId)
             ?: throw ResourceNotFoundException("Bet group not found")
         val match = try {
-             sportsClient.getMatch(matchId).toDto()
+            sportsClient.getMatch(matchId).toDto()
         } catch (e: FeignException) {
             if (e.status() == 404) {
                 throw ResourceNotFoundException("Sport not found")

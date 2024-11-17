@@ -3,13 +3,12 @@ package ru.itmo.user.accounter.unit
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.any
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.*
 import reactor.core.publisher.Mono
-import ru.itmo.user.accounter.model.dto.UserDto
-import ru.itmo.user.accounter.model.entity.UsersEntity
+import ru.itmo.common.dto.UserDto
+import ru.itmo.common.dto.UserWithPasswordDto
+import ru.itmo.common.entity.RolesEntity
+import ru.itmo.common.entity.UsersEntity
 import ru.itmo.user.accounter.repository.UsersRepository
 import ru.itmo.user.accounter.service.UsersOperationsService
 import java.time.Instant
@@ -29,26 +28,21 @@ class UsersOperationsServiceTest {
         val email = "niktog1@mail.ru"
         val accountVerified = true
         val phoneNumber = "79991035532"
-        val usersEntity = UsersEntity(
+        val usersEntityDto = UsersEntity(
             userId = userId,
             username = username,
-            email = email,
-            phoneNumber = phoneNumber,
-            accountVerified = accountVerified,
-            registrationDate = registrationDate,
+            password = "1234",
+            roles = setOf(RolesEntity(1L, "USER")),
         )
-        `when`(usersRepository.findById(userId)).thenReturn(Mono.just(usersEntity))
+        `when`(usersRepository.findById(userId)).thenReturn(Mono.just(usersEntityDto))
 
 
         val result = usersOperationsService.getUser(userId).block()
 
         val expectedResult = UserDto(
             userId = userId,
-            registrationDate = registrationDate,
             username = username,
-            email = email,
-            phoneNumber = phoneNumber,
-            accountVerified = accountVerified,
+            roles = setOf("USER")
         )
 
         assertEquals(expectedResult, result)
@@ -62,26 +56,21 @@ class UsersOperationsServiceTest {
         val email = "niktog1@mail.ru"
         val accountVerified = true
         val phoneNumber = "79991035532"
-        val usersEntity = UsersEntity(
+        val usersEntityDto = UsersEntity(
             userId = userId,
             username = username,
-            email = email,
-            phoneNumber = phoneNumber,
-            accountVerified = accountVerified,
-            registrationDate = registrationDate,
+            password = "1234",
+            roles = setOf(RolesEntity(1L, "USER")),
         )
-        `when`(usersRepository.findByUsername(username)).thenReturn(Mono.just(usersEntity))
+        `when`(usersRepository.findByUsername(username)).thenReturn(Mono.just(usersEntityDto))
 
 
         val result = usersOperationsService.getByUserName(username).block()
 
         val expectedResult = UserDto(
             userId = userId,
-            registrationDate = registrationDate,
             username = username,
-            email = email,
-            phoneNumber = phoneNumber,
-            accountVerified = accountVerified,
+            roles = setOf("USER")
         )
 
         assertEquals(expectedResult, result)
@@ -95,28 +84,30 @@ class UsersOperationsServiceTest {
         val email = "niktog1@mail.ru"
         val accountVerified = true
         val phoneNumber = "79991035532"
-        val usersEntity = UsersEntity(
+        val usersEntityDto = UsersEntity(
             userId = userId,
             username = username,
-            email = email,
-            phoneNumber = phoneNumber,
-            accountVerified = accountVerified,
-            registrationDate = registrationDate,
+            password = "1234",
+            roles = setOf(RolesEntity(1L, "USER")),
         )
-        val userDto = UserDto(
+        val userDto = UserWithPasswordDto(
             userId = userId,
             username = username,
-            email = email,
-            phoneNumber = phoneNumber,
-            accountVerified = accountVerified,
-            registrationDate = registrationDate,
+            password = "1234",
+            roles = setOf("USER")
         )
 
-        `when`(usersRepository.save(any())).thenReturn(Mono.just(usersEntity))
+        val expected = UserDto(
+            userId = userId,
+            username = username,
+            roles = setOf("USER")
+        )
+
+        `when`(usersRepository.save(any())).thenReturn(Mono.just(usersEntityDto))
 
         val result = usersOperationsService.save(userDto).block()
 
-        assertEquals(userDto, result)
+        assertEquals(expected, result)
     }
 
     @Test
@@ -127,24 +118,19 @@ class UsersOperationsServiceTest {
         val email = "niktog1@mail.ru"
         val accountVerified = true
         val phoneNumber = "79991035532"
-        val usersEntity = UsersEntity(
+        val usersEntityDto = UsersEntity(
             userId = userId,
             username = username,
-            email = email,
-            phoneNumber = phoneNumber,
-            accountVerified = accountVerified,
-            registrationDate = registrationDate,
+            password = "1234",
+            roles = setOf(RolesEntity(1L, "USER")),
         )
         val userDto = UserDto(
             userId = userId,
             username = username,
-            email = email,
-            phoneNumber = phoneNumber,
-            accountVerified = accountVerified,
-            registrationDate = registrationDate,
+            roles = setOf("USER")
         )
 
-        `when`(usersRepository.save(any())).thenReturn(Mono.just(usersEntity))
+        `when`(usersRepository.save(any())).thenReturn(Mono.just(usersEntityDto))
 
         val result = usersOperationsService.update(userDto).block()
 

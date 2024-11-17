@@ -1,4 +1,4 @@
-package ru.itmo.sports.ru.itmo.sports.controller
+package ru.itmo.sports.controller
 
 import org.springframework.http.HttpHeaders
 

@@ -2,7 +2,6 @@ package ru.itmo.sports.unit
 
 
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -14,10 +13,10 @@ import ru.itmo.common.dto.PagingDto
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.CreateSportRequestDto
 import ru.itmo.common.request.UpdateSportRequestDto
-import ru.itmo.sports.ru.itmo.sports.model.dto.SportDto
-import ru.itmo.sports.ru.itmo.sports.model.entity.SportsEntity
-import ru.itmo.sports.ru.itmo.sports.repository.SportsRepository
-import ru.itmo.sports.ru.itmo.sports.service.SportsService
+import ru.itmo.common.dto.SportDto
+import ru.itmo.common.entity.SportsEntity
+import ru.itmo.sports.repository.SportsRepository
+import ru.itmo.sports.service.SportsService
 import java.util.*
 import kotlin.test.assertEquals
 

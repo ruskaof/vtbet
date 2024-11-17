@@ -1,4 +1,4 @@
-package ru.itmo.bets.handler.entity
+package ru.itmo.bets.handler.model.entity
 
 import jakarta.persistence.*
 import java.math.BigDecimal
@@ -9,9 +9,8 @@ class BetsEntity(
     @Column(name = "bet_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val betId: Long? = null,
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    val usersEntity: UsersEntity,
+    @Column(name = "user_id")
+    val userId: Long,
     @Column(nullable = false)
     val amount: BigDecimal,
     @Column(nullable = false)
