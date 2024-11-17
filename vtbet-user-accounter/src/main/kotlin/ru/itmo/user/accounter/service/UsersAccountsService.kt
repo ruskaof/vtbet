@@ -38,8 +38,7 @@ class UsersAccountsService(
                 phoneNumber = request.phoneNumber,
                 accountVerified = true,
                 registrationDate = Instant.now(),
-                isUserNew = true,
-            )
+            ).apply { this.isUserNew = true }
         ).map { it.toDto() }
 
     fun updateUserAccount(request: UpdateUserRequestDto, userId: Long): Mono<UserAccountDto> =

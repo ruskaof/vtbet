@@ -1,6 +1,5 @@
 package ru.itmo.user.accounter.model.entity
 
-import jakarta.persistence.Transient
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Pattern
 import org.springframework.data.annotation.Id
@@ -27,13 +26,14 @@ data class UsersAccountsEntity(
     var accountVerified: Boolean,
     @Column("registration_date")
     val registrationDate: Instant,
-
-    @Transient
-    var isUserNew: Boolean = false,
 ): Persistable<Long> {
+
+    @org.springframework.data.annotation.Transient
+    var isUserNew: Boolean? = false
+
     override fun getId(): Long {
         return userId
     }
 
-    override fun isNew(): Boolean = isUserNew
+    override fun isNew(): Boolean = isUserNew == true
 }
