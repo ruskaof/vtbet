@@ -10,6 +10,9 @@ import ru.itmo.common.response.UserResponse
 
 @FeignClient(name = "user-accounter-client", url = "http://localhost:8601/users")
 interface UserAccountClient {
+    @GetMapping("/users/{id}")
+    fun getUser(@PathVariable id: Long): UserResponse
+
     @PostMapping("users/{id}/balance")
     fun updateBalance(
         @PathVariable id: Long,

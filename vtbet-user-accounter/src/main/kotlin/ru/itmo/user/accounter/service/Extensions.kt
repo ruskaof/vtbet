@@ -14,16 +14,6 @@ fun UsersAccountsEntity.toDto() =
         registrationDate = registrationDate,
     )
 
-fun UserAccountDto.toEntity() =
-    UsersAccountsEntity(
-        userId = userId,
-        registrationDate = registrationDate,
-        balanceAmount = balanceAmount,
-        email = email,
-        phoneNumber = phoneNumber,
-        accountVerified = accountVerified,
-    )
-
 fun UserAccountDto.toResponse() =
     UserResponse(
         id = userId,

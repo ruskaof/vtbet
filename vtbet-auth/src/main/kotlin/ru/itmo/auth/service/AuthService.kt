@@ -37,7 +37,7 @@ class AuthService(
                 roles = user.roles.map { it.name }.toSet()
             )
         )
-        return JwtResponseDto(token)
+        return JwtResponseDto(user.userId, token)
     }
 
     fun login(request: UserPasswordRequestDto): JwtResponseDto {
@@ -53,11 +53,6 @@ class AuthService(
                 roles = user.roles.map { it.name }.toSet()
             )
         )
-        return JwtResponseDto(token)
-    }
-
-    fun loginService(service: String): JwtResponseDto {
-        val token = jwtService.generateServiceAccessToken(service)
-        return JwtResponseDto(token)
+        return JwtResponseDto(user.userId, token)
     }
 }

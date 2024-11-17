@@ -41,7 +41,7 @@ class MatchesController(
     }
 
     @PostMapping("/{id}")
-    fun createTypeOfBetMatch(
+    fun createAvailableBet(
         @PathVariable("id") matchId: Long,
         @RequestBody createAvailableBetRequestDto: CreateAvailableBetRequestDto,
     ): FullTypeOfBetMatchResponse =

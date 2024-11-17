@@ -44,10 +44,10 @@ class BetsController(
     @GetMapping("/{id}")
     fun getAvailableBet(
         @PathVariable(name = "id") availableBetId: Long,
-    ) = complexBetsService.getAvailableBet(availableBetId).toResponse()
+    ): AvailableBetsResponse = complexBetsService.getAvailableBet(availableBetId).toResponse()
 
     @PutMapping("/{id}")
-    fun modifyBetGroup(
+    fun modifyAvailableBet(
         @PathVariable("id") betId: Long,
         @Valid
         @RequestBody updateAvailableBetRequestDto: UpdateAvailableBetRequestDto,

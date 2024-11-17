@@ -1,7 +1,6 @@
-package ru.itmo.sports.configuration
+package ru.itmo.vtbet.configuration
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
 
 @ConfigurationProperties("auth.keys")

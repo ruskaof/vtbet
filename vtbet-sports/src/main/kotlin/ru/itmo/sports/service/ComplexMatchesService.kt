@@ -73,4 +73,8 @@ class ComplexMatchesService(
 
         return match
     }
+
+    fun getMatch(id: Long) =
+        matchesOperationsService.getMatch(id)?.toResponse()
+            ?: throw ResourceNotFoundException("Match with id $id not found")
 }

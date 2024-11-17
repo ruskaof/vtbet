@@ -1,10 +1,11 @@
 package ru.itmo.bets.handler.service
 
+import feign.FeignException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.itmo.bets.handler.client.SportsClient
-import ru.itmo.bets.handler.client.UsersClient
+import ru.itmo.bets.handler.client.UserAccountClient
 import ru.itmo.bets.handler.request.MakeBetRequestDto
 import ru.itmo.common.dto.BetDto
 import ru.itmo.common.dto.PagingDto
@@ -12,13 +13,13 @@ import ru.itmo.common.exception.IllegalBetActionException
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.BalanceActionRequestDto
 import ru.itmo.common.request.BalanceActionType
+import ru.itmo.common.utils.scaled
 import java.math.BigDecimal
-import java.math.RoundingMode
 
 @Service
 class ComplexUsersService(
     private val sportsClient: SportsClient,
-    private val usersClient: UsersClient,
+    private val userAccountClient: UserAccountClient,
     private val availableBetsService: AvailableBetsService,
     private val betsService: BetsService,
     @Value("\${vtbet.ratio-decrease-value}")
@@ -27,7 +28,15 @@ class ComplexUsersService(
     @Transactional
     fun makeBet(userId: Long, makeBetRequestDto: MakeBetRequestDto): BetDto {
 
-        val user = usersClient.getUser(userId).toDto()
+        val user = try {
+            userAccountClient.getUser(userId).toDto()
+        } catch (e: FeignException) {
+            if (e.status() == 404) {
+                throw ResourceNotFoundException("User account not found")
+            } else {
+                throw e
+            }
+        }
 
         val availableBet = availableBetsService.getAvailableBetWithGroup(makeBetRequestDto.availableBetId)
             ?: throw ResourceNotFoundException("No available bet found with ID: ${makeBetRequestDto.availableBetId}")
@@ -37,9 +46,14 @@ class ComplexUsersService(
             )
         }
 
-        //FIXME: sasaovch handle not found
-        val match = sportsClient.getMatch(availableBet.matchId)
-//            ?: throw ResourceNotFoundException("No match found with ID: ${availableBet.matchId}")
+        val match = try { sportsClient.getMatch(availableBet.matchId) } catch (e: FeignException) {
+            if (e.status() == 404) {
+                throw ResourceNotFoundException("Match not found")
+            } else {
+                throw e
+            }
+        }
+
         if (match.ended) {
             throw IllegalBetActionException("Match has been already finished")
         }
@@ -54,7 +68,7 @@ class ComplexUsersService(
             makeBetRequestDto.amount
         )
 
-        usersClient.updateBalance(
+        userAccountClient.updateBalance(
             userId,
             BalanceActionRequestDto(
                 BalanceActionType.WITHDRAW,
@@ -66,12 +80,6 @@ class ComplexUsersService(
 
         return bet
     }
-
-    val MAX_PAGE_SIZE = 50L
-    val DECIMAL_SCALE = 2
-
-    fun BigDecimal.scaled() = setScale(DECIMAL_SCALE, RoundingMode.FLOOR)
-
 
     fun getUserBets(userId: Long, pageNumber: Int, pageSize: Int): PagingDto<BetDto> {
         return betsService.getUserBets(userId, pageNumber, pageSize)

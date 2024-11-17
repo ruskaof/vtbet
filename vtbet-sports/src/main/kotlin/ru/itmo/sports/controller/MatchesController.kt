@@ -39,6 +39,12 @@ class MatchesController(
         ))
     }
 
+    @GetMapping("/matches/{id}")
+    fun getMatch(
+        @PathVariable id: Long,
+    ) =
+        complexMatchesService.getMatch(id)
+
     @PutMapping("matches/{id}")
     fun updateMatch(
         @PathVariable id: Long,

@@ -1,8 +1,10 @@
 package ru.itmo.user.accounter.model.entity
 
+import jakarta.persistence.Transient
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Pattern
 import org.springframework.data.annotation.Id
+import org.springframework.data.domain.Persistable
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.math.BigDecimal
@@ -24,5 +26,14 @@ data class UsersAccountsEntity(
     @Column("account_verified")
     var accountVerified: Boolean,
     @Column("registration_date")
-    val registrationDate: Instant
-)
+    val registrationDate: Instant,
+
+    @Transient
+    var isUserNew: Boolean = false,
+): Persistable<Long> {
+    override fun getId(): Long {
+        return userId
+    }
+
+    override fun isNew(): Boolean = isUserNew
+}

@@ -38,6 +38,7 @@ class UsersAccountsService(
                 phoneNumber = request.phoneNumber,
                 accountVerified = true,
                 registrationDate = Instant.now(),
+                isUserNew = true,
             )
         ).map { it.toDto() }
 

@@ -17,13 +17,9 @@ class SecurityConfiguration(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain =
         http
             .logout { it.disable() }
-            .oauth2ResourceServer {
-                it.jwt { jwt ->
-                    jwt.decoder(jwtDecoder)
-                }
-            }
-            .formLogin { it.disable() }
-            .authorizeHttpRequests { it.anyRequest().permitAll() }
             .csrf { it.disable() }
+            .formLogin { it.disable() }
+            .oauth2ResourceServer { it.jwt { jwt -> jwt.decoder(jwtDecoder) } }
+            .authorizeHttpRequests { it.anyRequest().permitAll() }
             .build()
 }

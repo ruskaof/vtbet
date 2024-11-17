@@ -61,7 +61,7 @@ class AvailableBetsService(
             sportsClient.getMatch(matchId)
         } catch (e: FeignException) {
             if (e.status() == 404) {
-                throw ResourceNotFoundException("Sport not found")
+                throw ResourceNotFoundException("Match not found")
             } else {
                 throw e
             }

@@ -38,7 +38,7 @@ class UsersController(
         @PathVariable("id") userId: Long,
     ): Mono<Void> = usersAccountsService.delete(userId)
 
-    @PutMapping("users/{id}")
+    @PatchMapping("users/{id}")
     fun updateUser(
         @PathVariable("id") userId: Long,
         @RequestBody
