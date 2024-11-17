@@ -7,7 +7,6 @@ import reactor.core.publisher.Mono
 import ru.itmo.common.dto.ComplexUserDto
 import ru.itmo.common.dto.UserWithPasswordDto
 import ru.itmo.common.exception.DuplicateException
-import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.BalanceActionType
 import ru.itmo.common.request.CreateUserRequestDto
 import ru.itmo.common.request.UpdateUserRequestDto
@@ -78,17 +77,33 @@ class ComplexUsersService(
 
 
     @Transactional
-    fun deleteUser(userId: Long) =
+    fun deleteUser(userId: Long): Mono<Void> =
         usersOperationsService.getUser(userId)
-            .map { usersOperationsService.deleteById(userId) }
-            .switchIfEmpty(Mono.error(ResourceNotFoundException("User with userId $userId not found")))
+            .flatMap {
+                println("hello")
+                usersAccountsService.deleteByUserId(userId)
+            }.flatMap {
+                usersOperationsService.deleteByUserId(userId)
+            }
 
     @Transactional
     fun updateUser(userId: Long, request: UpdateUserRequestDto): Mono<ComplexUserDto> =
         Mono.zip(
-            usersOperationsService.getUser(userId),
+            usersOperationsService.getUserWithPassword(userId),
             usersAccountsService.getUserAccount(userId),
         ).flatMap {
+            deleteUser(userId)
+                .thenReturn(it)
+        }.flatMap {
+            usersOperationsService.saveWithId(
+                UserWithPasswordDto(
+                    userId = it.t1.userId,
+                    username = request.username ?: it.t1.username,
+                    password = request.password ?: it.t1.password,
+                    roles = it.t1.roles,
+                )
+            ).thenReturn(it)
+        }.flatMap {
             usersAccountsService.update(
                 ComplexUserDto(
                     userId = it.t1.userId,
@@ -108,7 +123,7 @@ class ComplexUsersService(
         }.map { ComplexUserDto(it.t1, it.t2) }
 
     @Transactional
-    fun handleBalanceAction(userId: Long, amount: BigDecimal, action: BalanceActionType) =
+    fun handleBalanceAction(userId: Long, amount: BigDecimal, action: BalanceActionType): Mono<ComplexUserDto> =
         getUser(userId)
             .flatMap { userAccount ->
                 val updatedAccount = when (action) {
@@ -120,9 +135,7 @@ class ComplexUsersService(
                         balanceAmount = userAccount.balanceAmount.subtract(amount).scaled(),
                     )
                 }
-                usersAccountsService.update(
-                    updatedAccount
-                )
+                usersAccountsService.updateBalanceById(userId, updatedAccount.balanceAmount.toDouble())
+                    .thenReturn(updatedAccount)
             }
-            .flatMap { getUser(userId) }
 }

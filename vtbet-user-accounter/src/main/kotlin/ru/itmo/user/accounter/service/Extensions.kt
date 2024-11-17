@@ -4,10 +4,9 @@ import ru.itmo.common.dto.ComplexUserDto
 import ru.itmo.common.dto.UserAccountDto
 import ru.itmo.common.dto.UserDto
 import ru.itmo.common.dto.UserWithPasswordDto
-import ru.itmo.common.entity.RolesEntity
-import ru.itmo.common.entity.UsersAccountsEntity
-import ru.itmo.common.entity.UsersEntity
 import ru.itmo.common.response.UserResponse
+import ru.itmo.user.accounter.models.entity.UsersAccountsEntity
+import ru.itmo.user.accounter.models.entity.UsersEntity
 
 fun UsersAccountsEntity.toDto() =
     UserAccountDto(
@@ -23,7 +22,15 @@ fun UsersEntity.toDto() =
     UserDto(
         userId = userId!!,
         username = username,
-        roles = roles.map { it.name }.toSet(),
+        roles = emptySet(),
+    )
+
+fun UsersEntity.toWithPasswordDto() =
+    UserWithPasswordDto(
+        userId = userId!!,
+        username = username,
+        password = password!!,
+        roles = emptySet(),
     )
 
 
@@ -43,7 +50,6 @@ fun UserDto.toEntity() =
     UsersEntity(
         userId = userId,
         username = username,
-        roles = roles.map { RolesEntity(name = it) }.toSet(),
         password = null,
     )
 
@@ -51,7 +57,6 @@ fun UserWithPasswordDto.toEntity() =
     UsersEntity(
         userId = userId,
         username = username,
-        roles = roles.map { RolesEntity(name = it) }.toSet(),
         password = password,
     )
 

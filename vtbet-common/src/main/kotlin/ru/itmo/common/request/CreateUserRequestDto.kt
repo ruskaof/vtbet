@@ -16,7 +16,6 @@ data class CreateUserRequestDto(
     @field:Size(max = 255, min = 1, message = "String length must be between 1 and 255")
     @field:Pattern(regexp = "[0-9]{10}", message = "Invalid phone number")
     val phoneNumber: String? = null,
-    @field:Size(max = 255, min = 9, message = "Password length must be between 9 and 255")
-    @field:Email(message = "Invalid password")
+    @field:Size(max = 255, min = 4, message = "Password length must be between 9 and 255")
     val password: String,
 )
