@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import ru.itmo.common.request.BalanceActionRequestDto
 import ru.itmo.common.response.UserResponse
 
-@FeignClient(name = "user-accounter-client", url = "http://localhost:8601/users")
+@FeignClient(name = "user-accounter-client", url = "http://localhost:8601")
 interface UserAccountClient {
     @GetMapping("/users/{id}")
     fun getUser(@PathVariable id: Long): UserResponse

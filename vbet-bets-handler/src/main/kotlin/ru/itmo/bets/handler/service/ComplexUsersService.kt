@@ -68,13 +68,22 @@ class ComplexUsersService(
             makeBetRequestDto.amount
         )
 
-        userAccountClient.updateBalance(
-            userId,
-            BalanceActionRequestDto(
-                BalanceActionType.WITHDRAW,
-                makeBetRequestDto.amount
+        try {
+
+            userAccountClient.updateBalance(
+                userId,
+                BalanceActionRequestDto(
+                    BalanceActionType.WITHDRAW,
+                    makeBetRequestDto.amount
+                )
             )
-        )
+        } catch (e: FeignException) {
+            if (e.status() == 400) {
+                throw IllegalBetActionException("Could not withdraw money from user. Account might have not enough money")
+            } else {
+                throw e
+            }
+        }
 
         availableBetsService.update(availableBet.copy(ratio = updateRatio(availableBet.ratio)))
 

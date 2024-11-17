@@ -3,6 +3,7 @@ package ru.itmo.user.accounter.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono
+import ru.itmo.common.exception.IllegalBetActionException
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.BalanceActionType
 import ru.itmo.common.request.CreateUserRequestDto
@@ -65,9 +66,14 @@ class UsersAccountsService(
                         balanceAmount = userAccount.balanceAmount.add(amount).scaled(),
                     )
 
-                    BalanceActionType.WITHDRAW -> userAccount.copy(
-                        balanceAmount = userAccount.balanceAmount.subtract(amount).scaled(),
-                    )
+                    BalanceActionType.WITHDRAW -> {
+                        if (userAccount.balanceAmount < amount) {
+                            throw IllegalBetActionException("User does not have enough money to withdraw")
+                        }
+                        userAccount.copy(
+                            balanceAmount = userAccount.balanceAmount.subtract(amount).scaled(),
+                        )
+                    }
                 }
                 usersAccountsRepository.updateBalanceById(userId, updatedAccount.balanceAmount.toDouble())
                     .thenReturn(updatedAccount)

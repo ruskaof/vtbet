@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import ru.itmo.common.exception.DuplicateException
+import ru.itmo.common.exception.IllegalBetActionException
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.response.VtbetExceptionResponse
 
@@ -36,6 +37,13 @@ class MethodArgumentNotValidExceptionAdvice {
     @ExceptionHandler(DuplicateException::class)
     fun handleDuplicateException(e: DuplicateException): ResponseEntity<VtbetExceptionResponse> {
         val message = e.message ?: "Duplicate entry"
+        val status = HttpStatus.BAD_REQUEST
+        return ResponseEntity(VtbetExceptionResponse(status.value(), message), status)
+    }
+
+    @ExceptionHandler(IllegalBetActionException::class)
+    fun handleIllegalBetActionException(e: IllegalBetActionException): ResponseEntity<VtbetExceptionResponse> {
+        val message = e.message ?: "Illegal bet"
         val status = HttpStatus.BAD_REQUEST
         return ResponseEntity(VtbetExceptionResponse(status.value(), message), status)
     }
