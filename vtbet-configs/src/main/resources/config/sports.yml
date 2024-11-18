@@ -18,6 +18,11 @@ spring:
 vtbet:
   ratio-decrease-value: 0.01
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL}
+
 server:
   port: 8081
   error:

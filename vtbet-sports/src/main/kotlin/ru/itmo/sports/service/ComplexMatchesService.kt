@@ -74,6 +74,13 @@ class ComplexMatchesService(
         return match
     }
 
+    @Transactional
+    fun endMatch(id: Long) {
+        val match = matchesOperationsService.getMatch(id)
+            ?: throw ResourceNotFoundException("Match with id $id not found")
+        matchesOperationsService.update(match.copy(ended = true))
+    }
+
     fun getMatch(id: Long) =
         matchesOperationsService.getMatch(id)?.toResponse()
             ?: throw ResourceNotFoundException("Match with id $id not found")

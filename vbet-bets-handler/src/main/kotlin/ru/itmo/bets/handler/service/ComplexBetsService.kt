@@ -126,6 +126,6 @@ class ComplexBetsService(
                 )
             }
 
-        sportsClient.endMatch(matchId, true)
+        sportsClient.endMatch(matchId)
     }
 }

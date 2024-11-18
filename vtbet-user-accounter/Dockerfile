@@ -1,9 +1,4 @@
-FROM gradle:jdk21 as build
-COPY . /sources
-WORKDIR /sources
-RUN gradle clean bootJar
-
 FROM openjdk:21-jdk as runner
+COPY /build/libs/vtbet-user-accounter.jar /app/
 WORKDIR /app
-COPY --from=build /sources/build/libs/* .
 CMD java -jar vtbet-user-accounter.jar

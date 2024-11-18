@@ -1,6 +1,7 @@
 package ru.itmo.bets.handler.service
 
 import feign.FeignException
+import jakarta.servlet.UnavailableException
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -65,6 +66,8 @@ class AvailableBetsService(
             } else {
                 throw e
             }
+        } catch (e: UnavailableException) {
+            // ignore
         }
 
         val result = availableBetsRepository.findAllByMatchId(matchId, PageRequest.of(pageNumber, pageSize, Sort.by("availableBetId")))

@@ -52,6 +52,12 @@ class MatchesController(
     ): Mono<MatchResponse> =
         Mono.just(complexMatchesService.updateMatch(updateMatchRequestDto, id).toResponse())
 
+    @PostMapping("matches/{id}/ended")
+    fun updateMatch(
+        @PathVariable id: Long,
+    ): Mono<Unit> =
+        Mono.just(complexMatchesService.endMatch(id))
+
     @DeleteMapping("matches/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteMatch(

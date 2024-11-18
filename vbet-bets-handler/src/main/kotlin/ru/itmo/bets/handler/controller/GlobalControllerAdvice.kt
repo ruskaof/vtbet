@@ -1,6 +1,7 @@
 package ru.itmo.bets.handler.controller
 
 import jakarta.persistence.PersistenceException
+import jakarta.servlet.UnavailableException
 import jakarta.validation.ConstraintViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -11,6 +12,7 @@ import ru.itmo.common.exception.DuplicateException
 import ru.itmo.common.exception.IllegalBetActionException
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.response.VtbetExceptionResponse
+import java.net.UnknownHostException
 
 @RestControllerAdvice
 class MethodArgumentNotValidExceptionAdvice {
@@ -51,6 +53,20 @@ class MethodArgumentNotValidExceptionAdvice {
     @ExceptionHandler(PersistenceException::class)
     fun handleDbException(e: PersistenceException): ResponseEntity<VtbetExceptionResponse> {
         val message = "Could not process request because of database error: ${e.message}"
+        val status = HttpStatus.INTERNAL_SERVER_ERROR
+        return ResponseEntity(VtbetExceptionResponse(status.value(), message), status)
+    }
+
+    @ExceptionHandler(UnknownHostException::class)
+    fun handleUnknownHostException(e: UnknownHostException): ResponseEntity<VtbetExceptionResponse> {
+        val message = e.message ?: "Unknown host"
+        val status = HttpStatus.INTERNAL_SERVER_ERROR
+        return ResponseEntity(VtbetExceptionResponse(status.value(), message), status)
+    }
+
+    @ExceptionHandler(UnavailableException::class)
+    fun handleUnknownHostException(e: UnavailableException): ResponseEntity<VtbetExceptionResponse> {
+        val message = e.message ?: "Unavailable"
         val status = HttpStatus.INTERNAL_SERVER_ERROR
         return ResponseEntity(VtbetExceptionResponse(status.value(), message), status)
     }

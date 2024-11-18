@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS users
     password VARCHAR(255) NOT NULL
 );
 
+insert into users(username, password) values ('verifier', '$2a$10$n6q69nUHISvHITGvAWyZiOHx6z0jxuXc1a94L.gkKWD3kyv4bl/pS');
+
 CREATE TABLE IF NOT EXISTS roles
 (
     role_id BIGINT PRIMARY KEY,
@@ -17,7 +19,6 @@ CREATE TABLE IF NOT EXISTS roles
 INSERT INTO roles (role_id, name) values (1, 'USER');
 INSERT INTO roles (role_id, name) values (2, 'BET_ADMIN');
 INSERT INTO roles (role_id, name) values (3, 'USER_VERIFIER');
-INSERT INTO roles (role_id, name) values (4, 'SERVICES_ADMIN');
 
 CREATE TABLE IF NOT EXISTS users_roles
 (

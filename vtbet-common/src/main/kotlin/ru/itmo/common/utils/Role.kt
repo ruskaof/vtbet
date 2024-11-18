@@ -4,5 +4,4 @@ object Role {
     const val USER = "USER"
     const val BET_ADMIN = "BET_ADMIN"
     const val USER_VERIFIER = "USER_VERIFIER"
-    const val SERVICES_ADMIN = "SERVICES_ADMIN"
 }

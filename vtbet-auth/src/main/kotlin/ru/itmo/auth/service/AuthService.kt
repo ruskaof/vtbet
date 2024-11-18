@@ -7,9 +7,13 @@ import ru.itmo.auth.model.dto.UserDto
 import ru.itmo.auth.model.entity.UsersEntity
 import ru.itmo.auth.repository.RolesRepository
 import ru.itmo.auth.repository.UsersRepository
+import ru.itmo.common.exception.AuthException
+import ru.itmo.common.exception.DuplicateException
+import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.UserPasswordRequestDto
 import ru.itmo.common.response.JwtResponseDto
 import ru.itmo.common.utils.Role
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class AuthService(
@@ -21,7 +25,9 @@ class AuthService(
 
     @Transactional
     fun register(request: UserPasswordRequestDto): JwtResponseDto {
-        // todo check duplicate username
+        if (usersRepository.findByUsername(request.username).isPresent) {
+            throw DuplicateException("User with username ${request.username} already exists")
+        }
         val user = usersRepository.saveAndFlush(
             UsersEntity(
                 userId = null,
@@ -42,8 +48,10 @@ class AuthService(
 
     fun login(request: UserPasswordRequestDto): JwtResponseDto {
         val user = usersRepository.findByUsername(request.username)
-        if (!passwordEncoder.matches(request.password, user.password)) {
-            error("invalid username or password") // fixme
+            .getOrNull()
+
+        if (user == null || !passwordEncoder.matches(request.password, user.password)) {
+            throw AuthException("invalid username or password")
         }
 
         val token = jwtService.generateAccessToken(

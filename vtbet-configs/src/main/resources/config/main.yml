@@ -15,6 +15,18 @@ server:
   error:
     include-message: always
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL}
+
+vtbet:
+  gateway:
+    service-auth: ${AUTH_URL}
+    service-bets-handler: ${BETS_HANDLER_URL}
+    service-sports: ${SPORTS_URL}
+    service-user-accounter: ${USER_ACCOUNTER_URL}
+
 auth:
   keys:
     public-key: |

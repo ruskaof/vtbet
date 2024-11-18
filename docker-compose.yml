@@ -59,6 +59,8 @@ services:
       - postgresql
       - liquibase-migrations
       - eureka
+    environment:
+      EUREKA_URL: http://eureka:8761/eureka
 
   user-accounter:
     build: ./vtbet-user-accounter
@@ -71,9 +73,11 @@ services:
       - liquibase-migrations
       - configs
     environment:
+      EUREKA_URL: http://eureka:8761/eureka
+      CONFIG_URL: http://configs:8489/
       DB_USERNAME: vtbet
       DB_PASSWORD: vtbet
-      DB_URL: jdbc:postgresql://postgresql:5432/vtbet
+      DB_URL: r2dbc:postgresql://postgresql:5432/vtbet
 
   sports:
     build: ./vtbet-sports
@@ -86,12 +90,14 @@ services:
       - liquibase-migrations
       - configs
     environment:
+      EUREKA_URL: http://eureka:8761/eureka
+      CONFIG_URL: http://configs:8489/
       DB_USERNAME: vtbet
       DB_PASSWORD: vtbet
       DB_URL: jdbc:postgresql://postgresql:5432/vtbet
 
   bets-handler:
-    build: ./vtbet-sports
+    build: ./vbet-bets-handler
     ports:
       - "8492:8492"
     networks:
@@ -101,6 +107,45 @@ services:
       - liquibase-migrations
       - configs
     environment:
+      EUREKA_URL: http://eureka:8761/eureka
+      SPORTS_URL: http://sports:8081/
+      USER_ACCOUNTER_URL: http://user-accounter:8601/
+      CONFIG_URL: http://configs:8489/
+      DB_USERNAME: vtbet
+      DB_PASSWORD: vtbet
+      DB_URL: jdbc:postgresql://postgresql:5432/vtbet
+
+  main:
+    build: ./vtbet-main
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+    depends_on:
+      - postgresql
+      - liquibase-migrations
+      - configs
+    environment:
+      EUREKA_URL: http://eureka:8761/eureka
+      CONFIG_URL: http://configs:8489/
+      AUTH_URL: http://auth:8440/
+      BETS_HANDLER_URL: http://bets-handler:8492/
+      SPORTS_URL: http://sports:8081/
+      USER_ACCOUNTER_URL: http://user-accounter:8601/
+
+  auth:
+    build: ./vtbet-auth
+    ports:
+      - "8440:8440"
+    networks:
+      - backend
+    depends_on:
+      - postgresql
+      - liquibase-migrations
+      - configs
+    environment:
+      EUREKA_URL: http://eureka:8761/eureka
+      CONFIG_URL: http://configs:8489/
       DB_USERNAME: vtbet
       DB_PASSWORD: vtbet
       DB_URL: jdbc:postgresql://postgresql:5432/vtbet

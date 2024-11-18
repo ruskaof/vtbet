@@ -1,4 +1,14 @@
 spring:
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+      client:
+        config:
+          sports-client:
+            url: ${SPORTS_URL:http://localhost:8081}
+          user-accounter-client:
+            url: ${USER_ACCOUNTER_URL}
   application:
     name: "bets-handler"
   transaction:
@@ -14,9 +24,17 @@ spring:
     username: ${DB_USERNAME:vtbet}
     password: ${DB_PASSWORD:vtbet}
     url: ${DB_URL:jdbc:postgresql://localhost:5432/vtbet}
-
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL}
 vtbet:
   ratio-decrease-value: 0.01
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      ignoreExceptions:
 
 server:
   port: 8492
