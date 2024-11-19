@@ -20,15 +20,9 @@ class UsersAccountsService(
     private val usersAccountsRepository: UsersAccountsRepository,
 ) {
     fun getUserAccount(userId: Long): Mono<UserAccountDto> =
-        usersAccountsRepository.existsById(userId)
-            .flatMap { exists ->
-                if (exists) {
-                    usersAccountsRepository.findById(userId).map { it.toDto() }
-                } else {
-                    Mono.error(ResourceNotFoundException("User with id $userId not found"))
-                }
-            }
-
+        usersAccountsRepository.findById(userId)
+            .switchIfEmpty(Mono.error(ResourceNotFoundException("User with id $userId not found")))
+            .map { it.toDto() }
 
     fun createUserAccount(request: CreateUserRequestDto, userId: Long): Mono<UserAccountDto> =
         usersAccountsRepository.save(
@@ -44,6 +38,7 @@ class UsersAccountsService(
 
     fun updateUserAccount(request: UpdateUserRequestDto, userId: Long): Mono<UserAccountDto> =
         usersAccountsRepository.findById(userId)
+            .switchIfEmpty(Mono.error(ResourceNotFoundException("User with id $userId not found")))
             .flatMap {
                 usersAccountsRepository.save(
                     it.copy(
@@ -51,8 +46,7 @@ class UsersAccountsService(
                         phoneNumber = request.phoneNumber ?: it.phoneNumber,
                     )
                 )
-            }
-            .map { it.toDto() }
+            }.map { it.toDto() }
 
     fun delete(userId: Long): Mono<Void> =
         usersAccountsRepository.deleteById(userId)
@@ -60,6 +54,7 @@ class UsersAccountsService(
     @Transactional
     fun handleBalanceAction(userId: Long, amount: BigDecimal, action: BalanceActionType): Mono<UserAccountDto> =
         getUserAccount(userId)
+            .switchIfEmpty(Mono.error(ResourceNotFoundException("User with id $userId not found")))
             .flatMap { userAccount ->
                 val updatedAccount = when (action) {
                     BalanceActionType.DEPOSIT -> userAccount.copy(
@@ -68,7 +63,7 @@ class UsersAccountsService(
 
                     BalanceActionType.WITHDRAW -> {
                         if (userAccount.balanceAmount < amount) {
-                            throw IllegalBetActionException("User does not have enough money to withdraw")
+                            return@flatMap Mono.error(IllegalBetActionException("User does not have enough money to withdraw"))
                         }
                         userAccount.copy(
                             balanceAmount = userAccount.balanceAmount.subtract(amount).scaled(),

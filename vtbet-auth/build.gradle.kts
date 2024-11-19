@@ -43,6 +43,8 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter:1.19.8")
     testImplementation("org.testcontainers:postgresql:1.19.8")
     testImplementation("org.liquibase:liquibase-core")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+
 }
 
 kotlin {

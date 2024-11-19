@@ -22,9 +22,10 @@ class ComplexUsersService(
     private val userAccountClient: UserAccountClient,
     private val availableBetsService: AvailableBetsService,
     private val betsService: BetsService,
-    @Value("\${vtbet.ratio-decrease-value}")
-    private val ratioDecreaseValue: BigDecimal,
 ) {
+    @Value("\${vtbet.ratio-decrease-value}")
+    lateinit var ratioDecreaseValue: BigDecimal
+
     @Transactional
     fun makeBet(userId: Long, makeBetRequestDto: MakeBetRequestDto): BetDto {
 

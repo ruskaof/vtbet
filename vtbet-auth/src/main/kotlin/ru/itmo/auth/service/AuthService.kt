@@ -9,7 +9,6 @@ import ru.itmo.auth.repository.RolesRepository
 import ru.itmo.auth.repository.UsersRepository
 import ru.itmo.common.exception.AuthException
 import ru.itmo.common.exception.DuplicateException
-import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.UserPasswordRequestDto
 import ru.itmo.common.response.JwtResponseDto
 import ru.itmo.common.utils.Role
@@ -26,7 +25,7 @@ class AuthService(
     @Transactional
     fun register(request: UserPasswordRequestDto): JwtResponseDto {
         if (usersRepository.findByUsername(request.username).isPresent) {
-            throw DuplicateException("User with username ${request.username} already exists")
+            throw DuplicateException("Username is already registered")
         }
         val user = usersRepository.saveAndFlush(
             UsersEntity(

@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
-import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.BalanceActionRequestDto
 import ru.itmo.common.request.CreateUserRequestDto
 import ru.itmo.common.request.UpdateUserRequestDto
@@ -45,7 +44,6 @@ class UsersController(
         @Valid
         request: UpdateUserRequestDto,
     ): Mono<UserResponse> = usersAccountsService.updateUserAccount(request, userId).map { it.toResponse() }
-        .switchIfEmpty(Mono.error(ResourceNotFoundException("User with ID $userId not found")))
 
     @PostMapping("users/{id}/balance")
     fun addMoney(
@@ -54,5 +52,4 @@ class UsersController(
         @Valid
         request: BalanceActionRequestDto,
     ): Mono<UserResponse> = usersAccountsService.handleBalanceAction(userId, request.amount, request.action).map { it.toResponse() }
-        .switchIfEmpty(Mono.error(ResourceNotFoundException("User with ID $userId not found")))
 }

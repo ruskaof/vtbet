@@ -9,10 +9,10 @@ import org.mockito.Mockito.verify
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import ru.itmo.common.exception.ResourceNotFoundException
+import ru.itmo.sports.model.dto.MatchDto
+import ru.itmo.sports.model.dto.SportDto
 import ru.itmo.sports.model.entity.MatchesEntity
-import ru.itmo.common.dto.MatchDto
-import ru.itmo.common.dto.SportDto
-import ru.itmo.common.entity.SportsEntity
+import ru.itmo.sports.model.entity.SportsEntity
 import ru.itmo.sports.repository.MatchesRepository
 import ru.itmo.sports.service.MatchesOperationsService
 import java.util.*

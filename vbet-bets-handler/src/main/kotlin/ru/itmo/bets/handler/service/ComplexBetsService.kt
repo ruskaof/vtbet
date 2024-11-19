@@ -10,7 +10,8 @@ import ru.itmo.bets.handler.model.dto.AvailableBetWithBetGroupDto
 import ru.itmo.bets.handler.model.dto.FullAvailableBetWithBetGroupDto
 import ru.itmo.bets.handler.request.CreateAvailableBetRequestDto
 import ru.itmo.bets.handler.request.UpdateAvailableBetRequestDto
-import ru.itmo.common.dto.*
+import ru.itmo.common.dto.BetGroupDto
+import ru.itmo.common.dto.PagingDto
 import ru.itmo.common.exception.IllegalBetActionException
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.BalanceActionRequestDto
@@ -56,15 +57,6 @@ class ComplexBetsService(
         availableBetsService.update(bet.copy(betsClosed = true))
     }
 
-//    fun getAvailableBets(pageNumber: Int, pageSize: Int): PagingDto<AvailableBetDto> {
-//        val result = availableBetsRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("availableBetId")))
-//        return PagingDto(
-//            items = result.content.map { it.toDto() },
-//            total = result.totalElements,
-//            pageSize = pageSize,
-//            page = pageNumber,
-//        )
-//    }
 
     @Transactional
     fun createAvailableBet(matchId: Long, request: CreateAvailableBetRequestDto): FullAvailableBetWithBetGroupDto {
