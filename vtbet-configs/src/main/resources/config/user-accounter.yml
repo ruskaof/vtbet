@@ -26,16 +26,3 @@ eureka:
   client:
     serviceUrl:
       defaultZone: ${EUREKA_URL}
-
-auth:
-  keys:
-    public-key: |
-      -----BEGIN PUBLIC KEY-----
-      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAypqDZKKWllCE7xtTtJD/
-      5gy/Cpk/uVsACJzV88IVCU98kykx7kjotYLPw8GcQ5sspp7iOa04AhPkbgCJyhpg
-      3UdTsn+z/k3CpEUyyBVf51Fthjosbj0lvqx3PYLNm5FveZysVtze1SSOXCu4RaNV
-      Idrh/4QP+YbOLmARWBx29RHQxXavlvcb91/eYW/IK3U5lC4LuFvF5+CUWDIOsGVs
-      D3ebJY67bIrClg2/9QDCxOI7TLQZwjNZ1bppTNl19zX0oJWh+5xFNb6AJhiPOJMS
-      U8504NENkG7FG37jKOW0+kPhN/35iLxmcjdBoJHS88wWtmw4g8Jqyw+Zrw8wf5Ac
-      8wIDAQAB
-      -----END PUBLIC KEY-----
