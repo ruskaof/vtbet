@@ -21,6 +21,8 @@ import ru.itmo.auth.repository.RolesRepository
 import ru.itmo.auth.repository.UsersRepository
 import ru.itmo.auth.service.AuthService
 import ru.itmo.auth.service.JwtService
+import ru.itmo.common.exception.AuthException
+import ru.itmo.common.exception.DuplicateException
 import ru.itmo.common.request.UserPasswordRequestDto
 import ru.itmo.common.utils.Role
 import java.util.*
@@ -94,7 +96,7 @@ class UserServiceTest {
 
         Mockito.`when`(usersRepository.findByUsername(username)).thenReturn(Optional.of(user))
         // Act & Assert
-        org.junit.jupiter.api.assertThrows<IllegalArgumentException> {
+        org.junit.jupiter.api.assertThrows<DuplicateException> {
             authService.register(request)
         }
     }
@@ -144,11 +146,11 @@ class UserServiceTest {
         whenever(usersRepository.findByUsername(username)).thenReturn(java.util.Optional.empty())
 
         // Act & Assert
-        val exception = assertThrows<IllegalArgumentException> {
+        val exception = assertThrows<AuthException> {
             authService.login(request)
         }
 
-        Assertions.assertEquals("User does not exist", exception.message)
+        Assertions.assertEquals("invalid username or password", exception.message)
         verify(usersRepository).findByUsername(username)
     }
 
@@ -169,7 +171,7 @@ class UserServiceTest {
         whenever(passwordEncoder.matches(password, user.password)).thenReturn(false)
 
         // Act & Assert
-        val exception = assertThrows<IllegalStateException> {
+        val exception = assertThrows<AuthException> {
             authService.login(request)
         }
 

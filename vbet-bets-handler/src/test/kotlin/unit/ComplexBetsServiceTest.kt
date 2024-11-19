@@ -370,7 +370,7 @@ class ComplexBetsServiceTest {
             successfulBet.amount * successfulBet.ratio
         )
         )
-        verify(sportsClient).endMatch(matchId, true)
+        verify(sportsClient).endMatch(matchId)
     }
 
     @Test
@@ -393,6 +393,6 @@ class ComplexBetsServiceTest {
 
         // Assert
         verify(userAccountClient, times(0)).updateBalance(any(), any())
-        verify(sportsClient).endMatch(matchId, true)
+        verify(sportsClient).endMatch(matchId)
     }
 }
