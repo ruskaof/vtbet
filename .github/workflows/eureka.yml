@@ -4,7 +4,7 @@ on:
       - main
     paths:
       - vtbet-common/**
-      - vbet-bets-handler/**
+      - vtbet-eureka/**
 
 permissions:
   contents: write
@@ -32,7 +32,7 @@ jobs:
           password: ${{ secrets.TOKEN }}
 
       - name: Build docker image
-        run: docker build -t ghcr.io/ruskaof/vbet-bets-handler:latest vbet-bets-handler -f vbet-bets-handler/Dockerfile
+        run: docker build -t ghcr.io/ruskaof/vtbet-eureka:latest vtbet-eureka -f vtbet-eureka/Dockerfile
 
       - name: Push docker image
-        run: docker push ghcr.io/ruskaof/vbet-bets-handler:latest
+        run: docker push ghcr.io/ruskaof/vtbet-eureka:latest
