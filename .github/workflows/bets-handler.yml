@@ -1,5 +1,7 @@
 on:
   push:
+    branches:
+      - main
     paths:
       - vtbet-common/**
       - vbet-bets-handler/**
