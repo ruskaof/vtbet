@@ -36,4 +36,4 @@ jobs:
         run: docker build -t ghcr.io/${{ secrets.USERNAME }}/vbet-bets-handler:latest vbet-bets-handler -f vbet-bets-handler/Dockerfile
 
       - name: Push docker image
-        run: docker push ghcr.io/${{ secrets.TOKEN }}/vbet-bets-handler:latest
+        run: docker push ghcr.io/${{ secrets.USERNAME }}/vbet-bets-handler:latest
