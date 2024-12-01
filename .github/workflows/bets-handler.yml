@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 21
 
       - name: Build with Gradle
         run: ./gradlew bootJar
@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.TOKEN }}
 
       - name: Build docker image
-        run: docker build -t ghcr.io/${{ secrets.USERNAME }}/vbet-bets-handler:latest . -f vbet-bets-handler/Dockerfile
+        run: docker build -t ghcr.io/${{ secrets.USERNAME }}/vbet-bets-handler:latest vbet-bets-handler -f vbet-bets-handler/Dockerfile
 
       - name: Push docker image
         run: docker push ghcr.io/${{ secrets.TOKEN }}/vbet-bets-handler:latest
