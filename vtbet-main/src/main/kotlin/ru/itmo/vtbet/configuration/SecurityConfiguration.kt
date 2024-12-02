@@ -13,9 +13,22 @@ import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authorization.AuthorizationContext
+import org.springframework.web.reactive.config.CorsRegistry
+import org.springframework.web.reactive.config.EnableWebFlux
+import org.springframework.web.reactive.config.WebFluxConfigurer
 import reactor.core.publisher.Mono
 import ru.itmo.common.utils.Claim
 import ru.itmo.common.utils.Role
+
+@Configuration
+@EnableWebFlux
+class CorsGlobalConfiguration : WebFluxConfigurer {
+    override fun addCorsMappings(corsRegistry: CorsRegistry) {
+        corsRegistry.addMapping("/**")
+            .allowedOriginPatterns("*")
+            .allowedMethods("*")
+    }
+}
 
 @Configuration
 @EnableMethodSecurity
@@ -34,10 +47,13 @@ class SecurityConfiguration(
         http
             .logout { it.disable() }
             .formLogin { it.disable() }
-            .csrf { it.disable() }
+            .cors { }
             .oauth2ResourceServer { it.jwt { jwt -> jwt.jwtDecoder(jwtDecoder()) } }
             .authorizeExchange {
                 it
+                    .pathMatchers(HttpMethod.GET, "/webjars/swagger-ui/**").permitAll()
+                    .pathMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
+                    .pathMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
                     // sport, matches
                     .pathMatchers(HttpMethod.GET, "/service-sports/**").hasAuthority("SCOPE_${Role.USER}")
                     .pathMatchers("/service-sports/**").hasAuthority("SCOPE_${Role.BET_ADMIN}")

@@ -22,10 +22,25 @@ eureka:
 
 vtbet:
   gateway:
-    service-auth: ${AUTH_URL}
-    service-bets-handler: ${BETS_HANDLER_URL}
-    service-sports: ${SPORTS_URL}
-    service-user-accounter: ${USER_ACCOUNTER_URL}
+    service-auth: ${AUTH_URL:http://auth:8440/}
+    service-bets-handler: ${BETS_HANDLER_URL:http://bets-handler:8492/}
+    service-sports: ${SPORTS_URL:http://sports:8081/}
+    service-user-accounter: ${USER_ACCOUNTER_URL:http://user-accounter:8601/}
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    urls:
+      - url: http://localhost:8492/v3/api-docs
+        name: bets handler service
+      - url: http://localhost:8081/v3/api-docs
+        name: sport service
+      - url: http://localhost:8601/v3/api-docs
+        name: user accounter service
+      - url: http://localhost:8440/v3/api-docs
+        name: auth service
 
 auth:
   keys:

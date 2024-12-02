@@ -1,11 +1,12 @@
-package ru.itmo.bets.handler.config
+package ru.itmo.vtbet.configuration
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
 import io.swagger.v3.oas.annotations.info.Contact
 import io.swagger.v3.oas.annotations.info.Info
 import io.swagger.v3.oas.annotations.security.SecurityScheme
-import io.swagger.v3.oas.annotations.servers.Server
+import org.springframework.context.annotation.Configuration
+
 @OpenAPIDefinition(
     info = Info(
         title = "vtbet",
@@ -14,8 +15,7 @@ import io.swagger.v3.oas.annotations.servers.Server
         contact = Contact(
             name = "ruskaof, svytoq, sasaovch"
         )
-    ),
-    servers = [Server(url = "/bets-handler-service", description = "Gateway server")]
+    )
 )
 @SecurityScheme(
     name = "Bearer Authentication",
@@ -23,4 +23,5 @@ import io.swagger.v3.oas.annotations.servers.Server
     bearerFormat = "JWT",
     scheme = "bearer"
 )
+@Configuration
 class OpenApiConfig
