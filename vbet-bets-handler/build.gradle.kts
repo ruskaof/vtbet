@@ -45,6 +45,8 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.1.3")
     implementation("org.springframework.cloud:spring-cloud-starter-config:4.1.3")
 
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+
     testImplementation("org.testcontainers:junit-jupiter:1.19.8")
     testImplementation("org.testcontainers:postgresql:1.19.8")
     testImplementation("org.liquibase:liquibase-core")

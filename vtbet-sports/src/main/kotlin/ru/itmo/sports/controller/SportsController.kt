@@ -1,5 +1,7 @@
 package ru.itmo.sports.controller
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Positive
@@ -23,6 +25,8 @@ import ru.itmo.sports.service.toResponse
 
 @RestController
 @Validated
+@SecurityRequirement(name = "Bearer Authentication")
+@Tag(name = "Sports_controller", description = "API for sports")
 class SportsController(
     private val sportsService: SportsService,
     private val complexMatchesService: ComplexMatchesService,

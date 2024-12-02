@@ -1,5 +1,7 @@
 package ru.itmo.bets.handler.controller
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.PositiveOrZero
@@ -19,6 +21,8 @@ import ru.itmo.common.utils.MAX_PAGE_SIZE
 @Validated
 @RestController
 @RequestMapping("/bets/matches")
+@SecurityRequirement(name = "Bearer Authentication")
+@Tag(name = "Matches_controller", description = "API for matches")
 class MatchesController(
     private val complexBetsService: ComplexBetsService,
     private val availableBetsService: AvailableBetsService,

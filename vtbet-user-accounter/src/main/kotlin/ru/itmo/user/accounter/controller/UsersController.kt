@@ -1,5 +1,7 @@
 package ru.itmo.user.accounter.controller
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
@@ -14,6 +16,8 @@ import ru.itmo.user.accounter.service.toResponse
 
 @RestController
 @Validated
+@SecurityRequirement(name = "Bearer Authentication")
+@Tag(name = "User_controller", description = "API for user")
 class UsersController(
     private val usersAccountsService: UsersAccountsService
 ) {

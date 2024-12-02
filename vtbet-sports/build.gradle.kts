@@ -33,6 +33,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+
     implementation(project(":vtbet-common"))
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
