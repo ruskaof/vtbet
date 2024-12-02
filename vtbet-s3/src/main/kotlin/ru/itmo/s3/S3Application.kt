@@ -6,7 +6,6 @@ import org.springframework.boot.runApplication
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-//@EnableReactiveFeignClients
 class FilesApplication
 
 fun main(args: Array<String>) {
