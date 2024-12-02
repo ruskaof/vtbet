@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: "s3"
+  config:
+    import: configserver:http://localhost:8489/
+  cloud:
+    config:
+      fail-fast: true
+      enabled: true
+  web:
+    socket:
+      message-size: 512MB # Increase the buffer size (default is 64KB)
+  servlet:
+    multipart:
+      enabled: false
+      max-file-size: 10MB

@@ -3,6 +3,7 @@ package ru.itmo.user.accounter.service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono
+import ru.itmo.common.dto.PagingDto
 import ru.itmo.common.exception.IllegalBetActionException
 import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.BalanceActionType
@@ -24,6 +25,14 @@ class UsersAccountsService(
             .switchIfEmpty(Mono.error(ResourceNotFoundException("User with id $userId not found")))
             .map { it.toDto() }
 
+    fun getNotVerifiedUsers(pageSize: Int, pageNumber: Int): Mono<PagingDto<UserAccountDto>> =
+        usersAccountsRepository.findAllByAccountVerifiedFalse(pageSize, pageNumber * pageSize)
+            .switchIfEmpty(Mono.error(ResourceNotFoundException("There are no users")))
+            .collectList()
+            .map { it.map { entity -> entity.toDto() } }
+            .zipWith(usersAccountsRepository.countAllByAccountVerifiedFalse())
+            .map { PagingDto(it.t1, it.t2, pageNumber, pageSize) }
+
     fun createUserAccount(request: CreateUserRequestDto, userId: Long): Mono<UserAccountDto> =
         usersAccountsRepository.save(
             UsersAccountsEntity(
@@ -31,7 +40,7 @@ class UsersAccountsService(
                 balanceAmount = BigDecimal.ZERO,
                 email = request.email,
                 phoneNumber = request.phoneNumber,
-                accountVerified = true,
+                accountVerified = false,
                 registrationDate = Instant.now(),
             ).apply { this.isUserNew = true }
         ).map { it.toDto() }
@@ -44,6 +53,7 @@ class UsersAccountsService(
                     it.copy(
                         email = request.email ?: it.email,
                         phoneNumber = request.phoneNumber ?: it.phoneNumber,
+                        accountVerified = request.accountVerified ?: it.accountVerified,
                     )
                 )
             }.map { it.toDto() }
