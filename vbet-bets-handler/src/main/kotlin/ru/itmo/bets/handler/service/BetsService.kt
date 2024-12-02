@@ -5,6 +5,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.itmo.bets.handler.kafka.KafkaProducer
 import ru.itmo.bets.handler.repository.BetsGroupsRepository
 import ru.itmo.bets.handler.repository.BetsRepository
 import ru.itmo.bets.handler.request.CreateBetsGroupsRequestDto

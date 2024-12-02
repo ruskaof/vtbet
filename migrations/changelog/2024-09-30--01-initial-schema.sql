@@ -84,3 +84,13 @@ CREATE TABLE IF NOT EXISTS bets
     ratio DECIMAL(100,2) NOT NULL,
     available_bet_id BIGINT NOT NULL REFERENCES available_bets (available_bet_id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS analytics_bets
+(
+    bet_id BIGINT PRIMARY KEY,
+    ts TIMESTAMP WITH TIME ZONE,
+    user_id BIGINT,
+    match_name VARCHAR(255),
+    match_id BIGINT,
+    bet_amount DECIMAL(100,2) NOT NULL
+);

@@ -1,4 +1,11 @@
 spring:
+  kafka:
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    bootstrap-servers:
+      - PLAINTEXT://broker-1:19092
+      - PLAINTEXT://broker-2:19092
+      - PLAINTEXT://broker-3:19092
   cloud:
     openfeign:
       circuitbreaker:

@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.itmo.bets.handler.client.SportsClient
 import ru.itmo.bets.handler.client.UserAccountClient
+import ru.itmo.bets.handler.kafka.KafkaProducer
 import ru.itmo.bets.handler.request.MakeBetRequestDto
+import ru.itmo.common.dto.BetCreatedEventDto
 import ru.itmo.common.dto.BetDto
 import ru.itmo.common.dto.PagingDto
 import ru.itmo.common.exception.IllegalBetActionException
@@ -22,6 +24,7 @@ class ComplexUsersService(
     private val userAccountClient: UserAccountClient,
     private val availableBetsService: AvailableBetsService,
     private val betsService: BetsService,
+    private val kafkaProducer: KafkaProducer,
 ) {
     @Value("\${vtbet.ratio-decrease-value}")
     lateinit var ratioDecreaseValue: BigDecimal
@@ -87,6 +90,7 @@ class ComplexUsersService(
         }
 
         availableBetsService.update(availableBet.copy(ratio = updateRatio(availableBet.ratio)))
+        kafkaProducer.produceBetCreated(BetCreatedEventDto(bet.betId, userId, makeBetRequestDto.amount, match.id, match.name))
 
         return bet
     }
