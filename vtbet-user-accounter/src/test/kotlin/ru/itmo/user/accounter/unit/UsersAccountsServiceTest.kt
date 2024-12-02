@@ -1,12 +1,18 @@
 package ru.itmo.user.accounter.unit
 
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
+import org.mockito.kotlin.any
+import org.mockito.kotlin.verify
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import ru.itmo.common.exception.IllegalBetActionException
+import ru.itmo.common.exception.ResourceNotFoundException
 import ru.itmo.common.request.BalanceActionType
 import ru.itmo.common.request.CreateUserRequestDto
 import ru.itmo.common.request.UpdateUserRequestDto
@@ -21,7 +27,7 @@ import java.math.BigDecimal
 import java.time.Instant
 
 class UsersAccountsServiceTest {
-    private val usersAccountsRepository = Mockito.mock(UsersAccountsRepository::class.java)
+    private val usersAccountsRepository = mock(UsersAccountsRepository::class.java)
     private val usersAccountsService = UsersAccountsService(usersAccountsRepository)
 
 
@@ -43,7 +49,7 @@ class UsersAccountsServiceTest {
             registrationDate = registrationDate,
         )
 
-        Mockito.`when`(usersAccountsRepository.findById(userId)).thenReturn(Mono.just(usersAccountsEntity))
+        `when`(usersAccountsRepository.findById(userId)).thenReturn(Mono.just(usersAccountsEntity))
 
         val result = usersAccountsService.getUserAccount(userId).block()
 
@@ -56,7 +62,7 @@ class UsersAccountsServiceTest {
             registrationDate = registrationDate,
         )
 
-        Assertions.assertEquals(expectedResult, result)
+        assertEquals(expectedResult, result)
     }
 
     @Test
@@ -82,7 +88,7 @@ class UsersAccountsServiceTest {
             phoneNumber = phoneNumber,
         )
 
-        Mockito.`when`(usersAccountsRepository.save(any())).thenReturn(Mono.just(usersAccountsEntity))
+        `when`(usersAccountsRepository.save(any())).thenReturn(Mono.just(usersAccountsEntity))
 
         val result = usersAccountsService.createUserAccount(createUserRequestDto, userId).block()
 
@@ -95,7 +101,7 @@ class UsersAccountsServiceTest {
             registrationDate = registrationDate,
         )
 
-        Assertions.assertEquals(expectedResult, result)
+        assertEquals(expectedResult, result)
     }
 
     @Test
@@ -121,8 +127,8 @@ class UsersAccountsServiceTest {
             phoneNumber = phoneNumber,
         )
 
-        Mockito.`when`(usersAccountsRepository.findById(userId)).thenReturn(Mono.just(usersAccountsEntity))
-        Mockito.`when`(usersAccountsRepository.save(any())).thenReturn(Mono.just(usersAccountsEntity))
+        `when`(usersAccountsRepository.findById(userId)).thenReturn(Mono.just(usersAccountsEntity))
+        `when`(usersAccountsRepository.save(any())).thenReturn(Mono.just(usersAccountsEntity))
 
         val result = usersAccountsService.updateUserAccount(updateUserRequestDto, userId).block()
 
@@ -135,7 +141,7 @@ class UsersAccountsServiceTest {
             registrationDate = registrationDate,
         )
 
-        Assertions.assertEquals(expectedResult, result)
+        assertEquals(expectedResult, result)
     }
 
     @Test
@@ -160,8 +166,8 @@ class UsersAccountsServiceTest {
         val usersAccountDto = usersAccountsEntity.toDto()
 
 
-        Mockito.`when`(usersAccountsRepository.findById(userId)).thenReturn(Mono.just(usersAccountsEntity))
-        Mockito.`when`(usersAccountsRepository.updateBalanceById(userId, balanceAmount.plus(deposit).toDouble()))
+        `when`(usersAccountsRepository.findById(userId)).thenReturn(Mono.just(usersAccountsEntity))
+        `when`(usersAccountsRepository.updateBalanceById(userId, balanceAmount.plus(deposit).toDouble()))
             .thenReturn(Mono.just(userId))
 
         val result = usersAccountsService.handleBalanceAction(userId, deposit, BalanceActionType.DEPOSIT).block()
@@ -170,9 +176,9 @@ class UsersAccountsServiceTest {
             balanceAmount = balanceAmount.plus(deposit).scaled(),
         )
 
-        Assertions.assertNotNull(result)
-        Assertions.assertEquals(expectedResult, result)
-        Assertions.assertEquals(expectedResult.toResponse().id, result!!.toResponse().id)
+        assertNotNull(result)
+        assertEquals(expectedResult, result)
+        assertEquals(expectedResult.toResponse().id, result!!.toResponse().id)
     }
 
     @Test
@@ -204,8 +210,8 @@ class UsersAccountsServiceTest {
         )
 
 
-        Mockito.`when`(usersAccountsRepository.findById(userId)).thenReturn(Mono.just(usersAccountsEntity))
-        Mockito.`when`(usersAccountsRepository.updateBalanceById(userId, balanceAmount.minus(deposit).toDouble()))
+        `when`(usersAccountsRepository.findById(userId)).thenReturn(Mono.just(usersAccountsEntity))
+        `when`(usersAccountsRepository.updateBalanceById(userId, balanceAmount.minus(deposit).toDouble()))
             .thenReturn(Mono.just(userId))
 
         val result = usersAccountsService.handleBalanceAction(userId, deposit, BalanceActionType.WITHDRAW).block()
@@ -213,8 +219,7 @@ class UsersAccountsServiceTest {
         val expectedResult = usersAccountDto.copy(
             balanceAmount = balanceAmount.minus(deposit).scaled(),
         )
-
-        Assertions.assertEquals(expectedResult, result)
+        assertEquals(expectedResult, result)
     }
 
     @Test
@@ -236,8 +241,8 @@ class UsersAccountsServiceTest {
             registrationDate = registrationDate,
         )
 
-        Mockito.`when`(usersAccountsRepository.findById(userId)).thenReturn(Mono.just(usersAccountsEntity))
-        Mockito.`when`(usersAccountsRepository.updateBalanceById(userId, balanceAmount.minus(deposit).toDouble()))
+        `when`(usersAccountsRepository.findById(userId)).thenReturn(Mono.just(usersAccountsEntity))
+        `when`(usersAccountsRepository.updateBalanceById(userId, balanceAmount.minus(deposit).toDouble()))
             .thenReturn(Mono.just(userId))
 
         val result = usersAccountsService.handleBalanceAction(userId, deposit, BalanceActionType.WITHDRAW)
@@ -254,10 +259,82 @@ class UsersAccountsServiceTest {
     fun `delete by id`() {
         val userId = 1L
 
-        Mockito.`when`(usersAccountsRepository.deleteById(userId)).thenReturn(Mono.empty())
+        `when`(usersAccountsRepository.deleteById(userId)).thenReturn(Mono.empty())
 
         usersAccountsService.delete(userId).block()
 
-        Mockito.verify(usersAccountsRepository).deleteById(userId)
+        verify(usersAccountsRepository).deleteById(userId)
+    }
+
+    @Test
+    fun `getNotVerifiedUsers returns PagingDto with users`() {
+        val userId1 = 1L
+        val userId2 = 2L
+        val registrationDate = Instant.now()
+        val email = "niktog1@mail.ru"
+        val accountVerified = true
+        val phoneNumber = "79991035532"
+        val balanceAmount = BigDecimal(200)
+
+        val usersAccountsEntity1 = UsersAccountsEntity(
+            userId = userId1,
+            balanceAmount = balanceAmount,
+            email = email,
+            phoneNumber = phoneNumber,
+            accountVerified = accountVerified,
+            registrationDate = registrationDate,
+        )
+
+        val usersAccountsEntity2 = UsersAccountsEntity(
+            userId = userId2,
+            balanceAmount = balanceAmount,
+            email = email,
+            phoneNumber = phoneNumber,
+            accountVerified = accountVerified,
+            registrationDate = registrationDate,
+        )
+
+        val userEntities = listOf(usersAccountsEntity1, usersAccountsEntity2)
+        val pageSize = 2
+        val pageNumber = 0
+
+        `when`(usersAccountsRepository.findAllByAccountVerifiedFalse(pageSize, pageNumber * pageSize))
+            .thenReturn(Flux.fromIterable(userEntities))
+        `when`(usersAccountsRepository.countAllByAccountVerifiedFalse())
+            .thenReturn(Mono.just(2L))
+
+        val result = usersAccountsService.getNotVerifiedUsers(pageSize, pageNumber)
+
+        StepVerifier.create(result)
+            .assertNext { pagingDto ->
+                assertEquals(2, pagingDto.items.size)
+                assertEquals(2, pagingDto.total)
+                assertEquals(pageNumber, pagingDto.page)
+                assertEquals(pageSize, pagingDto.pageSize)
+                assertEquals(userId1, pagingDto.items[0].userId)
+                assertEquals(userId2, pagingDto.items[1].userId)
+            }
+            .verifyComplete()
+
+        verify(usersAccountsRepository).findAllByAccountVerifiedFalse(pageSize, pageNumber * pageSize)
+        verify(usersAccountsRepository).countAllByAccountVerifiedFalse()
+    }
+
+    @Test
+    fun `getNotVerifiedUsers throws ResourceNotFoundException when no users found`() {
+        `when`(usersAccountsRepository.findAllByAccountVerifiedFalse(anyInt(), anyInt()))
+            .thenReturn(Flux.empty())
+        `when`(usersAccountsRepository.countAllByAccountVerifiedFalse())
+            .thenReturn(Mono.just(0L))
+
+        val result = usersAccountsService.getNotVerifiedUsers(2, 0)
+
+        StepVerifier.create(result)
+            .expectErrorMatches { throwable ->
+                throwable is ResourceNotFoundException &&
+                        throwable.message == "There are no users"
+            }.verify()
+
+        verify(usersAccountsRepository).findAllByAccountVerifiedFalse(anyInt(), anyInt())
     }
 }

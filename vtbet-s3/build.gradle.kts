@@ -6,7 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.jpa") version "1.9.25"
 }
 
-group = "ru.itmo.user.accounter"
+group = "ru.itmo.s3"
 
 java {
     toolchain {
@@ -19,26 +19,22 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":vtbet-common"))
-    implementation("org.springframework.boot:spring-boot-starter-websocket")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
+    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.1.3")
     implementation("org.springframework.cloud:spring-cloud-starter-config:4.1.3")
-
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
-    implementation("org.postgresql:r2dbc-postgresql:1.0.7.RELEASE")
+    implementation("io.minio:minio:8.5.11")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("org.postgresql:postgresql")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
-    implementation("org.springdoc:springdoc-openapi-starter-webflux-api:2.6.0")
-    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0")
+    implementation(project(":vtbet-common"))
 
+    // test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -46,9 +42,7 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter:1.19.8")
     testImplementation("org.testcontainers:postgresql:1.19.8")
     testImplementation("org.liquibase:liquibase-core")
-    testImplementation("io.projectreactor:reactor-test:3.7.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
-
 
 }
 
