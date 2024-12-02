@@ -1,16 +1,17 @@
 package ru.itmo.user.accounter.config
 
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.reactive.config.CorsRegistry
-import org.springframework.web.reactive.config.EnableWebFlux
-import org.springframework.web.reactive.config.WebFluxConfigurer
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-@EnableWebFlux
-class CorsGlobalConfiguration : WebFluxConfigurer {
-    override fun addCorsMappings(corsRegistry: CorsRegistry) {
-        corsRegistry.addMapping("/**")
-            .allowedOriginPatterns("*")
-            .allowedMethods("*")
+class CorsGlobalConfiguration {
+    @Bean
+    fun corsConfigurer(): WebMvcConfigurer {
+        return object : WebMvcConfigurer {
+            override fun addCorsMappings(registry: org.springframework.web.servlet.config.annotation.CorsRegistry) {
+                registry.addMapping("/**").allowedOrigins("*").allowedMethods("*")
+            }
+        }
     }
 }

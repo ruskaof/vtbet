@@ -23,7 +23,7 @@ server:
     include-message: always
 
 websocket:
-  s3-address: ws://localhost:8090/ws
+  s3-address: ws://${S3_URL}/ws
   s3-topic: topic
   s3-app: app
 

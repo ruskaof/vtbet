@@ -78,6 +78,7 @@ services:
       DB_USERNAME: vtbet
       DB_PASSWORD: vtbet
       DB_URL: r2dbc:postgresql://postgresql:5432/vtbet
+      S3_URL: s3:8090
 
   sports:
     build: ./vtbet-sports
@@ -168,6 +169,8 @@ services:
       MINIO_BUCKET: passports
 
   minio:
+    networks:
+      - backend
     image: minio/minio:latest
     command: server --console-address ":9001" /data/
     ports:
