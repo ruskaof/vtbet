@@ -162,7 +162,7 @@ services:
     environment:
       EUREKA_URL: http://eureka:8761/eureka
       CONFIG_URL: http://configs:8489/
-      MINIO_ENDPOINT: http://localhost:9000
+      MINIO_ENDPOINT: http://minio:9000
       MINIO_ACCESS_KEY: vtbets
       MINIO_SECRET_KEY: vtbetsvtbets
       MINIO_BUCKET: passports
