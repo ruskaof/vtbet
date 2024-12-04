@@ -71,6 +71,13 @@ class SecurityConfiguration(
                         matchesUserIdInPath(authentication, context)
                     }
                     .pathMatchers(HttpMethod.POST, "/service-user-accounter/users/{id}").hasAuthority("SCOPE_${Role.USER_VERIFIER}")
+                    .pathMatchers(HttpMethod.POST, "/service-user-accounter/users/{id}/passport").access { authentication, context ->
+                        matchesUserIdInPath(authentication, context)
+                    }
+                    .pathMatchers(HttpMethod.GET, "/service-user-accounter/users/{id}/passport/file").hasAuthority("SCOPE_${Role.USER_VERIFIER}")
+                    .pathMatchers(HttpMethod.GET, "/service-user-accounter/users/{id}/passport/url").hasAuthority("SCOPE_${Role.USER_VERIFIER}")
+                    .pathMatchers(HttpMethod.DELETE, "/service-user-accounter/users/{id}/passport").hasAuthority("SCOPE_${Role.USER_VERIFIER}")
+                    .pathMatchers(HttpMethod.GET, "/service-user-accounter/users/not-verified").hasAuthority("SCOPE_${Role.USER_VERIFIER}")
                     .pathMatchers("/service-user-accounter/users/{id}/balance").hasAuthority("SCOPE_${Role.BET_ADMIN}")
                     // bets
                     .pathMatchers("/service-bets-handler/bets/groups").hasAuthority("SCOPE_${Role.BET_ADMIN}")
