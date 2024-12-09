@@ -33,13 +33,13 @@ springdoc:
   swagger-ui:
     enabled: true
     urls:
-      - url: http://localhost:8492/v3/api-docs
+      - url: ${BETS_HANDLER_SWAGGER_URL}
         name: bets handler service
-      - url: http://localhost:8081/v3/api-docs
+      - url: ${SPORTS_SWAGGER_URL}
         name: sport service
-      - url: http://localhost:8601/v3/api-docs
+      - url: ${USER_ACCOUNTER_SWAGGER_URl}
         name: user accounter service
-      - url: http://localhost:8440/v3/api-docs
+      - url: ${AUTH_SWAGGER_URL}
         name: auth service
 
 auth:

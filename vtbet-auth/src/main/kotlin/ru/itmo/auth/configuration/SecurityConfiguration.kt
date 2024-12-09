@@ -33,6 +33,7 @@ class SecurityConfiguration(
         http
             .logout { it.disable() }
             .formLogin { it.disable() }
+            .csrf { it.disable() }
             .oauth2ResourceServer { it.jwt { jwt -> jwt.decoder(jwtDecoder) } }
             .authorizeHttpRequests { it.anyRequest().permitAll() }
             .build()

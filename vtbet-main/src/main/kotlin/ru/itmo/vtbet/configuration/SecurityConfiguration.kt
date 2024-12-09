@@ -94,6 +94,7 @@ class SecurityConfiguration(
                     }
                     .anyExchange().denyAll()
             }
+            .csrf { it.disable() }
             .build()
 
     private fun matchesUserIdInPath(authentication: Mono<Authentication>, context: AuthorizationContext) =
