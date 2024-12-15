@@ -23,9 +23,7 @@ class WebSocketController {
 
     @MessageMapping("/file.upload")
     @SendTo("/topic/file/url")
-    fun uploadFile(@Payload payload: String) {
-        minioService.uploadFile(payload)
-    }
+    fun uploadFile(@Payload payload: String) = minioService.uploadFile(payload)
 
     @MessageMapping("/file.delete")
     @SendTo("/topic/file/deleted")
