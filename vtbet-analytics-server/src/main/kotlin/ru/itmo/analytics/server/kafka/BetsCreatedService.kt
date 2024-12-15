@@ -2,13 +2,14 @@ package ru.itmo.analytics.server.kafka
 
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import ru.itmo.analytics.server.model.entity.AnalyticsBetsEntity
 import ru.itmo.analytics.server.repository.AnalyticsBetsRepository
 import ru.itmo.common.dto.BetCreatedEventDto
 import java.time.Instant
 
-@Component
-class BetsCreatedConsumer(
+@Service
+class BetsCreatedService(
     private val analyticsBetsRepository: AnalyticsBetsRepository
 ) {
 
