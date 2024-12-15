@@ -22,7 +22,7 @@ jobs:
           java-version: 21
 
       - name: Build with Gradle
-        run: ./gradlew test
+        run: ./gradlew :vtbet-analytics-server:test
   build:
     runs-on: ubuntu-latest
     steps:
