@@ -16,6 +16,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.test.util.ReflectionTestUtils
 import ru.itmo.bets.handler.client.SportsClient
 import ru.itmo.bets.handler.client.UserAccountClient
+import ru.itmo.bets.handler.kafka.KafkaProducer
 import ru.itmo.bets.handler.model.dto.AvailableBetDto
 import ru.itmo.bets.handler.model.dto.AvailableBetWithBetGroupDto
 import ru.itmo.bets.handler.model.dto.MatchDto
@@ -50,6 +51,9 @@ class ComplexUsersServiceTest {
 
     @Mock
     lateinit var betsService: BetsService
+
+    @Mock
+    lateinit var kafkaProducer: KafkaProducer
 
     private val ratioDecreaseValue: BigDecimal = BigDecimal("0.5")
 
